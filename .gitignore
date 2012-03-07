@@ -1,7 +1,8 @@
-*.aux
-*.log
-*.nav
-*.mk
-*.out
-*.snm
-*.toc
+**.aux
+**.log
+**.nav
+**.mk
+**.out
+**.snm
+**.toc
+**.orig
