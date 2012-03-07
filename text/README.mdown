@@ -1,0 +1,3 @@
+# Text to Aaron Karper's Bachelor Thesis
+
+Just run `make` to get a PDF of the thesis.
