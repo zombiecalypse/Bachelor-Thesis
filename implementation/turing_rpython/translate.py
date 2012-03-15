@@ -1,1 +1,0 @@
-/usr/local/src/pypy/pypy/translator/goal/translate.py
