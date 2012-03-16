@@ -1,0 +1,14 @@
+text=/home/aaron/Bachelor/text filter="*.mdown **/*.tex *.bib" {
+ README.mdown
+ abstract.tex
+ complexity/main.tex
+ main.tex
+ self/main.tex
+ transforms/main.tex
+ while/main.tex
+ biblio.bib
+}
+implementation=/home/aaron/Bachelor/implementation {
+ Makefile
+ README.mdown
+}
