@@ -6,8 +6,15 @@
 \usepackage{ucs}
 \usepackage{cite}
 \usepackage{newclude}
+\usepackage{stmaryrd}
+\usepackage[stable]{footmisc}
+\newcommand{\timeestimation}[1]{ \footnote{#1} }
+\newcommand{\citationneeded}{{\em (citation needed) } }
+\newcommand{\lineofthought}[1]{{\bf [#1] }}
+\newcommand{\interpret}[1]{\ensuremath{\left\llbracket #1 \right\rrbracket}}
+
 \author{Aaron Karper}
-\title{A Language Oriented Approach to Computability}
+\title{A Programming Language Oriented Approach to Computability}
 \begin{document}
 \maketitle
 \tableofcontents
@@ -17,9 +24,9 @@
 
 \include*{while/main}
 
-\include*{self/main}
-
 \include*{transforms/main}
+
+\include*{self/main}
 
 \include*{complexity/main}
 
