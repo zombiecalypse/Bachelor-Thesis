@@ -1,10 +1,32 @@
 \section{The {\tt WHILE} Language\timeestimation{15h}}
 \label{sec:WHILE}
+\paragraph{Alternatives to the {\tt WHILE} construct} % (fold)
+\label{par:Alternatives to the WHILE construct}
+\lineofthought{
+  \begin{itemize}
+  	\item Unrestricted Recursion
+	\item Unbound Search ($\mu$)
+	\item Applying rules as long as possible.
+  \end{itemize}
+}
+% paragraph Alternatives to the WHILE construct (end)
 \subsection{{\tt cons} Data} % (fold)
 \label{sub:cons}
+\lineofthought{Wie bei Common Lisp}
 \subsubsection{Natural Numbers} % (fold)
 \label{ssub:Natural Numbers}
+\lineofthought{Bei \cite{jones} sind Zahlen unär codiert, zerstört das nicht 
+alle möglichen Eigenschaften, wie {\tt add} in $\log n$ Zeit? Gucken, ob 
+nicht Binär drin vorkommt.}
 
 % subsubsection Natural Numbers (end)
-
 % subsection cons (end)
+
+\subsection{Turing Completeness} % (fold)
+\label{sub:Turing Completeness}
+\lineofthought{
+  Wärend theoretisch jede tc Sprache äquivalent ist, muss das praktisch 
+  nichts heissen: Referenz zu Brainfuck und Conway's Game of Life
+}
+
+% subsection Turing Completeness (end)

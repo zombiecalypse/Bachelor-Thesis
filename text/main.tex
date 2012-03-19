@@ -7,6 +7,8 @@
 \usepackage{cite}
 \usepackage{newclude}
 \usepackage{stmaryrd}
+\usepackage{hyperref}
+\usepackage[titletoc]{appendix}
 \usepackage[stable]{footmisc}
 \newcommand{\timeestimation}[1]{ \footnote{#1} }
 \newcommand{\citationneeded}{{\em (citation needed) } }
@@ -32,4 +34,9 @@
 
 \bibliography{biblio}{}
 \bibliographystyle{plain}
+
+\clearpage
+\begin{appendices}
+  \include*{appendix}
+\end{appendices}
 \end{document}

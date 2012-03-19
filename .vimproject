@@ -1,6 +1,7 @@
 text=/home/aaron/Bachelor/text filter="*.mdown **/*.tex *.bib" {
  README.mdown
  abstract.tex
+ appendix.tex
  complexity/main.tex
  main.tex
  self/main.tex
