@@ -12,4 +12,11 @@ text=/home/aaron/Bachelor/text filter="*.mdown **/*.tex *.bib" {
 implementation=/home/aaron/Bachelor/implementation {
  Makefile
  README.mdown
+ turing=turing filter="*.hs" {
+  Parser.hs
+  Runner.hs
+ }
+ while=while filter="*.hs" {
+  Parser.hs
+ }
 }
