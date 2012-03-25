@@ -64,13 +64,14 @@ ifThenElseExpression = do {
 	return $ IfElse dataexp ifBlockVal elseBlockVal
 }
 
-parseWhileProgram = parse fileExpression
+parseWhile = parse fileExpression "(unknown)"
 
 parseWhileFile = parseFromFile fileExpression
 
-main = do
-    args <- getArgs
-    parsed <- parseWhileFile (args!!0)
+main = do {
+    args <- getArgs;
+    parsed <- parseWhileFile (args!!0);
     case parsed of
-        Left err -> error $ show err
-        Right ast -> print ast
+        Left err -> error $ show err;
+        Right ast -> print ast;
+}

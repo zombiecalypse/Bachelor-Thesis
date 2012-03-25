@@ -5,4 +5,4 @@ length read x1 {
 		x1 := tl x1
 	}
 }
-write x1
+write x2

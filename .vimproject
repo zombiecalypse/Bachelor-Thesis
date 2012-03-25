@@ -21,7 +21,9 @@ implementation=/home/aaron/Bachelor/implementation {
   While/Data.hs
   While/Parser.hs
   While/Statement.hs
+  While/Evaluate.hs
   data.hs
   statement.hs
+  eval.hs
  }
 }
