@@ -18,6 +18,10 @@ as_number Nil = Just 0
 as_number (Cons (Cons _ _) _) = Nothing
 as_number (Cons Nil x) = (as_number x) >>= (Just . (1+))
 
+as_list :: Tree -> [Tree]
+as_list Nil = []
+as_list (Cons x y) = x:(as_list y)
+
 type ContextDict = M.Map String Tree
 
 data Context = Context { dict :: ContextDict, parentContext :: Maybe Context }
@@ -70,5 +74,5 @@ main = do {
 		ast = either (error . show) id  parsed;
 		inputDataExpression = either (error . show) id input;
 		inputData = evalData (Context { dict = M.empty, parentContext = Nothing }) inputDataExpression } in
-	print $ as_number (interpretProgram ast inputData)
+	print $ as_list (interpretProgram ast inputData)
 }
