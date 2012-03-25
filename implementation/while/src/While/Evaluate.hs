@@ -7,7 +7,16 @@ import Control.Monad.State
 import System (getArgs)
 
 data Tree = Nil | Cons Tree Tree
-	deriving (Show, Eq)
+	deriving (Eq)
+
+instance Show Tree where	
+	show Nil = "nil"
+	show (Cons l r) = "(" ++ (show l) ++ "." ++ (show r) ++ ")"
+
+as_number :: Tree -> Maybe Integer
+as_number Nil = Just 0
+as_number (Cons (Cons _ _) _) = Nothing
+as_number (Cons Nil x) = (as_number x) >>= (Just . (1+))
 
 type ContextDict = M.Map String Tree
 
@@ -61,5 +70,5 @@ main = do {
 		ast = either (error . show) id  parsed;
 		inputDataExpression = either (error . show) id input;
 		inputData = evalData (Context { dict = M.empty, parentContext = Nothing }) inputDataExpression } in
-	print (interpretProgram ast inputData)
+	print $ as_number (interpretProgram ast inputData)
 }
