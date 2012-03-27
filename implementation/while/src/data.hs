@@ -1,1 +1,1 @@
-import Text.Parsers.While.Data (main)
+import While.Data (main)

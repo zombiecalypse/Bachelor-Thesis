@@ -1,5 +1,5 @@
-module While.Data where
-import While.Base
+module Text.Parsers.While.Data where
+import Text.Parsers.While.Base
 import System (getArgs)
 import Text.Parsec
 import Text.ParserCombinators.Parsec.Prim (parseFromFile)

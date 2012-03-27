@@ -1,6 +1,6 @@
-module Text.Parsers.While.Statement where
-import Text.Parsers.While.Base
-import Text.Parsers.While.Data
+module While.Statement where
+import While.Base
+import While.Data
 import Text.Parsec
 import qualified Text.Parsec.Token as P
 import Text.Parsec.Language

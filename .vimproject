@@ -16,14 +16,18 @@ implementation=/home/aaron/Bachelor/implementation {
   Parser.hs
   Runner.hs
  }
- while=while/src/ filter="**/*.hs" {
-  While/Base.hs
-  While/Data.hs
-  While/Parser.hs
-  While/Statement.hs
-  While/Evaluate.hs
-  data.hs
-  statement.hs
-  eval.hs
+ while=while/ filter="**/*.hs *.cabal" {
+  src/Data.hs
+  src/While/AsData.hs
+  src/While/Base.hs
+  src/While/Data.hs
+  src/While/Evaluate.hs
+  src/While/FromData.hs
+  src/While/Parser.hs
+  src/While/Statement.hs
+  src/data.hs
+  src/eval.hs
+  src/statement.hs
+  while.cabal
  }
 }

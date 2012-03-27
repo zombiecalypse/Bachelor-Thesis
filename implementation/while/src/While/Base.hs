@@ -1,4 +1,4 @@
-module Text.Parsers.While.Base where
+module While.Base where
 import Text.Parsec
 import qualified Text.Parsec.Token as P
 import Text.Parsec.Language
@@ -27,3 +27,10 @@ reservedOp = P.reservedOp lexer
 parens = P.parens lexer
 braces = P.braces lexer
 whiteSpace = P.whiteSpace lexer
+
+data Tree = Nil | Cons Tree Tree
+	deriving (Eq)
+
+instance Show Tree where	
+	show Nil = "nil"
+	show (Cons l r) = "(" ++ (show l) ++ "." ++ (show r) ++ ")"

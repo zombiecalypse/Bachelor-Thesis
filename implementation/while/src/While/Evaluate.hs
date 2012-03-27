@@ -1,26 +1,13 @@
-module Interpreter.While where
-import Text.Parsers.While
-import Text.Parsers.While.Statement
-import Text.Parsers.While.Data
+module While.Evaluate where
+import While.Parser
+import While.Statement
+import While.Data
+import While.Base
+import While.FromData
 import qualified Data.Map as M
 import Control.Monad.State
 import System (getArgs)
 
-data Tree = Nil | Cons Tree Tree
-	deriving (Eq)
-
-instance Show Tree where	
-	show Nil = "nil"
-	show (Cons l r) = "(" ++ (show l) ++ "." ++ (show r) ++ ")"
-
-as_number :: Tree -> Maybe Integer
-as_number Nil = Just 0
-as_number (Cons (Cons _ _) _) = Nothing
-as_number (Cons Nil x) = (as_number x) >>= (Just . (1+))
-
-as_list :: Tree -> [Tree]
-as_list Nil = []
-as_list (Cons x y) = x:(as_list y)
 
 type ContextDict = M.Map String Tree
 
@@ -73,6 +60,6 @@ main = do {
 		input = parseData (args!!1) ;
 		ast = either (error . show) id  parsed;
 		inputDataExpression = either (error . show) id input;
-		inputData = evalData (Context { dict = M.empty, parentContext = Nothing }) inputDataExpression } in
-	print $ as_list (interpretProgram ast inputData)
+		inputData = evalData (Context { dict = M.empty, parentContext = Nothing }) inputDataExpression } in 
+		print $  as_list (interpretProgram ast inputData)
 }
