@@ -25,11 +25,15 @@ evalStatement (Assign name dat) = do {
 	modify (\l -> l {dict = Map.insert name ev (dict l)})
 }
 evalStatement (IfElse d b1 b2) = do
+	usingData d;
+	tick 1; -- Check for equality to nil
 	ev <- evalData d;
 	case ev of
 		Nil -> (evalBlock b2)
 		_   -> (evalBlock b1)
 evalStatement w@(While d b) = do
+	usingData d;
+	tick 1;
 	ev <- evalData d;
 	case ev of
 		Nil -> return ()
