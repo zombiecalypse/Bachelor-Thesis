@@ -4,62 +4,70 @@ import While.Statement
 import While.Data
 import While.Base
 import While.FromData
-import qualified Data.Map as M
+import While.Helpers 
+import Control.Monad
 import Control.Monad.State
+import Data.Monoid 
+import qualified Data.Map as Map
 import System (getArgs)
 
+usingData :: DataExpression -> Evaluation ()
+usingData dat = do {
+	size <- sizeof dat;
+	reportDataUsage size;
+	tick (flatSize dat)
+}
 
-type ContextDict = M.Map String Tree
+evalStatement :: WhileStatement -> Evaluation ()
+evalStatement (Assign name dat) = do {
+	usingData dat;
+	ev <- evalData dat;
+	modify (\l -> l {dict = Map.insert name ev (dict l)})
+}
+evalStatement (IfElse d b1 b2) = do
+	ev <- evalData d;
+	case ev of
+		Nil -> (evalBlock b2)
+		_   -> (evalBlock b1)
+evalStatement w@(While d b) = do
+	ev <- evalData d;
+	case ev of
+		Nil -> return ()
+		_   -> do
+			evalBlock b;
+			evalStatement w
 
-data Context = Context { dict :: ContextDict, parentContext :: Maybe Context }
-
-evalData :: Context -> DataExpression -> Tree
-evalData _ NilExp = Nil
-evalData c (HdExp y) = case (evalData c y) of 
-	Cons x _ -> x
-	Nil -> error "Hd of nil"
-evalData c (TlExp y) = case (evalData c y) of
-	Cons _ x -> x
-	Nil -> error "Tl of nil"
-evalData c (ConsExp x y) = Cons (evalData c x) (evalData c y)
-evalData (Context { dict = d, parentContext = Nothing }) (Var n) 
-	| n `M.member` d = (M.!) d n
-	| otherwise = Nil
-evalData (Context { dict = d, parentContext = (Just p) }) v@(Var n) 
-	| n `M.member` d = (M.!) d n
-	| otherwise = evalData p v
-
-evalStatement :: Context -> WhileStatement -> Context
-evalStatement c@(Context { dict = d, parentContext = p }) (Assign name dat) = 
-	c { dict = (M.insert name (evalData c dat) d) }
-evalStatement c (IfElse d b1 b2) =
-	case (evalData c d) of
-		Nil -> (evalBlock c b2)
-		_   -> (evalBlock c b1)
-evalStatement c w@(While d b) =
-	case (evalData c d) of
-		Nil -> c
-		_   -> evalStatement (evalBlock c b) w
-
-evalBlock :: Context -> [WhileStatement] -> Context
-evalBlock = foldl evalStatement
+evalBlock b = forM_ b evalStatement
 
 interpretProgram (Program {
 	program_name = _, 
 	input = read_var, 
 	block = block, 
-	output = write_var}) read = evalData (evalBlock 
-				(Context {dict = (M.singleton read_var read), parentContext = Nothing}) 
-				block) 
-			(Var write_var)
+	output = write_var}) read = do
+		inp <- evalData read;
+		put (mempty { dict = Map.singleton read_var inp})
+		ret <- evalBlock block;
+		dat <- evalData (Var write_var);
+		return dat
 
-main = do {
-    args <- getArgs;
-    parsed <- parseWhileFile (args!!0); 
-	let {
-		input = parseData (args!!1) ;
-		ast = either (error . show) id  parsed;
-		inputDataExpression = either (error . show) id input;
-		inputData = evalData (Context { dict = M.empty, parentContext = Nothing }) inputDataExpression } in 
-		print $  as_list (interpretProgram ast inputData)
-}
+data Report = Report {
+	returnValue :: Tree,
+	commandsExecuted :: Integer,
+	spaceUsed :: Integer
+} deriving (Show, Eq)
+	
+runProgram a i = interpret $ runEvaluation (mempty :: Context) (interpretProgram a i) where
+	interpret (Left s) = error s
+	interpret (Right ((r, env), _)) = compileReport r env
+	compileReport r (RuntimeEnvironment {counter = Sum {getSum = ticks}, max_data_size = Max {getMax = space}}) = Report {spaceUsed = space, commandsExecuted = ticks, returnValue = r}
+
+main = do
+	args <- getArgs
+	parsed <- parseWhileFile (args!!0)
+	let parsedInp = parseData (args!!1)
+	case parsed of
+		Left err -> error $ show err
+		Right ast -> case parsedInp of
+			Left err -> error $ show err
+			Right inp -> do
+				print $ runProgram ast inp

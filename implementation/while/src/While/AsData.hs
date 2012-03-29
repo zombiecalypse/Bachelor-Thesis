@@ -14,5 +14,4 @@ program_as_data (Program {
 	block = block,
 	output = write_var}) = (var_as_data read_var) `ConsExp` 
 							(block_as_data block) `ConsExp` 
-							(var_as_data write_var) where
-
+							(var_as_data write_var) 

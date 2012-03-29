@@ -20,6 +20,7 @@ implementation=/home/aaron/Bachelor/implementation {
   src/Data.hs
   src/While/AsData.hs
   src/While/Base.hs
+  src/While/Helpers.hs
   src/While/Data.hs
   src/While/Evaluate.hs
   src/While/FromData.hs
