@@ -1,6 +1,7 @@
 module While.Statement where
 import While.Base
 import While.Data
+import While.Helpers
 import Text.Parsec
 import qualified Text.Parsec.Token as P
 import Text.Parsec.Language
@@ -24,8 +25,6 @@ data Program = Program {
 	output :: Name
 	}
 	deriving (Show, Eq)
-
-
 
 fileExpression = do {
 	proc_name <- identifier;

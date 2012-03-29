@@ -1,6 +1,8 @@
 module While.Data where
 import While.Base
 import System (getArgs)
+import Data.Foldable
+import Data.Monoid (Monoid, mempty, mappend)
 import Text.Parsec
 import Text.ParserCombinators.Parsec.Prim (parseFromFile)
 
@@ -12,6 +14,16 @@ data DataExpression =
 	ConsExp DataExpression DataExpression  |
 	Var Name                               
 	deriving (Show, Eq)
+
+instance Monoid DataExpression where
+	mempty = NilExp
+	a `mappend` b = ConsExp a b
+
+flatSize (Var _) = 1
+flatSize (HdExp x) = (flatSize x) - 1
+flatSize (TlExp x) = (flatSize x) - 1
+flatSize (ConsExp x y) = 1 + (flatSize x) + (flatSize y)
+flatSize NilExp = 0
 
 nilExp = do {
 	reserved "nil";
@@ -50,7 +62,7 @@ parseDataFile = parseFromFile dataExpression
 
 main = do
     args <- getArgs
-    parsed <- parseDataFile (args!!0)
+    let parsed = parseData (args!!0)
     case parsed of
         Left err -> error $ show err
         Right ast -> print ast
