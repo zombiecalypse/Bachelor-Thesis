@@ -1,0 +1,22 @@
+name: turing
+version: 1.0.0
+cabal-version: -any
+build-type: Simple
+license: AllRightsReserved
+license-file: ""
+copyright:
+maintainer:
+build-depends: HUnit -any, base -any, parsec -any, haskell98 -any, mtl -any,
+				containers -any
+stability: None whatsoever
+homepage:
+package-url:
+bug-reports:
+synopsis: Implementation of a language of turing
+description: Implements a simple language for defining turing machines.
+				It is useful for computability introductions.
+ 
+executable: eval-turing
+main-is: eval.hs
+buildable: True
+hs-source-dirs: src, src/Turing
