@@ -1,9 +1,17 @@
 \section{Language Transforms\timeestimation{25h}} % (fold)
 \label{sec:transforms}
+In this chapter, we'll discuss how we can use the notion of a data 
+representation of a program to get a standard toolchain.
 \subsection{Language Subsets} % (fold)
 \label{sub:Language Subsets}
 \paragraph{{\tt C++}  and {\tt C} } % (fold)
 \label{par:Cpp and C}
+\begin{defn}
+	Let {\tt A} and {\tt B} be two languages such that each valid {\tt B} 
+	program is also a valid {\tt A} program. Further 
+	$\forall b\in B\forall d\in Dat(B): \interpret{b}_A(d) =
+	\interpret{b}_B(d)$
+\end{defn}
 
 % paragraph Cpp and C (end)
 % subsection Language Subsets (end)
@@ -29,8 +37,10 @@
 % subsubsection Futamura Projections (end)
 \paragraph{The PyPy project} % (fold)
 \label{par:The PyPy project}
-\lineofthought{Research how PyPy uses specializers and how that does compare 
-to the Futamura Projections.}
+\begin{example}
+\lineofthought{Research how PyPy uses specializers and how that does
+compare to the Futamura Projections.}
+\end{example}
 
 % paragraph The PyPy project (end)
 
