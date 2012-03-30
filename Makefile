@@ -1,8 +1,7 @@
-text:
-	echo "Building Text"
-	cd text; $(MAKE) $(MFLAGS)
-implementation:
-	echo "Building Implementations"
-	cd implementation; $(MAKE) $(MFLAGS)
+SUBDIRS = implementation text
+subdirs:
+	for dir in $(SUBDIRS); do \
+		$(MAKE) -C $$dir; \
+	done
 
-.PHONY: text implementation
+.PHONY: subdirs 

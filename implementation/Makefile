@@ -1,8 +1,7 @@
-.PHONY: turing while
+SUBDIRS = turing while
+subdirs:
+	for dir in $(SUBDIRS); do \
+		$(MAKE) -C $$dir; \
+	done
 
-turing:
-	echo "Bulding Turing"
-	cd turing; $(MAKE) $(MFLAGS)
-while:
-	echo "Bulding While"
-	cd while; $(MAKE) $(MFLAGS)
+.PHONY: subdirs 
