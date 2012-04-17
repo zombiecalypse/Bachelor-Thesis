@@ -18,23 +18,23 @@ usingData dat = do {
 	tick (flatSize dat)
 }
 
-evalStatement :: WhileStatement -> Evaluation ()
-evalStatement (Assign name dat) = do {
-	usingData dat;
-	ev <- evalData dat;
-	modify (\l -> l {dict = Map.insert name ev (dict l)})
-}
-evalStatement (IfElse d b1 b2) = do
-	usingData d;
-	tick 1; -- Check for equality to nil
-	ev <- evalData d;
-	case ev of
-		Nil -> (evalBlock b2)
-		_   -> (evalBlock b1)
-evalStatement w@(While d b) = do
+useData d = do
 	usingData d;
 	tick 1;
-	ev <- evalData d;
+	evalData d
+
+evalStatement :: WhileStatement -> Evaluation ()
+evalStatement (Assign name dat) = do {
+	ev <- useData dat;
+  modify (\l -> l {dict = Map.insert name ev (dict l)})
+}
+evalStatement (IfElse d b1 b2) = do
+	ev <- useData d;
+	case ev of
+		Nil -> evalBlock b2
+		_   -> evalBlock b1
+evalStatement w@(While d b) = do
+	ev <- useData d;
 	case ev of
 		Nil -> return ()
 		_   -> do
@@ -44,15 +44,14 @@ evalStatement w@(While d b) = do
 evalBlock b = forM_ b evalStatement
 
 interpretProgram (Program {
-	program_name = _, 
+	programName = _, 
 	input = read_var, 
 	block = block, 
 	output = write_var}) read = do
 		inp <- evalData read;
 		put (mempty { dict = Map.singleton read_var inp})
 		ret <- evalBlock block;
-		dat <- evalData (Var write_var);
-		return dat
+		evalData (Var write_var)
 
 data Report = Report {
 	returnValue :: Tree,
@@ -67,11 +66,10 @@ runProgram a i = interpret $ runEvaluation (mempty :: Context) (interpretProgram
 
 main = do
 	args <- getArgs
-	parsed <- parseWhileFile (args!!0)
+	parsed <- parseWhileFile (head args)
 	let parsedInp = parseData (args!!1)
 	case parsed of
 		Left err -> error $ show err
 		Right ast -> case parsedInp of
 			Left err -> error $ show err
-			Right inp -> do
-				print $ runProgram ast inp
+			Right inp -> print $ runProgram ast inp

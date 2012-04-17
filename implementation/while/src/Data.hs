@@ -41,7 +41,7 @@ varExp = do {
 }
 
 	
-bareDataExpression = (nilExp <|> hdExp <|> tlExp <|> consExp <|> varExp)
+bareDataExpression = nilExp <|> hdExp <|> tlExp <|> consExp <|> varExp
 dataExpression = parens bareDataExpression <|> bareDataExpression
 
 parseData = parse dataExpression "(unknown)"
@@ -50,7 +50,7 @@ parseDataFile = parseFromFile dataExpression
 
 main = do
     args <- getArgs
-    parsed <- parseDataFile (args!!0)
+    parsed <- parseDataFile (head args)
     case parsed of
         Left err -> error $ show err
         Right ast -> print ast

@@ -33,4 +33,4 @@ data Tree = Nil | Cons Tree Tree
 
 instance Show Tree where	
 	show Nil = "nil"
-	show (Cons l r) = "(" ++ (show l) ++ "." ++ (show r) ++ ")"
+	show (Cons l r) = "(" ++ show l ++ "." ++ show r ++ ")"

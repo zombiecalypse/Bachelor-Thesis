@@ -20,9 +20,9 @@ instance Monoid DataExpression where
 	a `mappend` b = ConsExp a b
 
 flatSize (Var _) = 1
-flatSize (HdExp x) = (flatSize x) - 1
-flatSize (TlExp x) = (flatSize x) - 1
-flatSize (ConsExp x y) = 1 + (flatSize x) + (flatSize y)
+flatSize (HdExp x) = flatSize x - 1
+flatSize (TlExp x) = flatSize x - 1
+flatSize (ConsExp x y) = 1 + flatSize x + flatSize y
 flatSize NilExp = 0
 
 nilExp = do {
@@ -53,7 +53,7 @@ varExp = do {
 }
 
 	
-bareDataExpression = (nilExp <|> hdExp <|> tlExp <|> consExp <|> varExp)
+bareDataExpression = nilExp <|> hdExp <|> tlExp <|> consExp <|> varExp
 dataExpression = parens bareDataExpression <|> bareDataExpression
 
 parseData = parse dataExpression "(unknown)"
@@ -62,7 +62,7 @@ parseDataFile = parseFromFile dataExpression
 
 main = do
     args <- getArgs
-    let parsed = parseData (args!!0)
+    let parsed = parseData (head args)
     case parsed of
         Left err -> error $ show err
         Right ast -> print ast

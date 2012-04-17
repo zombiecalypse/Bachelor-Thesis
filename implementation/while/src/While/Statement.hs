@@ -19,7 +19,7 @@ data WhileStatement =
 	deriving (Show, Eq)
 
 data Program = Program {
-	program_name :: Name,
+	programName :: Name,
 	input :: Name,
 	block :: Block,
 	output :: Name
@@ -33,12 +33,15 @@ fileExpression = do {
 	blockVal <- blockExp;
 	reserved "write";
 	writeVar <- identifier;
-	return Program { program_name = proc_name, input = readVar, block = blockVal, output = writeVar }
+	return Program { programName = proc_name, input = readVar, block = blockVal, output = writeVar }
 }
 
 blockExp = between (symbol "{") (symbol "}") $ sepBy statement whiteSpace
 
-statement = (try assignmentExpression) <|> (try whileExpression) <|> (try ifThenElseExpression)
+statement = 
+		try assignmentExpression <|> 
+		try whileExpression <|> 
+		try ifThenElseExpression
 
 assignmentExpression = do {
 	name <- identifier;
@@ -69,7 +72,7 @@ parseWhileFile = parseFromFile fileExpression
 
 main = do {
     args <- getArgs;
-    parsed <- parseWhileFile (args!!0);
+    parsed <- parseWhileFile (head args);
     case parsed of
         Left err -> error $ show err;
         Right ast -> print ast;

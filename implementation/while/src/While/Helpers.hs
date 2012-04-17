@@ -1,7 +1,6 @@
 module While.Helpers where
 import While.Data
 import While.Base
-import Control.Monad.State
 import Control.Monad.Writer
 import Control.Monad.Identity
 import Control.Monad.Error
@@ -18,7 +17,7 @@ instance (Ord a) => Monoid (Max a) where
 	mempty = MaxNull
 	mappend MaxNull x = x
 	mappend x MaxNull = x
-	mappend (Max {getMax = x}) (Max {getMax = y}) = Max {getMax = (max x y)}
+	mappend (Max {getMax = x}) (Max {getMax = y}) = Max {getMax = max x y}
 
 data RuntimeEnvironment = RuntimeEnvironment {
 	counter :: Sum Integer,
