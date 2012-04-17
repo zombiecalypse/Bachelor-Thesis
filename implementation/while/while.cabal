@@ -5,8 +5,7 @@ build-type: Simple
 license: AllRightsReserved
 license-file: ""
 copyright:
-maintainer:
-build-depends: HUnit -any, base -any, parsec -any, haskell98 -any, mtl -any,
+maintainer: Aaron Karper
 				containers -any
 stability: None whatsoever
 homepage:
@@ -15,6 +14,12 @@ bug-reports:
 synopsis: Implementation of the while language
 description: Implements the very basic programming language WHILE.
 				It is useful for computability introductions.
+build-depends: 
+    base,
+    containers,
+    HUnit, 
+    parsec,  
+    mtl
  
 executable: while-data
 main-is: data.hs

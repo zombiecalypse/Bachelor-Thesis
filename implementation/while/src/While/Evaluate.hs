@@ -9,7 +9,7 @@ import Control.Monad
 import Control.Monad.State
 import Data.Monoid 
 import qualified Data.Map as Map
-import System (getArgs)
+import System.Environment (getArgs)
 
 usingData :: DataExpression -> Evaluation ()
 usingData dat = do {
@@ -63,7 +63,7 @@ data Report = Report {
 runProgram a i = interpret $ runEvaluation (mempty :: Context) (interpretProgram a i) where
 	interpret (Left s) = error s
 	interpret (Right ((r, env), _)) = compileReport r env
-	compileReport r (RuntimeEnvironment {counter = Sum {getSum = ticks}, max_data_size = Max {getMax = space}}) = Report {spaceUsed = space, commandsExecuted = ticks, returnValue = r}
+	compileReport r (RuntimeEnvironment {counter = Sum {getSum = ticks}, maxDataSize = Max {getMax = space}}) = Report {spaceUsed = space, commandsExecuted = ticks, returnValue = r}
 
 main = do
 	args <- getArgs

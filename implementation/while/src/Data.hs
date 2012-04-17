@@ -1,6 +1,6 @@
 module Text.Parsers.While.Data where
 import Text.Parsers.While.Base
-import System (getArgs)
+import System.Environment (getArgs)
 import Text.Parsec
 import Text.ParserCombinators.Parsec.Prim (parseFromFile)
 

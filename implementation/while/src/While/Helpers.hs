@@ -22,24 +22,22 @@ instance (Ord a) => Monoid (Max a) where
 
 data RuntimeEnvironment = RuntimeEnvironment {
 	counter :: Sum Integer,
-	max_data_size :: Max Integer
+	maxDataSize :: Max Integer
 } deriving (Show, Eq, Ord)
 
 instance Monoid RuntimeEnvironment where
-	mempty = RuntimeEnvironment { counter = mempty :: Sum Integer, max_data_size = mempty :: Max Integer }
+	mempty = RuntimeEnvironment { counter = mempty :: Sum Integer, maxDataSize = mempty :: Max Integer }
 	mappend 
-		(RuntimeEnvironment { counter = c1, max_data_size = m1 })
-		(RuntimeEnvironment { counter = c2, max_data_size = m2 }) =
-			RuntimeEnvironment {counter = c1 `mappend` c2, max_data_size = m1 `mappend` m2}
+		(RuntimeEnvironment { counter = c1, maxDataSize = m1 })
+		(RuntimeEnvironment { counter = c2, maxDataSize = m2 }) =
+			RuntimeEnvironment {counter = c1 `mappend` c2, maxDataSize = m1 `mappend` m2}
 
 
 tick :: Integer -> Evaluation ()
-tick n = do
-	tell RuntimeEnvironment { counter = Sum n, max_data_size = mempty }
+tick n = tell RuntimeEnvironment { counter = Sum n, maxDataSize = mempty }
 
 reportDataUsage :: Integer -> Evaluation ()
-reportDataUsage n = do
-	tell RuntimeEnvironment { counter = mempty, max_data_size =Max n }
+reportDataUsage n = tell RuntimeEnvironment { counter = mempty, maxDataSize =Max n }
 -- LOOKUP
 
 type ContextDict = M.Map String Tree
@@ -52,8 +50,7 @@ instance Monoid Context where
 	a `mappend` b = b { parentContext = Just a }
 
 evalData :: DataExpression -> Evaluation Tree
-evalData NilExp = do
-	return Nil
+evalData NilExp = return Nil
 evalData (HdExp y) = do 
 	ev <- evalData y
 	case ev of 
@@ -80,7 +77,7 @@ evalData (Var name) = do
 				| otherwise = lookup n p
 setVal name val = do {
 	context@(Context {dict = d, parentContext = _}) <- get;
-	put (context {dict = (M.insert name val d)})
+	put (context {dict = M.insert name val d})
 }
  
 sizeof :: DataExpression -> Evaluation Integer
@@ -91,4 +88,4 @@ sizeof dat = do
 		where 
 			dataSize :: Tree -> Integer
 			dataSize Nil = 0
-			dataSize (Cons a b) = 1+(dataSize a)+(dataSize b)
+			dataSize (Cons a b) = 1 + dataSize a + dataSize b

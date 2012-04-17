@@ -6,7 +6,7 @@ import Text.Parsec
 import qualified Text.Parsec.Token as P
 import Text.Parsec.Language
 import Text.ParserCombinators.Parsec.Prim (parseFromFile)
-import System (getArgs)
+import System.Environment (getArgs)
 
 
 

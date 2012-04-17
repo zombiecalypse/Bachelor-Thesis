@@ -1,6 +1,6 @@
 module While.Data where
 import While.Base
-import System (getArgs)
+import System.Environment (getArgs)
 import Data.Foldable
 import Data.Monoid (Monoid, mempty, mappend)
 import Text.Parsec
