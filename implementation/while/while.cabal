@@ -14,18 +14,17 @@ bug-reports:
 synopsis: Implementation of the while language
 description: Implements the very basic programming language WHILE.
 				It is useful for computability introductions.
-build-depends: 
+build-depends:
     base,
     containers,
-    HUnit, 
-    parsec,  
+    parsec,
     mtl
- 
+
 executable: while-data
 main-is: data.hs
 buildable: True
 hs-source-dirs: src,src/While
- 
+
 executable: parser
 main-is: statement.hs
 buildable: True

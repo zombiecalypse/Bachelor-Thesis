@@ -1,0 +1,25 @@
+\section{Turing-Completeness of a Language}
+\label{sec:Turing Completeness}
+\lineofthought{
+	List some surprisingly turing complete things, e.g. cellular automata (Rule 110), 
+	string rewriting, ...
+
+	Churches thesis: There is no intuitive extension to {\tt  WHILE} that is 
+	stronger than {\tt WHILE}.
+
+	Approximations of results, ... also work (linear slow-down). 
+
+	Note that when there are side effects, we might be interested that a program
+	does {\em not} terminate (e.g. our OS).
+}
+\subsection{Why are most programming languages Turing Complete?} % (fold)
+\label{sub:Why are most programming languages Turing Complete?}
+\lineofthought{
+	While most algorithms used today are guaranteed to stop, proving this for all
+	programs of a language is often hard. Things like recursion is no longer
+	possible, unbound conditional loops (`while`) don't work and there are real
+	problems that can not be solved this way. 
+
+	Compare however Coq, that is {\em not} Turing Complete, but still used.
+}
+% subsection Why are most programming languages Turing Complete? (end)

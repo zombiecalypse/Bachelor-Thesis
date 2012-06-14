@@ -21,8 +21,8 @@ representation of a program to get a standard toolchain.
 % subsection Interpreter (end)
 \subsection{Compiler} % (fold)
 \label{sub:Compiler}
-\paragraph{Wie der {\tt gcc} portiert wird} % (fold)
-\label{par:Wie der gcc portiert wird}
+\paragraph{How the {\tt gcc} is ported} % (fold)
+\label{par:gcc}
 \lineofthought{ Bootstrapping von {\tt gcc} }
 % paragraph Wie der gcc portiert wird (end)
 
@@ -33,13 +33,23 @@ representation of a program to get a standard toolchain.
 \label{ssub:Specializer}
 \subsubsection{Futamura Projections} % (fold)
 \label{ssub:Futamura Projections}
+The notion of a specializer as a transformer of source code has lead to some 
+interesting observations: \lineofthought{ 
+	\begin{itemize}
+		\item An interpreter spec'ed with source is executable ($\rightarrow$ py2exe)
+		\item A compiler is a specialized specializer with the step above.
+		\item Repeat to get a compiler generator.
+	\end{itemize} 
+	Use types to visualize (
+	$\applied{spec}: Input_1 \rightarrow \coded{\left( Input_2 \rightarrow Output \right)}$)
+}
 
 % subsubsection Futamura Projections (end)
 \paragraph{The PyPy project} % (fold)
 \label{par:The PyPy project}
 \begin{example}
 \lineofthought{Research how PyPy uses specializers and how that does
-compare to the Futamura Projections.}
+	compare to the Futamura Projections. \cite{psycho}}
 \end{example}
 
 % paragraph The PyPy project (end)

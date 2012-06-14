@@ -2,6 +2,7 @@ text=/home/aaron/Bachelor/text filter="*.mdown **/*.tex *.bib" {
  README.mdown
  abstract.tex
  appendix.tex
+ completeness/main.tex
  complexity/main.tex
  main.tex
  self/main.tex
@@ -17,13 +18,14 @@ implementation=/home/aaron/Bachelor/implementation {
   Runner.hs
  }
  while=while/ filter="**/*.hs *.cabal" {
+  dist/build/autogen/Paths_while.hs
   src/Data.hs
   src/While/AsData.hs
   src/While/Base.hs
-  src/While/Helpers.hs
   src/While/Data.hs
   src/While/Evaluate.hs
   src/While/FromData.hs
+  src/While/Helpers.hs
   src/While/Parser.hs
   src/While/Statement.hs
   src/data.hs
