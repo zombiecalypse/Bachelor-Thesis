@@ -4,15 +4,20 @@ In this chapter, we'll discuss how we can use the notion of a data
 representation of a program to get a standard toolchain.
 \subsection{Language Subsets} % (fold)
 \label{sub:Language Subsets}
-\paragraph{{\tt C++}  and {\tt C} } % (fold)
-\label{par:Cpp and C}
 \begin{defn}
 	Let {\tt A} and {\tt B} be two languages such that each valid {\tt B} 
 	program is also a valid {\tt A} program. Further 
-	$\forall b\in B\forall d\in Dat(B): \interpret{b}_A(d) =
-	\interpret{b}_B(d)$
-\end{defn}
+	$\forall b\in B\forall d\in Dat(B): \interpret{b}_A(d) = \interpret{b}_B(d)$
 
+	Then $B$ is a language subset of $A$ (and conversely $A$ is a superset of
+	$B$), writen $B \subset A$.
+\end{defn}
+\paragraph{{\tt C++}  and {\tt C} } % (fold)
+\label{par:Cpp and C}
+{\tt C++} was designed to be a object-oriented superset to the popular {\tt C}
+programming language, so that the new {\tt C++} code could use legacy {\tt C}
+code without modification. This notion was important to raise the acceptance of
+{\tt C++} with programmers and eased switching.
 % paragraph Cpp and C (end)
 % subsection Language Subsets (end)
 \subsection{Interpreter} % (fold)
@@ -23,8 +28,18 @@ representation of a program to get a standard toolchain.
 \label{sub:Compiler}
 \paragraph{How the {\tt gcc} is ported} % (fold)
 \label{par:gcc}
+When a new machine architecture is build, there is the problem that there is 
+not yet any compiler for it. The naïve solution would be to write a complete 
+compiler in the new machine language, but that would be very cumbersome and 
+inefficient to do that for every new processor build.
+
+Instead the Gnu Compiler Collection uses a concept called {\em bootstrapping}:
+A very small subset of the languages supported by the {\em gcc} has its 
+compiler written in the machine language and this minimal compiler is then 
+used to compile the next compiler and so on, until the whole collection is 
+translated into the new machine language.
 \lineofthought{ Bootstrapping von {\tt gcc} }
-% paragraph Wie der gcc portiert wird (end)
+% paragraph How the gcc is ported (end)
 
 % subsection Compiler (end)
 \subsection{Futamura Projections} % (fold)
@@ -48,11 +63,11 @@ interesting observations: \lineofthought{
 \paragraph{The PyPy project} % (fold)
 \label{par:The PyPy project}
 \begin{example}
-	The {\tt PyPy} project is an attempt to implement the popular 
-	Python\footnote{\url{http://python.org/}} itself in a subset of Python 
-	(called RPython). Since Python is an interpreted language, it would seem 
-	that this approach would lead to very slow execution, but that is not the 
-	case: PyPy uses Just-In-Time (JIT) specialization and compilation 
+	The {\tt PyPy} project is an attempt to implement the popular {\tt
+	Python}\footnote{\url{http://python.org/}} itself in a subset of {\tt Python}
+	(called {\tt RPython}). Since {\tt Python} is an interpreted language, it
+	would seem that this approach would lead to very slow execution, but that is
+	not the case: PyPy uses Just-In-Time (JIT) specialization and compilation
 	techniques in part described in \cite{psycho}.
 
 	While the approach described in \ref{ssub:Specializer} is understood to be 
@@ -63,7 +78,7 @@ interesting observations: \lineofthought{
 	static specializer might fail to set in, but a dynamic specializer can 
 	determine this and produce a specialized function to call.
 
-	For a highly dynamic language like Python, it can lead to a hundredfold 
+	For a highly dynamic language like {\tt Python}, it can lead to a hundredfold 
 	speedup for very repetitive arithmetics\footnote{\cite{psycho}}.
 \end{example}
 
