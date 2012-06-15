@@ -48,8 +48,23 @@ interesting observations: \lineofthought{
 \paragraph{The PyPy project} % (fold)
 \label{par:The PyPy project}
 \begin{example}
-\lineofthought{Research how PyPy uses specializers and how that does
-	compare to the Futamura Projections. \cite{psycho}}
+	The {\tt PyPy} project is an attempt to implement the popular 
+	Python\footnote{\url{http://python.org/}} itself in a subset of Python 
+	(called RPython). Since Python is an interpreted language, it would seem 
+	that this approach would lead to very slow execution, but that is not the 
+	case: PyPy uses Just-In-Time (JIT) specialization and compilation 
+	techniques in part described in \cite{psycho}.
+
+	While the approach described in \ref{ssub:Specializer} is understood to be 
+	executed before the actual program is run, it is also possible to run it 
+	in parallel to the actual computation: Now the specializer can use 
+	statistical information on the values. For example, while it might not be 
+	obvious from the source that a certain value is constant and therefore a 
+	static specializer might fail to set in, but a dynamic specializer can 
+	determine this and produce a specialized function to call.
+
+	For a highly dynamic language like Python, it can lead to a hundredfold 
+	speedup for very repetitive arithmetics\footnote{\cite{psycho}}.
 \end{example}
 
 % paragraph The PyPy project (end)
