@@ -10,6 +10,7 @@
 \usepackage[colorlinks]{hyperref}
 \usepackage[titletoc,page]{appendix}
 \usepackage[stable]{footmisc}
+\usepackage{xifthen}
 
 \newcommand{\pfunc}{\xrightarrow{p}}
 \newcommand{\peq}{\simeq}
@@ -27,7 +28,8 @@
 %\newcommand{\citationneeded}{}
 %\newcommand{\lineofthought}[1]{}
 
-\newcommand{\interpret}[1]{\ensuremath{\left\llbracket #1 \right\rrbracket}}
+\newcommand{\interpret}[2][]{\ensuremath{\left\llbracket #1 \right\rrbracket
+	\ifthenelse{\isempty{#2}}{}{ ^#2}}}
 \newtheorem{prop}{Proposition}
 \theoremstyle{definition}
 \newtheorem{defn}{Definition}
