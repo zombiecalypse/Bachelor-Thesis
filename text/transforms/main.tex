@@ -35,6 +35,8 @@ in our high-level programming language. An {\em interpreter} is such a program.
 \end{defn}
 
 \lineofthought{ A language $A$ that can interpret $B$ is at least as powerful as $B$ }
+
+\lineofthought{Interpreter are easier to write, but have an interpretation overhead}
 % subsection Interpreter (end)
 \subsection{Compiler} % (fold)
 \label{sub:Compiler}
@@ -75,12 +77,30 @@ first translation.
 The notion of a specializer as a transformer of source code has lead to some 
 interesting observations: \lineofthought{ 
 	\begin{itemize}
-		\item An interpreter spec'ed with source is executable ($\rightarrow$ py2exe)
+		\item An interpreter spec'ed with source is executable ($\rightarrow$ 
+			py2exe) 
+			\begin{equation*}
+			  \begin{split}
+					\interpret[P]{\interpret[P]{spec}(interp_A, src)}(d) 
+						&= \interpret[P]{interp_A}(src,d)\\
+						&= \interpret[A]{src}(d)
+			  \end{split}
+			\end{equation*}
 		\item A compiler is a specialized specializer with the step above.
+			\begin{equation*}
+			  \begin{split}
+					\interpret[P]{\interpret[P]{spec}(spec, interp_A}(src)
+						&= \interpret[P]{spec}(interp_A, src)
+			  \end{split}
+			\end{equation*}
 		\item Repeat to get a compiler generator.
 	\end{itemize} 
 	Use types to visualize (
 	$\interpret[P]{spec}: Input_1 \rightarrow \coded{\left( Input_2 \rightarrow Output \right)}$)
+}
+
+\lineofthought{
+	Exercise: interpreter for {\tt while} is given. Make a compiler.
 }
 
 % subsubsection Futamura Projections (end)

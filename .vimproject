@@ -17,7 +17,8 @@ implementation=/home/aaron/Bachelor/implementation {
   Parser.hs
   Runner.hs
  }
- while=while/ filter="**/*.hs *.cabal" {
+ while=while/ filter="**/*.hs *.cabal TODO" {
+  TODO
   dist/build/autogen/Paths_while.hs
   src/Data.hs
   src/While/AsData.hs
