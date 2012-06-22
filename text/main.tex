@@ -15,7 +15,6 @@
 \newcommand{\pfunc}{\xrightarrow{p}}
 \newcommand{\peq}{\simeq}
 \newcommand{\listof}[1]{\left< #1 \right> }
-\newcommand{\applied}[1]{\left\{ #1 \right\} }
 \newcommand{\coded}[1]{\ulcorner #1 \urcorner }
 
 % Note Commands
@@ -28,8 +27,12 @@
 %\newcommand{\citationneeded}{}
 %\newcommand{\lineofthought}[1]{}
 
-\newcommand{\interpret}[2][]{\ensuremath{\left\llbracket #1 \right\rrbracket
-	\ifthenelse{\isempty{#2}}{}{ ^#2}}}
+\newcommand{\interpret}[2][]{\ensuremath{\left\llbracket #2 \right\rrbracket
+	\ifthenelse{\isempty{#1}}{}{ _{#1}}}}
+\newcommand{\Input}[1][]{\ensuremath{I
+	\ifthenelse{\isempty{#1}}{}{_{#1}}}}
+\newcommand{\Output}[1][]{\ensuremath{O
+	\ifthenelse{\isempty{#1}}{}{_{#1}}}}
 \newtheorem{prop}{Proposition}
 \theoremstyle{definition}
 \newtheorem{defn}{Definition}

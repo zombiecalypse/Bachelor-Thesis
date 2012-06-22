@@ -7,7 +7,7 @@ representation of a program to get a standard toolchain.
 \begin{defn}
 	Let {\tt A} and {\tt B} be two languages such that each valid {\tt B} 
 	program is also a valid {\tt A} program. Further 
-	$\forall b\in B\forall d\in Dat(B): \interpret{b}_A(d) = \interpret{b}_B(d)$
+	$\forall b\in B\, \forall d\in Dat(B): \interpret[A]{b}(d) = \interpret[B]{b}(d)$
 
 	Then $B$ is a language subset of $A$ (and conversely $A$ is a superset of
 	$B$), writen $B \subset A$.
@@ -22,7 +22,19 @@ code without modification. This notion was important to raise the acceptance of
 % subsection Language Subsets (end)
 \subsection{Interpreter} % (fold)
 \label{sub:Interpreter}
+Today programmers and machines seldom speak the same language. Programming in 
+machine language is difficult, error-prone and unportable to name only a few 
+drawbacks. However it seems reasonable to expect to be able to execute ones 
+code nonetheless. Typically, we want our computer to interpret what we mean 
+in our high-level programming language. An {\em interpreter} is such a program.
 
+\begin{defn}
+	An {\em interpreter} of $A$ is a program 
+	\[\interpret[P]{interp}: A \times \Input[A] \longrightarrow \Output[A] \]
+	\[ \interpret[P]{interp}(a, d) = \interpret[A]{a}(d) \]
+\end{defn}
+
+\lineofthought{ A language $A$ that can interpret $B$ is at least as powerful as $B$ }
 % subsection Interpreter (end)
 \subsection{Compiler} % (fold)
 \label{sub:Compiler}
@@ -52,16 +64,7 @@ The second problem is nowadays solved by cross-compiling -- when the language
 the compiler is executed in and the output language differ. Another approach 
 was to have a minimal (non-optimizing) compiler or an interpreter to do the 
 first translation.
-%Instead the Gnu Compiler Collection uses a concept called {\em bootstrapping}:
-%A very small subset of the languages supported by the {\em gcc} has its 
-%compiler written in the machine language and this minimal compiler is then 
-%used to compile the next compiler and so on, until the whole collection is 
-%translated into the new machine language. 
-
-
-\lineofthought{ Bootstrapping von {\tt gcc} }
 % paragraph How the gcc is ported (end)
-
 % subsection Compiler (end)
 \subsection{Futamura Projections} % (fold)
 \label{sub:Futamura}
@@ -77,7 +80,7 @@ interesting observations: \lineofthought{
 		\item Repeat to get a compiler generator.
 	\end{itemize} 
 	Use types to visualize (
-	$\applied{spec}: Input_1 \rightarrow \coded{\left( Input_2 \rightarrow Output \right)}$)
+	$\interpret[P]{spec}: Input_1 \rightarrow \coded{\left( Input_2 \rightarrow Output \right)}$)
 }
 
 % subsubsection Futamura Projections (end)
