@@ -26,6 +26,12 @@ code without modification. This notion was important to raise the acceptance of
 % subsection Interpreter (end)
 \subsection{Compiler} % (fold)
 \label{sub:Compiler}
+\lineofthought{
+	\begin{itemize}
+		\item Simple definition: language transformer.
+		\item 3 stages: frontend, independent middle and backend.
+	\end{itemize}
+}
 \paragraph{How the {\tt gcc} is ported} % (fold)
 \label{par:gcc}
 When a new machine architecture is build, there is the problem that there is 
@@ -33,13 +39,26 @@ not yet any compiler for it. The naïve solution would be to write a complete
 compiler in the new machine language, but that would be very cumbersome and 
 inefficient to do that for every new processor build.
 
-Instead the Gnu Compiler Collection uses a concept called {\em bootstrapping}:
-A very small subset of the languages supported by the {\em gcc} has its 
-compiler written in the machine language and this minimal compiler is then 
-used to compile the next compiler and so on, until the whole collection is 
-translated into the new machine language \cite{nilsson2000porting}.
+There are two parts to the problem: on one hand, there is not any compiler, 
+that outputs the new machine lanugage and on the other hand, there is no 
+compiler that runs on the new machines.
 
-This process is called {\em bootstrapping}
+For the first problem, we see that of the three stages of a modern compiler,
+only the backend really depends on the output language. Often the backend has 
+a general variant that can be parametrized for many architectures.
+\footnote{For the whole process of writing a {\tt gcc} backend, see \cite{nilsson2000porting}}
+
+The second problem is nowadays solved by cross-compiling -- when the language 
+the compiler is executed in and the output language differ. Another approach 
+was to have a minimal (non-optimizing) compiler or an interpreter to do the 
+first translation.
+%Instead the Gnu Compiler Collection uses a concept called {\em bootstrapping}:
+%A very small subset of the languages supported by the {\em gcc} has its 
+%compiler written in the machine language and this minimal compiler is then 
+%used to compile the next compiler and so on, until the whole collection is 
+%translated into the new machine language. 
+
+
 \lineofthought{ Bootstrapping von {\tt gcc} }
 % paragraph How the gcc is ported (end)
 
