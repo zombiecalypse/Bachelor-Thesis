@@ -1,23 +1,11 @@
 module While.Data where
 import While.Base
+import While.DataExpression
 import System.Environment (getArgs)
-import Data.Foldable
-import Data.Monoid (Monoid, mempty, mappend)
 import Text.Parsec
 import Text.ParserCombinators.Parsec.Prim (parseFromFile)
+import Text.ParserCombinators.Parsec.Token (integer)
 
-type Name = String
-data DataExpression =
-	NilExp                                 |
-	HdExp DataExpression                   |
-	TlExp DataExpression                   |
-	ConsExp DataExpression DataExpression  |
-	Var Name                               
-	deriving (Show, Eq)
-
-instance Monoid DataExpression where
-	mempty = NilExp
-	a `mappend` b = ConsExp a b
 
 flatSize (Var _) = 1
 flatSize (HdExp x) = flatSize x - 1
@@ -52,8 +40,12 @@ varExp = do {
 	return $ Var dat
 }
 
+numExp = do {
+	dat <- many1 digit;
+	return $ intAsData (read dat)
+} 
 	
-bareDataExpression = nilExp <|> hdExp <|> tlExp <|> consExp <|> varExp
+bareDataExpression = nilExp <|> hdExp <|> tlExp <|> consExp <|> varExp <|> numExp
 dataExpression = parens bareDataExpression <|> bareDataExpression
 
 parseData = parse dataExpression "(unknown)"

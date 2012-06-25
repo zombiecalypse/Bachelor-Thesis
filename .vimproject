@@ -18,20 +18,23 @@ implementation=/home/aaron/Bachelor/implementation {
   Runner.hs
  }
  while=while/ filter="**/*.hs *.cabal TODO" {
-  TODO
   dist/build/autogen/Paths_while.hs
   src/Data.hs
-  src/While/AsData.hs
+  src/Main.hs
   src/While/Base.hs
   src/While/Data.hs
+  src/While/DataExpression.hs
+	src/While/ProgramType.hs
   src/While/Evaluate.hs
   src/While/FromData.hs
   src/While/Helpers.hs
   src/While/Parser.hs
   src/While/Statement.hs
+  src/While/Tree.hs
   src/data.hs
   src/eval.hs
   src/statement.hs
   while.cabal
+  TODO
  }
 }

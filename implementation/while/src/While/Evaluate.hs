@@ -2,6 +2,10 @@ module While.Evaluate where
 import While.Parser
 import While.Statement
 import While.Data
+import While.DataExpression
+import While.ProgramType
+import While.Statement
+import While.Tree (Tree(Nil))
 import While.Base
 import While.FromData
 import While.Helpers 

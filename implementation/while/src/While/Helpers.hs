@@ -1,6 +1,8 @@
 module While.Helpers where
-import While.Data
 import While.Base
+import While.DataExpression
+import While.ProgramType
+import While.Tree
 import Control.Monad.Writer
 import Control.Monad.Identity
 import Control.Monad.Error

@@ -2,7 +2,7 @@ module While.FromData where
 import While.Parser
 import While.Statement
 import While.Data
-import While.Base (Tree(Nil,Cons))
+import While.Tree (Tree(Nil,Cons))
 
 asNumber :: Tree -> Maybe Integer
 asNumber Nil = Just 0
