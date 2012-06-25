@@ -85,6 +85,7 @@ defaultOptions = Options {
 
 options = [ 
 	Option ['I'] ["int"] (NoArg (\o -> return o { optFormat = IntegerFormat} )) "write output as integer",
+	Option ['L'] ["list"] (NoArg (\o -> return o { optFormat = ListFormat} )) "write output as integer",
 	Option ['i'] ["input"] (OptArg _readInput "DataExpression") "use this input instead of nil" ]
 
 _readInput (Just exp) o = return o { optInput = parseData exp }

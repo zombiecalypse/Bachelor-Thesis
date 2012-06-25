@@ -35,15 +35,24 @@ binary = IntegerFormat {
 	fromInt = from,
 	toInt = to
 } where 
-				from 0 = NilExp
-				from 1 = NilExp `ConsExp` NilExp
-				from n = (from (n `mod` 2)) `ConsExp` (from (n `div` 2))
+				c0 = ConsExp NilExp NilExp
+				c1 = ConsExp (ConsExp NilExp NilExp) NilExp
+				from n = fromList $ reverse $ binList n
+					where
+						binDigit 0 = c0
+						binDigit n = c1
+						binList 0 = [c0]
+						binList 1 = [c1]
+						binList n = (binDigit (n`mod`2)):(binList (n`div`2))
+				fromList [] = NilExp
+				fromList (x:xs) = x `mappend` (fromList xs)
 
 				to x = do 
 					digits <- mapM asDigit (asList x)
 					return (foldl (\a b -> 2*a+b) 0 digits)
 				asDigit Nil = Just 0
-				asDigit (Cons Nil Nil) = Just 1
+				asDigit (Cons Nil Nil) = Just 0
+				asDigit (Nil `Cons` Nil `Cons` Nil) = Just 1
 				asDigit x = Nothing
 				asList Nil = []
 				asList (Cons a b) = a:(asList b)
