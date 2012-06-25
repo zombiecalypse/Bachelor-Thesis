@@ -1,7 +1,13 @@
-module While.DataExpression( Name, DataExpression(..), intAsData, treeAsInt) where
+module While.DataExpression( Name, DataExpression(..), intAsData, treeAsInt, flatSize) where
 import While.Tree
 import Data.Functor
 import Data.Monoid (Monoid, mempty, mappend)
+
+flatSize (Var _) = 1
+flatSize (HdExp x) = flatSize x - 1
+flatSize (TlExp x) = flatSize x - 1
+flatSize (ConsExp x y) = 1 + flatSize x + flatSize y
+flatSize NilExp = 0
 
 type Name = String
 data DataExpression =
@@ -43,9 +49,8 @@ binary = IntegerFormat {
 						binDigit n = c1
 						binList 0 = [c0]
 						binList 1 = [c1]
-						binList n = (binDigit (n`mod`2)):(binList (n`div`2))
-				fromList [] = NilExp
-				fromList (x:xs) = x `mappend` (fromList xs)
+						binList n = binDigit (n`mod`2) : binList (n`div`2)
+				fromList = foldr mappend NilExp
 
 				to x = do 
 					digits <- mapM asDigit (asList x)
@@ -55,12 +60,7 @@ binary = IntegerFormat {
 				asDigit (Nil `Cons` Nil `Cons` Nil) = Just 1
 				asDigit x = Nothing
 				asList Nil = []
-				asList (Cons a b) = a:(asList b)
+				asList (Cons a b) = a: asList b
 
-intAsData_ :: IntegerFormat -> Integer -> DataExpression
-intAsData_ f = fromInt f
-
-treeAsInt_ f = toInt f
-
-intAsData = intAsData_ binary
-treeAsInt = treeAsInt_ binary
+intAsData = fromInt binary
+treeAsInt = toInt binary

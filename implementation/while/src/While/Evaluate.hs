@@ -1,14 +1,13 @@
 module While.Evaluate where
-import While.Parser
-import While.Statement
+import While.Base
 import While.Data
 import While.DataExpression
+import While.FromData
+import While.Helpers 
+import While.Parser
 import While.ProgramType
 import While.Statement
 import While.Tree (Tree(Nil))
-import While.Base
-import While.FromData
-import While.Helpers 
 import Control.Monad
 import Control.Monad.State
 import Data.Monoid 
@@ -27,12 +26,12 @@ usingData dat = do {
 
 useData d = do
 	usingData d;
-	tick 1;
 	evalData d
 
 evalStatement :: WhileStatement -> Evaluation ()
 evalStatement (Assign name dat) = do {
 	ev <- useData dat;
+	tick 1;
   modify (\l -> l {dict = Map.insert name ev (dict l)})
 }
 evalStatement (IfElse d b1 b2) = do
@@ -40,6 +39,7 @@ evalStatement (IfElse d b1 b2) = do
 	case ev of
 		Nil -> evalBlock b2
 		_   -> evalBlock b1
+
 evalStatement w@(While d b) = do
 	ev <- useData d;
 	case ev of
@@ -84,9 +84,9 @@ defaultOptions = Options {
 }
 
 options = [ 
-	Option ['I'] ["int"] (NoArg (\o -> return o { optFormat = IntegerFormat} )) "write output as integer",
-	Option ['L'] ["list"] (NoArg (\o -> return o { optFormat = ListFormat} )) "write output as integer",
-	Option ['i'] ["input"] (OptArg _readInput "DataExpression") "use this input instead of nil" ]
+	Option "I" ["int"] (NoArg (\o -> return o { optFormat = IntegerFormat} )) "write output as integer",
+	Option "L" ["list"] (NoArg (\o -> return o { optFormat = ListFormat} )) "write output as integer",
+	Option "i" ["input"] (OptArg _readInput "DataExpression") "use this input instead of nil" ]
 
 _readInput (Just exp) o = return o { optInput = parseData exp }
 _readInput Nothing o = return o { optInput = Right NilExp }
@@ -102,16 +102,16 @@ orParseError (Right x) = x
 
 format :: OutputFormat -> Report -> String
 format f (Report { returnValue = r, commandsExecuted = nc, spaceUsed = ns }) = 
-	"Return value : " ++ (retFormat f r) ++ "\n" ++
-	"Time         : " ++ (show nc) ++ "\n" ++
-	"Space        : " ++ (show ns) 
+	"Return value : " ++ retFormat f r ++ "\n" ++
+	"Time         : " ++ show nc       ++ "\n" ++
+	"Space        : " ++ show ns 
 	where 
 		retFormat TreeFormat = show
 		retFormat ListFormat = show . asList
 		retFormat IntegerFormat = show . fromMaybe (error "NaN") . asNumber
 	
 main = do
-	(opts, (while_file:rst), msgs) <- parseArgs
+	(opts, while_file:rst, msgs) <- parseArgs
 	forM_ msgs putStr
 	guard (msgs == [])
 	parsed <- parseWhileFile while_file

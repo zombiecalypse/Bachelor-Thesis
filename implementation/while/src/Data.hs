@@ -43,6 +43,7 @@ consExp = try consDotted <|> consExplicit
 						dat2 <- dataExpression;
 						symbol ")";
 						return $ ConsExp dat1 dat2
+				}
 
 varExp = do {
 	dat <- identifier;

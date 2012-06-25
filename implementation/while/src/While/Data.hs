@@ -8,11 +8,6 @@ import Text.ParserCombinators.Parsec.Prim (parseFromFile)
 import Text.ParserCombinators.Parsec.Token (integer)
 
 
-flatSize (Var _) = 1
-flatSize (HdExp x) = flatSize x - 1
-flatSize (TlExp x) = flatSize x - 1
-flatSize (ConsExp x y) = 1 + flatSize x + flatSize y
-flatSize NilExp = 0
 
 nilExp = do {
 	reserved "nil";
@@ -29,7 +24,7 @@ tlExp = do {
 	return $ TlExp dat
 }
 
-consExp = consExplicit <|> consDotted
+consExp = consExplicit <|> parens consDotted
 	where
 		consExplicit = do {
     	reserved "cons";
@@ -38,15 +33,9 @@ consExp = consExplicit <|> consDotted
     	return $ ConsExp dat1 dat2
 		}
 		consDotted = do {
-			symbol "(";
-			whiteSpace;
 			dat1 <- dataExpression;
-			whiteSpace;
-			symbol ".";
-			whiteSpace;
+			reservedOp ".";
 			dat2 <- dataExpression;
-			whiteSpace;
-			symbol ")";
 			return $ ConsExp dat1 dat2
 		}
 

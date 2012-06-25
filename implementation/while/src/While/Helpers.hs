@@ -38,7 +38,11 @@ tick :: Integer -> Evaluation ()
 tick n = tell RuntimeEnvironment { counter = Sum n, maxDataSize = mempty }
 
 reportDataUsage :: Integer -> Evaluation ()
-reportDataUsage n = tell RuntimeEnvironment { counter = mempty, maxDataSize =Max n }
+reportDataUsage n = do 
+	Context { dict = d, parentContext = _} <- get
+	let maxDataSize = maximum $ map dataSize $ M.elems d
+	tell RuntimeEnvironment { counter = mempty, maxDataSize =Max (max n maxDataSize) }
+
 -- LOOKUP
 
 type ContextDict = M.Map String Tree
@@ -56,12 +60,12 @@ evalData (HdExp y) = do
 	ev <- evalData y
 	case ev of 
 		Cons x _ -> return x
-		Nil -> return $ error "Hd of nil"
+		Nil -> fail "Hd of nil"
 evalData (TlExp y) = do
 	ev <- evalData y
 	case ev of
 		Cons _ x -> return x
-		Nil -> return $ error "Tl of nil"
+		Nil -> fail "Tl of nil"
 evalData (ConsExp x y) = do
 	ev_left <- evalData x
 	ev_right <- evalData y
@@ -86,7 +90,3 @@ sizeof dat = do
 	ev <- evalData dat;
 	let ds = dataSize ev in
 		return ds 
-		where 
-			dataSize :: Tree -> Integer
-			dataSize Nil = 0
-			dataSize (Cons a b) = 1 + dataSize a + dataSize b
