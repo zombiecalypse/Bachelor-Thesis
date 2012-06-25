@@ -7,6 +7,7 @@ import qualified Text.Parsec.Token as P
 import Text.Parsec.Language
 import Text.ParserCombinators.Parsec.Prim (parseFromFile)
 import System.Environment (getArgs)
+import System.Console.GetOpt 
 
 
 
@@ -70,10 +71,11 @@ parseWhile = parse fileExpression "(unknown)"
 
 parseWhileFile = parseFromFile fileExpression
 
+
 main = do {
-    args <- getArgs;
-    parsed <- parseWhileFile (head args);
-    case parsed of
-        Left err -> error $ show err;
-        Right ast -> print ast;
+		inps <- getArgs;
+		parsed <- parseWhileFile (head inps);
+		case parsed of
+				Left err -> error $ show err;
+				Right ast -> print ast;
 }

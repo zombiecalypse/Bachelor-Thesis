@@ -10,6 +10,9 @@ import Control.Monad.State
 import Data.Monoid 
 import qualified Data.Map as Map
 import System.Environment (getArgs)
+import System.Console.GetOpt 
+import Text.Parsec.Error (ParseError)
+import Data.Maybe (fromMaybe)
 
 usingData :: DataExpression -> Evaluation ()
 usingData dat = do {
@@ -64,12 +67,49 @@ runProgram a i = interpret $ runEvaluation (mempty :: Context) (interpretProgram
 	interpret (Right ((r, env), _)) = compileReport r env
 	compileReport r (RuntimeEnvironment {counter = Sum {getSum = ticks}, maxDataSize = Max {getMax = space}}) = Report {spaceUsed = space, commandsExecuted = ticks, returnValue = r}
 
-main = do
+data OutputFormat = TreeFormat | ListFormat | IntegerFormat deriving (Show, Eq)
+
+data Options = Options {
+	optFormat :: OutputFormat,
+	optInput  :: Either ParseError DataExpression
+} deriving (Show)
+
+defaultOptions = Options {
+	optFormat = TreeFormat,
+	optInput = Right NilExp
+}
+
+options = [ 
+	Option ['I'] ["int"] (NoArg (\o -> return o { optFormat = IntegerFormat} )) "write output as integer",
+	Option ['i'] ["input"] (OptArg _readInput "DataExpression") "use this input instead of nil" ]
+
+_readInput (Just exp) o = return o { optInput = parseData exp }
+_readInput Nothing o = return o { optInput = Right NilExp }
+
+parseArgs = do
 	args <- getArgs
-	parsed <- parseWhileFile (head args)
-	let parsedInp = parseData (args!!1)
-	case parsed of
-		Left err -> error $ show err
-		Right ast -> case parsedInp of
-			Left err -> error $ show err
-			Right inp -> print $ runProgram ast inp
+	let ( actions, nonOpts, msgs ) = getOpt Permute options args
+	opts <- foldl (>>=) (return defaultOptions) actions
+	return (opts, nonOpts, msgs)
+
+orParseError (Left err) = error $ show err
+orParseError (Right x) = x
+
+format :: OutputFormat -> Report -> String
+format f (Report { returnValue = r, commandsExecuted = nc, spaceUsed = ns }) = 
+	"Return value : " ++ (retFormat f r) ++ "\n" ++
+	"Time         : " ++ (show nc) ++ "\n" ++
+	"Space        : " ++ (show ns) 
+	where 
+		retFormat TreeFormat = show
+		retFormat ListFormat = show . asList
+		retFormat IntegerFormat = show . fromMaybe (error "NaN") . asNumber
+	
+main = do
+	(opts, (while_file:rst), msgs) <- parseArgs
+	forM_ msgs putStr
+	guard (msgs == [])
+	parsed <- parseWhileFile while_file
+	let ast = orParseError parsed
+	let dat = orParseError $ optInput opts
+	putStrLn $ format (optFormat opts) $ runProgram ast dat
