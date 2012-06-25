@@ -24,11 +24,11 @@ implementation=/home/aaron/Bachelor/implementation {
   src/While/Base.hs
   src/While/Data.hs
   src/While/DataExpression.hs
-	src/While/ProgramType.hs
   src/While/Evaluate.hs
   src/While/FromData.hs
   src/While/Helpers.hs
   src/While/Parser.hs
+  src/While/ProgramType.hs
   src/While/Statement.hs
   src/While/Tree.hs
   src/data.hs

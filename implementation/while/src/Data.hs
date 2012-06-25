@@ -28,12 +28,21 @@ tlExp = do {
 	return $ TlExp dat
 }
 
-consExp = do {
-    reserved "cons";
-    dat1 <- dataExpression;
-    dat2 <- dataExpression;
-    return $ ConsExp dat1 dat2
-}
+consExp = try consDotted <|> consExplicit
+	where 
+		consExplicit = do {
+						reserved "cons";
+						dat1 <- dataExpression;
+						dat2 <- dataExpression;
+						return $ ConsExp dat1 dat2
+				}
+		consDotted = do {
+						symbol "(";
+						dat1 <- dataExpression;
+						symbol ".";
+						dat2 <- dataExpression;
+						symbol ")";
+						return $ ConsExp dat1 dat2
 
 varExp = do {
 	dat <- identifier;
@@ -42,7 +51,7 @@ varExp = do {
 
 	
 bareDataExpression = nilExp <|> hdExp <|> tlExp <|> consExp <|> varExp
-dataExpression = parens bareDataExpression <|> bareDataExpression
+dataExpression = try (parens bareDataExpression) <|> bareDataExpression
 
 parseData = parse dataExpression "(unknown)"
 

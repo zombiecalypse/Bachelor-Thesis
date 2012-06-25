@@ -1,6 +1,7 @@
 module While.Data where
 import While.Base
 import While.DataExpression
+import While.ProgramType
 import System.Environment (getArgs)
 import Text.Parsec
 import Text.ParserCombinators.Parsec.Prim (parseFromFile)
@@ -28,12 +29,26 @@ tlExp = do {
 	return $ TlExp dat
 }
 
-consExp = do {
-    reserved "cons";
-    dat1 <- dataExpression;
-    dat2 <- dataExpression;
-    return $ ConsExp dat1 dat2
-}
+consExp = consExplicit <|> consDotted
+	where
+		consExplicit = do {
+    	reserved "cons";
+    	dat1 <- dataExpression;
+    	dat2 <- dataExpression;
+    	return $ ConsExp dat1 dat2
+		}
+		consDotted = do {
+			symbol "(";
+			whiteSpace;
+			dat1 <- dataExpression;
+			whiteSpace;
+			symbol ".";
+			whiteSpace;
+			dat2 <- dataExpression;
+			whiteSpace;
+			symbol ")";
+			return $ ConsExp dat1 dat2
+		}
 
 varExp = do {
 	dat <- identifier;
@@ -46,7 +61,7 @@ numExp = do {
 } 
 	
 bareDataExpression = nilExp <|> hdExp <|> tlExp <|> consExp <|> varExp <|> numExp
-dataExpression = parens bareDataExpression <|> bareDataExpression
+dataExpression = try (parens bareDataExpression) <|> bareDataExpression
 
 parseData = parse dataExpression "(unknown)"
 

@@ -32,7 +32,7 @@ fileExpression = do {
 	return Program { programName = proc_name, input = readVar, block = blockVal, output = writeVar }
 }
 
-blockExp = between (symbol "{") (symbol "}") $ sepBy statement whiteSpace
+blockExp = between (symbol "{") (symbol "}") $ endBy statement whiteSpace
 
 statement = 
 		try assignmentExpression <|> 
