@@ -156,8 +156,7 @@ format :: OutputFormat -> Report -> String
 format f (Report { returnValue = r, commandsExecuted = nc, spaceUsed = ns, reportedContext = c }) = 
 	"Return value : " ++ retFormat f r ++ "\n" ++
 	"Time         : " ++ show nc       ++ "\n" ++
-	"Space        : " ++ show ns       ++ "\n" ++
-	"Dict         : " ++ show c
+	"Space        : " ++ show ns
 	where 
 		retFormat TreeFormat = show
 		retFormat ListFormat = show . asList

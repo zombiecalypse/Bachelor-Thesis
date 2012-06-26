@@ -16,11 +16,19 @@ and read X {
 	}
 } write A
 
+or read X {
+	A := hd X
+	B := tl X
+	if B {
+		A := B
+	}
+} write A
+
 equals read X {
 	A := hd X
 	B := tl X
 	Z := cons nil nil
-	while [and](cons A B) {
+	while [and]( (A.B) ) {
 		if Z {
 			if [not]([equals](cons (hd A) (hd B))) {
 				Z := nil
@@ -28,5 +36,8 @@ equals read X {
 		}
 		A := tl A
 		B := tl B
+	}
+	if [or]( (A.B) ) {
+		Z := nil
 	}
 } write Z
