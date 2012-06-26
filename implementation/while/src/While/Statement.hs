@@ -9,6 +9,7 @@ import Text.Parsec.Language
 import Text.ParserCombinators.Parsec.Prim (parseFromFile)
 import System.Environment (getArgs)
 import System.Console.GetOpt 
+import Data.Maybe (fromMaybe)
 
 {-
  -programAsData :: Program -> DataExpression
@@ -22,7 +23,7 @@ import System.Console.GetOpt
  -}
 
 
-fileExpression = do {
+progExpression = do {
 	proc_name <- identifier;
 	reserved "read";
 	readVar <- identifier;
@@ -32,7 +33,13 @@ fileExpression = do {
 	return Program { programName = proc_name, input = readVar, block = blockVal, output = writeVar }
 }
 
-blockExp = between (symbol "{") (symbol "}") $ endBy statement whiteSpace
+fileExpression = do 
+	optional whiteSpace
+	progs <- progExpression `endBy1` whiteSpace
+	optional whiteSpace
+	return progs
+
+blockExp = braces $ statement `endBy` whiteSpace
 
 statement = 
 		try assignmentExpression <|> 
@@ -57,10 +64,13 @@ ifThenElseExpression = do {
 	reserved "if";
 	dataexp <- dataExpression;
 	ifBlockVal <- blockExp;
-	reserved "else";
-	elseBlockVal <- blockExp;
+	elseBlockVal <- option [] (try elseBlock);
 	return $ IfElse dataexp ifBlockVal elseBlockVal
 }
+	where elseBlock = do {
+			reserved "else";
+			blockExp
+	}
 
 parseWhile = parse fileExpression "(unknown)"
 

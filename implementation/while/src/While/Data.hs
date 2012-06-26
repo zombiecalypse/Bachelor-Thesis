@@ -7,8 +7,6 @@ import Text.Parsec
 import Text.ParserCombinators.Parsec.Prim (parseFromFile)
 import Text.ParserCombinators.Parsec.Token (integer)
 
-
-
 nilExp = do {
 	reserved "nil";
 	return NilExp
@@ -48,9 +46,16 @@ numExp = do {
 	dat <- many1 digit;
 	return $ intAsData (read dat)
 } 
+
+evalExp = do {
+	name <- brackets identifier;
+	argument <- parens dataExpression;
+	return $ FunctionCall name argument
+}
 	
-bareDataExpression = nilExp <|> hdExp <|> tlExp <|> consExp <|> varExp <|> numExp
-dataExpression = try (parens bareDataExpression) <|> bareDataExpression
+	
+bareDataExpression = nilExp <|> hdExp <|> tlExp <|> consExp <|> varExp <|> numExp <|> evalExp
+dataExpression = (try (parens bareDataExpression) <|> bareDataExpression) <?> "Data Expression"
 
 parseData = parse dataExpression "(unknown)"
 

@@ -26,5 +26,6 @@ reserved = P.reserved lexer
 reservedOp = P.reservedOp lexer
 parens = P.parens lexer
 braces = P.braces lexer
+brackets = P.brackets lexer
 whiteSpace = P.whiteSpace lexer
 

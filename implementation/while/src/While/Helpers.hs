@@ -6,12 +6,19 @@ import While.Tree
 import Control.Monad.Writer
 import Control.Monad.Identity
 import Control.Monad.Error
+import Control.Monad.Reader
 import Data.Monoid (Sum, Monoid)
 import Control.Monad.State
 import qualified Data.Map as M
 
-type Evaluation a = WriterT RuntimeEnvironment (StateT Context (ErrorT String Identity)) a
-runEvaluation env ev = runIdentity (runErrorT (runStateT (runWriterT ev) env ))
+type Evaluation a = WriterT RuntimeEnvironment (StateT Context (ReaderT (M.Map Name Program) (ErrorT String Identity))) a
+runEvaluation :: [Program] -> Context -> Evaluation a -> Either String (a, RuntimeEnvironment, Context)
+runEvaluation procs context environ = report val
+	where 
+		val = runIdentity $ runErrorT $ runReaderT (runStateT (runWriterT environ) context) procmap
+		report (Right ((return_val, runtime_log), dict)) = Right (return_val, runtime_log, dict)
+		report (Left s) = Left s
+		procmap = M.fromList [(programName p, p) | p <- procs]
 -- LOGGING
 data (Ord a) => Max a = Max {getMax :: a} | MaxNull
 	deriving (Eq, Show, Ord)
@@ -54,39 +61,3 @@ instance Monoid Context where
 	mempty = Context { dict = M.empty, parentContext = Nothing }
 	a `mappend` b = b { parentContext = Just a }
 
-evalData :: DataExpression -> Evaluation Tree
-evalData NilExp = return Nil
-evalData (HdExp y) = do 
-	ev <- evalData y
-	case ev of 
-		Cons x _ -> return x
-		Nil -> fail "Hd of nil"
-evalData (TlExp y) = do
-	ev <- evalData y
-	case ev of
-		Cons _ x -> return x
-		Nil -> fail "Tl of nil"
-evalData (ConsExp x y) = do
-	ev_left <- evalData x
-	ev_right <- evalData y
-	return $ Cons ev_left ev_right
-evalData (Var name) = do
-	context <- get
-	return $ lookup name context
-		where
-			lookup n (Context {dict = d, parentContext = Nothing}) 
-				| n `M.member` d = (M.!) d n
-				| otherwise = Nil
-			lookup n (Context { dict = d, parentContext = (Just p) }) 
-				| n `M.member` d = (M.!) d n
-				| otherwise = lookup n p
-setVal name val = do {
-	context@(Context {dict = d, parentContext = _}) <- get;
-	put (context {dict = M.insert name val d})
-}
- 
-sizeof :: DataExpression -> Evaluation Integer
-sizeof dat = do
-	ev <- evalData dat;
-	let ds = dataSize ev in
-		return ds 
