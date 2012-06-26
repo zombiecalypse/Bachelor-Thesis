@@ -163,10 +163,10 @@ format f (Report { returnValue = r, commandsExecuted = nc, spaceUsed = ns, repor
 		retFormat IntegerFormat = show . fromMaybe (error "NaN") . asNumber
 	
 main = do
-	(opts, while_file:rst, msgs) <- parseArgs
+	(opts, while_files, msgs) <- parseArgs
 	forM_ msgs putStr
 	guard (msgs == [])
-	parsed <- parseWhileFile while_file
-	let ast = orParseError parsed
+	parsed <- mapM parseWhileFile while_files
+	let ast = concat $ map orParseError parsed
 	let dat = orParseError $ optInput opts
 	putStrLn $ format (optFormat opts) $ runProgram ast dat
