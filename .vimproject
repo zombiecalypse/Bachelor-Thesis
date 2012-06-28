@@ -2,12 +2,12 @@ text=/home/aaron/Bachelor/text filter="*.mdown **/*.tex *.bib" {
  README.mdown
  abstract.tex
  appendix.tex
- completeness/main.tex
- complexity/main.tex
+ completeness/completeness.tex
+ complexity/complexity.tex
  main.tex
- self/main.tex
- transforms/main.tex
- while/main.tex
+ self/self.tex
+ transforms/transforms.tex
+ while/while.tex
  biblio.bib
 }
 implementation=/home/aaron/Bachelor/implementation {
