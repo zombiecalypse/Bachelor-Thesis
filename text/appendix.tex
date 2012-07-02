@@ -1,5 +1,19 @@
 \section{Implementing the {\tt WHILE} Language} 
 \label{sec:implementing while}
+\lineofthought{
+	\begin{itemize}
+		\item Haskell: good support for parsing ({\tt Parsec}) and clean case 
+			definitions (deconstruction by contructor).
+		\item Pure language, need for a ``pipeline'' (Monad) to process stateful
+			language ($\rightarrow$ monad transformers, made it easy to add 
+			function calls (environment, i.e. {\tt ReaderT}))
+		\item made tracking of execution hard though: writer monad with a record
+			monoid. Make a monoid transformer maybe to get flexible addition of new 
+			information.
+		\item Strict typing made it easier to catch cases, where I had 
+			unevaluated expressions ({\tt DataExpression}) vs evaluated data ({\tt Tree} type)
+	\end{itemize}
+}
 \section{My general notes}
 \lineofthought{
 	\begin{itemize}

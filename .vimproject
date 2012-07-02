@@ -4,6 +4,7 @@ text=/home/aaron/Bachelor/text filter="*.mdown **/*.tex *.bib" {
  appendix.tex
  completeness/completeness.tex
  complexity/complexity.tex
+ introduction/introduction.tex
  main.tex
  self/self.tex
  transforms/transforms.tex

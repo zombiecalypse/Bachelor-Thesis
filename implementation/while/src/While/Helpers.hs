@@ -24,31 +24,24 @@ data (Ord a) => Max a = Max {getMax :: a} | MaxNull
 	deriving (Eq, Show, Ord)
 instance (Ord a) => Monoid (Max a) where
 	mempty = MaxNull
-	mappend MaxNull x = x
-	mappend x MaxNull = x
-	mappend (Max {getMax = x}) (Max {getMax = y}) = Max {getMax = max x y}
+	MaxNull `mappend` x = x
+	x `mappend` MaxNull = x
+	(Max {getMax = x}) `mappend` (Max {getMax = y}) = Max {getMax = max x y}
 
-data RuntimeEnvironment = RuntimeEnvironment {
-	counter :: Sum Integer,
-	maxDataSize :: Max Integer
-} deriving (Show, Eq, Ord)
+type RuntimeEnvironment = (Sum Integer, Max Integer)
 
-instance Monoid RuntimeEnvironment where
-	mempty = RuntimeEnvironment { counter = mempty :: Sum Integer, maxDataSize = mempty :: Max Integer }
-	mappend 
-		(RuntimeEnvironment { counter = c1, maxDataSize = m1 })
-		(RuntimeEnvironment { counter = c2, maxDataSize = m2 }) =
-			RuntimeEnvironment {counter = c1 `mappend` c2, maxDataSize = m1 `mappend` m2}
+counter = fst
+maxDataSize = snd
 
 
 tick :: Integer -> Evaluation ()
-tick n = tell RuntimeEnvironment { counter = Sum n, maxDataSize = mempty }
+tick n = tell (Sum n, mempty)
 
 reportDataUsage :: Integer -> Evaluation ()
 reportDataUsage n = do 
 	Context { dict = d, parentContext = _} <- get
 	let maxDataSize = maximum $ map dataSize $ M.elems d
-	tell RuntimeEnvironment { counter = mempty, maxDataSize =Max (max n maxDataSize) }
+	tell (mempty, Max (max n maxDataSize))
 
 -- LOOKUP
 

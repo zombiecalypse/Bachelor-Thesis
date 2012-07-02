@@ -121,7 +121,7 @@ data Report = Report {
 runProgram a i = interpret $ runEvaluation a mempty (interpretProgram a i) where
 	interpret (Left s) = error s
 	interpret (Right (r, env, context)) = compileReport r env context
-	compileReport r (RuntimeEnvironment {counter = Sum {getSum = ticks}, maxDataSize = Max {getMax = space}}) context = Report {spaceUsed = space, commandsExecuted = ticks, returnValue = r, reportedContext = context}
+	compileReport r (Sum {getSum = ticks}, Max {getMax = space}) context = Report {spaceUsed = space, commandsExecuted = ticks, returnValue = r, reportedContext = context}
 
 data OutputFormat = TreeFormat | ListFormat | IntegerFormat deriving (Show, Eq)
 

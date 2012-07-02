@@ -1,0 +1,65 @@
+\section{Introduction}
+Computability and complexity are in some way the basics of what computer
+science is about. Where algorithmics might answer what the currently best known
+solution to a problem is, computability theory says if a solution can exist and
+complexity theory gives the problem (not the concrete algorithm!) a general
+assessment of its difficulty, i.e. no algorithm can solve the problem faster 
+than its inert complexity.
+
+For this one needs an idea what a problem is, and when it is solvable. A 
+problem can be understood as getting some kind of input data $x\in \Input[A]$ 
+and needing to produce an output value $y\in \Output[A]$, in other words: 
+computing a function $f:\Input[A] \rightarrow \Output[A]$\footnote{Equivalently, 
+a problem can be characterized as deciding if $x\in^? B$.}.
+
+A problem is then considered solvable, if there is in some way a solution to 
+it, but what a solution looks like, divides the minds: 
+
+\paragraph{Turing and his machines}
+Turing's approach is a very mechanical one: A machine that has memory in the 
+form of an arbitrarily large tape and is in a certain state. Depending on the 
+tape's content at the current position and the current state, it can write to 
+the tape, change its state and move one cell to the left or to the right.
+
+\paragraph{Kleene composes functions}
+Kleene held it intuitively computable that there are some simple functions 
+such as the projections, the constant functions, and the successor are 
+computable and that the composition of two computable functions is again 
+computable. Finally every function can be coded and the codes can then be executed.
+
+\paragraph{Markov rewrites strings}
+Markov noted that executing an algorithm is basically nothing but rewriting a 
+string (the memory) according to some predefined rules.
+
+\paragraph{Programing languages}
+While each of these approaches is interesting in their own right, they do not 
+reflect the intuitions of a modern computer scientist, who already knows 
+about programming languages and is closer to them then to building machines 
+or even mathematical constructs.
+
+Nearly all modern languages try to capture the full spectrum of solvable 
+problems. For the sake of this text, a very simple language is considered, 
+which consists of elements common in modern languages.
+
+\lineofthought{
+	I need to explain stuff I'll need in the chapter \ref{sec:WHILE}, e.g. 
+	turing completeness (?), what a programming language is, ...
+	
+	\begin{itemize}
+		\item Data and Language
+		\item Representation of a program vs its semantics.
+		\item Turing completeness
+	\end{itemize}
+}
+\subsection{What is a programming language?} % (fold)
+\label{sub:What is a programming language}
+Before we can talk about computability in programming languages, we need to 
+define, what a programming language is. 
+
+\lineofthought{
+	A language is a set of lists of characters (so called words). A programming 
+	language also has a semantic function 
+	$\interpret{.}: A\rightarrow (\ensuremath{\mathbb{N}} \rightarrow \ensuremath{\mathbb{N}})$.
+}
+
+% subsection What is a programming language (end)
