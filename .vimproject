@@ -9,6 +9,7 @@ text=/home/aaron/Bachelor/text filter="*.mdown **/*.tex *.bib" {
  robustness/robustness.tex
  self/self.tex
  transforms/transforms.tex
+ while/images/cons_cell.tex
  while/while.tex
  biblio.bib
 }
