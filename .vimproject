@@ -3,13 +3,13 @@ text=/home/aaron/Bachelor/text filter="*.mdown **/*.tex *.bib" {
  abstract.tex
  appendix.tex
  completeness/completeness.tex
+ complexity/complexity.tex
  introduction/introduction.tex
  langcomplexity/langcomplexity.tex
  main.tex
  robustness/robustness.tex
  self/self.tex
  transforms/transforms.tex
- while/images/cons_cell.tex
  while/while.tex
  biblio.bib
 }

@@ -1,0 +1,53 @@
+As we saw, not all problems are solvable, but it seems not too farfetched to
+say that a problem not being solvable by any algorithm is seldom a concern for
+most applications. Being solvable in a reasonable amount of time and space
+however can very easily become a problem. What use is a program that solves our
+problem, but takes hundreds of years to complete for any reasonable input? This
+is where the field of complexity theory sets in: it characterises the solvable
+problems by their "difficulty".
+
+The most intuitive measure of difficulty is arguably time-complexity, i.e. how
+long any algorithm will take to solve the problem in the worst case. Also
+space-complexity needs to be considered, i.e. how much storage one needs to
+complete the computation.
+
+Since bigger problems are harder to solve and bigger problems need more data to
+describe it fully, we analyse the asymptotic complexity in the size of the
+input, i.e. how the time and space needed develop as the input grows towards
+infinity. The most important distinctions here will be if there is a linear
+relation or a polynomial of higher order - or something worse, e.g. exponential
+time/space.
+
+Another important classification is that of non-determinism: if we could guess
+during the computation, how would that affect the complexity of the problem?
+Could we solve things faster, if we only guessed good enough? Surprisingly the
+answer is that we are not sure (even though it is strongly suspected that being
+a good guesser really helps).
+
+As in computability with the Church's thesis, there is the question of what is
+intuitively computable in a certain bound and even more than in computability,
+this question seems to rely on the chosen formalism, but we will see that the
+distinctions are quite robust. Still the question remains, if some
+extraordinary feat of engineering can build a machine that is much faster than
+our WHILE language.
+
+\subsection{Time-complexity}
+We will denote the time that a program $P$ runs on an input $x$ by $T_P(x)$. To
+decide what that means, let's consider how long statements take to evaluate: we
+have only three kind of statements, assignment, if and while. Assigning a value
+can be thought of as writing an address, which can be done in one time-step. Of
+course, the right hand side might take some time to evaluate, so $T_{X := E} = 1
++ T_E$. If statements take one step to check if the value is nil and the
+evaluation, likewise for while. Also depending on the runtime values, the block
+its evaluated zero or more times.
+
+As for expressions, nil takes no time at all, since its not computed and all
+other expressions take one step plus the evaluation of subexpressions.
+
+Since the halting problem is not solvable, we actually need to execute the
+program to know how menu steps it will take. Otherwise we could just check if
+the number of steps is finite to show that P halts.
+
+Using this, we can show that $T_{a+b}$ is $\log(a+b)$: ...
+Now however that this uses that a and b are written in binary, were they for
+example coded in unary, the algorithm would take a+b steps. 
