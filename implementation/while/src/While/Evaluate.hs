@@ -2,6 +2,7 @@ module While.Evaluate where
 import While.Base
 import While.Data
 import While.DataExpression
+import While.Dialect as D
 import While.FromData
 import While.Helpers 
 import While.Parser
@@ -34,9 +35,13 @@ evalData (TlExp y) = do
 		Cons _ x -> return x
 		Nil -> fail ("Tl of nil" ++ show context)
 evalData (ConsExp x y) = do
-	ev_left <- evalData x
-	ev_right <- evalData y
-	return $ Cons ev_left ev_right
+	dialect <- getDialect
+	case D.cons dialect of
+		Allow -> do
+					ev_left <- evalData x
+					ev_right <- evalData y
+					return $ Cons ev_left ev_right
+		Disallow -> fail "Cons is not an allowed operation"
 evalData (Var name) = do
 	context <- get
 	return $ lookup name context
@@ -48,12 +53,25 @@ evalData (Var name) = do
 				| n `M.member` d = (M.!) d n
 				| otherwise = lookup n p
 evalData (FunctionCall name arg) = do
-	procs <- ask
-	context <- get
-	put (mempty { parentContext = Just context })
-	r <- interpretProcedure ((M.!) procs name) arg
-	put context
-	return r
+	dialect <- getDialect
+	case D.calling dialect of
+		NoCall -> fail "No calling is allowed"
+		Calling -> do
+			context <- get
+			if isRecursive $ Just context
+				then fail "No recursion allowed"
+				else eval
+		Recursion -> eval
+	where
+		isRecursive Nothing = False
+		isRecursive (Just p) = functionName p == name || isRecursive (parentContext p)
+		eval = do 
+					procs <- getPrograms
+					context <- get
+					put (mempty { functionName = name, parentContext = Just context })
+					r <- interpretProcedure ((M.!) procs name) arg
+					put context
+					return r
 
 setVal name val = do {
 	context@(Context {dict = d, parentContext = _}) <- get;
@@ -102,12 +120,12 @@ evalBlock b = forM_ b evalStatement
 interpretProgram l read = interpretProcedure (last l) read
 
 interpretProcedure (Program {
-	programName = _, 
+	programName = name, 
 	input = read_var, 
 	block = block, 
 	output = write_var}) read = do
 		inp <- evalData read;
-		put (mempty { dict = M.singleton read_var inp})
+		put (mempty { functionName = name, dict = M.singleton read_var inp})
 		ret <- evalBlock block;
 		evalData (Var write_var)
 
@@ -118,7 +136,7 @@ data Report = Report {
 	reportedContext :: Context
 } deriving (Show, Eq)
 	
-runProgram a i = interpret $ runEvaluation a mempty (interpretProgram a i) where
+runProgram d a i = interpret $ runEvaluation d a mempty (interpretProgram a i) where
 	interpret (Left s) = error s
 	interpret (Right (r, env, context)) = compileReport r env context
 	compileReport r (Sum {getSum = ticks}, Max {getMax = space}) context = Report {spaceUsed = space, commandsExecuted = ticks, returnValue = r, reportedContext = context}
@@ -162,11 +180,11 @@ format f (Report { returnValue = r, commandsExecuted = nc, spaceUsed = ns, repor
 		retFormat ListFormat = show . asList
 		retFormat IntegerFormat = show . fromMaybe (error "NaN") . asNumber
 	
-main = do
+main dialect = do
 	(opts, while_files, msgs) <- parseArgs
 	forM_ msgs putStr
 	guard (msgs == [])
 	parsed <- mapM parseWhileFile while_files
 	let ast = concat $ map orParseError parsed
 	let dat = orParseError $ optInput opts
-	putStrLn $ format (optFormat opts) $ runProgram ast dat
+	putStrLn $ format (optFormat opts) $ runProgram dialect ast dat

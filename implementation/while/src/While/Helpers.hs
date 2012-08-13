@@ -1,4 +1,5 @@
 module While.Helpers where
+import qualified While.Dialect as D
 import While.Base
 import While.DataExpression
 import While.ProgramType
@@ -11,11 +12,11 @@ import Data.Monoid (Sum, Monoid)
 import Control.Monad.State
 import qualified Data.Map as M
 
-type Evaluation a = WriterT RuntimeEnvironment (StateT Context (ReaderT (M.Map Name Program) (ErrorT String Identity))) a
-runEvaluation :: [Program] -> Context -> Evaluation a -> Either String (a, RuntimeEnvironment, Context)
-runEvaluation procs context environ = report val
+type Evaluation a = WriterT RuntimeEnvironment (StateT Context (ReaderT (D.WhileDialect, M.Map Name Program) (ErrorT String Identity))) a
+runEvaluation :: D.WhileDialect -> [Program] -> Context -> Evaluation a -> Either String (a, RuntimeEnvironment, Context)
+runEvaluation dialect procs context environ = report val
 	where 
-		val = runIdentity $ runErrorT $ runReaderT (runStateT (runWriterT environ) context) procmap
+		val = runIdentity $ runErrorT $ runReaderT (runStateT (runWriterT environ) context) (dialect, procmap)
 		report (Right ((return_val, runtime_log), dict)) = Right (return_val, runtime_log, dict)
 		report (Left s) = Left s
 		procmap = M.fromList [(programName p, p) | p <- procs]
@@ -33,6 +34,14 @@ type RuntimeEnvironment = (Sum Integer, Max Integer)
 counter = fst
 maxDataSize = snd
 
+getProgram :: Name -> Evaluation Program
+getProgram name = asks ((M.! name) . snd)
+
+getPrograms :: Evaluation (M.Map Name Program)
+getPrograms = asks snd
+
+getDialect :: Evaluation D.WhileDialect
+getDialect = asks fst
 
 tick :: Integer -> Evaluation ()
 tick n = tell (Sum n, mempty)
@@ -47,10 +56,10 @@ reportDataUsage n = do
 
 type ContextDict = M.Map String Tree
 
-data Context = Context { dict :: ContextDict, parentContext :: Maybe Context }
+data Context = Context { functionName :: Name, dict :: ContextDict, parentContext :: Maybe Context }
 	deriving (Show, Eq)
 
 instance Monoid Context where
-	mempty = Context { dict = M.empty, parentContext = Nothing }
+	mempty = Context { functionName = "", dict = M.empty, parentContext = Nothing }
 	a `mappend` b = b { parentContext = Just a }
 

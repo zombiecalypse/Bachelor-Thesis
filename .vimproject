@@ -4,6 +4,7 @@ text=/home/aaron/Bachelor/text filter="*.mdown **/*.tex *.bib" {
  appendix.tex
  completeness/completeness.tex
  complexity/complexity.tex
+ for/for.tex
  introduction/introduction.tex
  langcomplexity/langcomplexity.tex
  main.tex
@@ -20,23 +21,40 @@ implementation=/home/aaron/Bachelor/implementation {
   Parser.hs
   Runner.hs
  }
- while=while/ filter="**/*.hs *.cabal TODO" {
-  dist/build/autogen/Paths_while.hs
-  src/Data.hs
-  src/While/Base.hs
-  src/While/Data.hs
-  src/While/DataExpression.hs
-  src/While/Evaluate.hs
-  src/While/FromData.hs
-  src/While/Helpers.hs
-  src/While/Parser.hs
-  src/While/ProgramType.hs
-  src/While/Statement.hs
-  src/While/Tree.hs
-  src/data.hs
-  src/eval.hs
-  src/statement.hs
+ while=while/ filter="*.cabal TODO" {
   while.cabal
   TODO
+	executables=src filter="*.hs" {
+   data.hs
+   eval-while.hs
+   eval-for.hs
+   statement.hs
+	}
+	lib=src/While filter="*.hs" {
+   Base.hs
+   Data.hs
+   DataExpression.hs
+   Dialect.hs
+   Evaluate.hs
+   FromData.hs
+   Helpers.hs
+   Parser.hs
+   ProgramType.hs
+   Statement.hs
+   Tree.hs
+	 Parser=Parser {
+    Data.hs
+    DataExpression.hs
+    ProgramType.hs
+    Statement.hs
+	 }
+	}
+	examples=examples filter="*" {
+   error.wl
+   example.wl
+   function_call.wl
+   identity.wl
+   simple_call.wl
+	}
  }
 }
