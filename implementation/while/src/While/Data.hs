@@ -5,7 +5,6 @@ import While.ProgramType
 import System.Environment (getArgs)
 import Text.Parsec
 import Text.ParserCombinators.Parsec.Prim (parseFromFile)
-import Text.ParserCombinators.Parsec.Token (integer)
 
 nilExp = do {
 	reserved "nil";
@@ -22,7 +21,7 @@ tlExp = do {
 	return $ TlExp dat
 }
 
-consExp = consExplicit <|> parens consDotted
+consExp = (consExplicit <|> parens consDotted) <?> "cons expression"
 	where
 		consExplicit = do {
     	reserved "cons";
@@ -40,21 +39,21 @@ consExp = consExplicit <|> parens consDotted
 varExp = do {
 	dat <- identifier;
 	return $ Var dat
-}
+} <?> "variable"
 
 numExp = do {
 	dat <- many1 digit;
-	return $ intAsData (read dat)
-} 
+	return $ intAsData $ read dat
+} <?> "number"
 
 evalExp = do {
 	name <- brackets identifier;
 	argument <- parens dataExpression;
 	return $ FunctionCall name argument
-}
+} <?> "function call"
 	
 	
-bareDataExpression = nilExp <|> hdExp <|> tlExp <|> consExp <|> varExp <|> numExp <|> evalExp
+bareDataExpression = nilExp <|> numExp <|> hdExp <|> tlExp <|> consExp <|> varExp <|> evalExp
 dataExpression = (try (parens bareDataExpression) <|> bareDataExpression) <?> "Data Expression"
 
 parseData = parse dataExpression "(unknown)"

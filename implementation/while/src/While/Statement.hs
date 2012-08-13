@@ -35,47 +35,56 @@ progExpression = do {
 
 fileExpression = do 
 	optional whiteSpace
-	progs <- progExpression `endBy1` whiteSpace
+	progs <- progExpression `sepBy1` whiteSpace
 	optional whiteSpace
 	return progs
 
-blockExp = braces $ statement `endBy` whiteSpace
+blockExp = (braces $ statement `sepBy1` (whiteSpace <|> optional semi) ) <?> "block"
 
 statement = 
-		try assignmentExpression <|> 
+		try forExpression <|>
+		try ifThenElseExpression <|>
 		try whileExpression <|> 
-		try ifThenElseExpression
+		try assignmentExpression
 
 assignmentExpression = do {
 	name <- identifier;
 	reservedOp ":=";
 	dataexp <- dataExpression;
 	return (Assign name dataexp)
-	}
+	} <?> "assignment"
 
 whileExpression = do {
 	reserved "while";
 	dataexp <- dataExpression;
 	blockVal <- blockExp;
-	return (While dataexp blockVal)
-}
+	return $ While dataexp blockVal
+} <?> "while statement"
+
+forExpression = do {
+	reserved "for";
+	name <- identifier;
+	reservedOp "=";
+	dataexp <- dataExpression;
+	blockVal <- blockExp;
+	return $ For name dataexp blockVal
+} <?> "for statement"
 
 ifThenElseExpression = do {
 	reserved "if";
 	dataexp <- dataExpression;
-	ifBlockVal <- blockExp;
+	ifBlockVal <- blockExp <?> "if block";
 	elseBlockVal <- option [] (try elseBlock);
 	return $ IfElse dataexp ifBlockVal elseBlockVal
-}
+} <?> "if statement"
 	where elseBlock = do {
 			reserved "else";
 			blockExp
-	}
+	} <?> "else block"
 
 parseWhile = parse fileExpression "(unknown)"
 
 parseWhileFile = parseFromFile fileExpression
-
 
 main = do {
 		inps <- getArgs;

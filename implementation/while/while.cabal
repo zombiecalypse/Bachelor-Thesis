@@ -31,6 +31,11 @@ buildable: True
 hs-source-dirs: src, src/While
 
 executable: eval-while
-main-is: eval.hs
+main-is: eval-while.hs
+buildable: True
+hs-source-dirs: src, src/While
+
+executable: eval-for
+main-is: eval-for.hs
 buildable: True
 hs-source-dirs: src, src/While

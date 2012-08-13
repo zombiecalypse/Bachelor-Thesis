@@ -11,7 +11,7 @@ whileGrammar = javaStyle
 	P.nestedComments = True,
 	P.identStart = letter <|> char '_',
 	P.identLetter = alphaNum <|> char '_',
-	P.reservedNames = ["read", "write", "while", "end", "hd", "tl", "nil"],
+	P.reservedNames = ["read", "write", "while", "end", "hd", "tl", "nil", "for"],
 	P.reservedOpNames = ["=", ".", ":="],
 	P.caseSensitive = True
 }
@@ -19,13 +19,13 @@ whileGrammar = javaStyle
 
 lexer = P.makeTokenParser whileGrammar
 
-symbol = P.symbol lexer
+symbol     = P.symbol     lexer
 identifier = P.identifier lexer
-operator = P.operator lexer
-reserved = P.reserved lexer
+operator   = P.operator   lexer
+reserved   = P.reserved   lexer
 reservedOp = P.reservedOp lexer
-parens = P.parens lexer
-braces = P.braces lexer
-brackets = P.brackets lexer
+parens     = P.parens     lexer
+braces     = P.braces     lexer
+brackets   = P.brackets   lexer
 whiteSpace = P.whiteSpace lexer
-
+semi       = P.semi       lexer

@@ -35,13 +35,10 @@ evalData (TlExp y) = do
 		Cons _ x -> return x
 		Nil -> fail ("Tl of nil" ++ show context)
 evalData (ConsExp x y) = do
-	dialect <- getDialect
-	case D.cons dialect of
-		Allow -> do
-					ev_left <- evalData x
-					ev_right <- evalData y
-					return $ Cons ev_left ev_right
-		Disallow -> fail "Cons is not an allowed operation"
+	guardAllowed "Cons is not possible" D.cons
+	ev_left <- evalData x
+	ev_right <- evalData y
+	return $ Cons ev_left ev_right
 evalData (Var name) = do
 	context <- get
 	return $ lookup name context
@@ -97,6 +94,7 @@ useData d = do
 
 evalStatement :: WhileStatement -> Evaluation ()
 evalStatement (Assign name dat) = do {
+	guardAllowed "Can't assign" D.assignment;
 	ev <- useData dat;
 	tick 1;
   modify (\l -> l {dict = M.insert name ev (dict l)})
@@ -108,12 +106,25 @@ evalStatement (IfElse d b1 b2) = do
 		_   -> evalBlock b1
 
 evalStatement w@(While d b) = do
+	guardAllowed "While statement not allowed" D.while
 	ev <- useData d;
 	case ev of
 		Nil -> return ()
 		_   -> do
 			evalBlock b;
 			evalStatement w
+
+evalStatement f@(For name dataExp block) = do
+					guardAllowed "For statement not allowed" D.for
+					dat <- useData dataExp
+					evalFor dat
+	where
+		evalFor Nil = return ()
+		evalFor (Cons a b) = do
+			modify (\l -> l {dict = M.insert name a (dict l)})
+			evalBlock block
+			evalFor b
+{- TODO evalStatement (For ...) -}
 
 evalBlock b = forM_ b evalStatement
 

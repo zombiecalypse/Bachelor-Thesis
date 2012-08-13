@@ -43,6 +43,16 @@ getPrograms = asks snd
 getDialect :: Evaluation D.WhileDialect
 getDialect = asks fst
 
+guardDialect :: String -> (D.WhileDialect -> Bool) -> Evaluation ()
+guardDialect s pred = do
+	dialect <- getDialect
+	if pred dialect 
+		then return ()
+		else fail $ "Dialect " ++ D.name dialect ++ ": " ++ s
+
+guardAllowed :: String -> (D.WhileDialect -> D.Allow) -> Evaluation ()
+guardAllowed s pred = guardDialect s ((== D.Allow) . pred)
+
 tick :: Integer -> Evaluation ()
 tick n = tell (Sum n, mempty)
 
