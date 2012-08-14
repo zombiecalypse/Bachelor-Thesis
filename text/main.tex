@@ -13,11 +13,15 @@
 \usepackage[stable]{footmisc}
 \usepackage{xifthen}
 \usepackage{graphicx}
+\usepackage{varioref}
+\usepackage{syntax}
 
 \newcommand{\pfunc}{\xrightarrow{p}}
 \newcommand{\peq}{\simeq}
 \newcommand{\listof}[1]{\left< #1 \right> }
 \newcommand{\coded}[1]{\ulcorner #1 \urcorner }
+\newcommand{\WHILE}{\texttt{WHILE} }
+\newcommand{\FOR}{\texttt{FOR} }
 
 % Note Commands
 \newcommand{\timeestimation}[1]{ \footnote{#1} }
@@ -52,6 +56,8 @@
 \chapter{Introduction}
 
 \include*{introduction/introduction}
+
+\include*{for/for}
 
 \include*{while/while}
 

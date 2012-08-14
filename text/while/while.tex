@@ -24,39 +24,6 @@ introduce a simple, but expressive enough language called {\tt WHILE}.
 	\end{align*}
 \end{table*}
 
-\subsection{The Elements} % (fold)
-\label{sub:The Elements}
-The {\tt WHILE} language contains only very basic commands, but they can be combined
-to implement any algorithm (up to coding). As we will see, we only need a data
-structure that is not bounded in its range (something for example {\tt int}s in
-Java fail to be). An expression is then something, that can be evaluated to
-such an data structure. For the purposes of this text, the {\tt cons} cell data
-structure will be used, a cell that contains only a head and a tail (an
-observant reader will notice that this structure stems from the building of
-linked lists). 
-
-\begin{figure}[htb]
-	\begin{center}
-		\includegraphics[height=3cm]{while/images/conscell}
-	\end{center}
-	\caption{The {\tt cons} cell}
-\end{figure}
-
-In while the call {\tt cons e1 e2}, where e1 and e2 are again
-expressions, constructs such a cell with the value of e1 in the head and the
-value of e2 in the tail. The expression "hd e1" yields the head of the value of
-e1 and "tl e1" the tail. since all our current constructs need another
-expression, we also need a "bottom" to this regress. We add nil as an
-expression, which is distinct from any "cons e f". We also want to refer to
-stored values, so an identifier (eg X) can also be an expression. 
-
-Then there are statements. Statements change something about the state of the
-program. In the case of while, there is only the assignment as an atomic
-statement, which contains an identifier on the left side of an ":=" and an
-expression on the right side. The other important statement is the WHILE
-statement, which takes an data expression and a block of statements and as long
-as the expression does not evaluate to nil, the block is executed. 
-
 Finally there are procedures. Procedures read an input and write an output and
 execute some statements in between. (picture of input: data, black box, output:
 data)

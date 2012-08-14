@@ -40,13 +40,8 @@ implementation=/home/aaron/Bachelor/implementation {
    Helpers.hs
    Parser.hs
    ProgramType.hs
+   Statement.hs
    Tree.hs
-	 Parser=Parser {
-    Data.hs
-    DataExpression.hs
-    ProgramType.hs
-    StatementParser.hs
-	 }
 	}
 	examples=examples filter="*" {
    error.wl
