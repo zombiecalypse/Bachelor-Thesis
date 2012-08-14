@@ -11,18 +11,6 @@ import System.Environment (getArgs)
 import System.Console.GetOpt 
 import Data.Maybe (fromMaybe)
 
-{-
- -programAsData :: Program -> DataExpression
- -programAsData (Program {
- -  programName = _,
- -  input = read_var,
- -  block = block,
- -  output = write_var}) = var_as_data read_var `ConsExp` 
- -              block_as_data block `ConsExp` 
- -              var_as_data write_var
- -}
-
-
 progExpression = do {
 	proc_name <- identifier;
 	reserved "read";

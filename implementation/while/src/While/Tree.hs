@@ -2,12 +2,13 @@
 module While.Tree where
 import Data.Monoid
 
-data Tree = Nil | Cons Tree Tree
+data Tree = Nil | Cons Tree Tree | Sym String
 	deriving (Eq)
 
 instance Show Tree where	
 	show Nil = "nil"
 	show (Cons l r) = "(" ++ show l ++ "." ++ show r ++ ")"
+	show (Sym s) = ':' : s
 
 instance Monoid Tree where
 	mempty = Nil
@@ -27,4 +28,5 @@ instance TreeBijection [Tree] where
 
 dataSize :: Tree -> Integer
 dataSize Nil = 0
+dataSize (Sym _) = 1
 dataSize (Cons a b) = 1 + dataSize a + dataSize b

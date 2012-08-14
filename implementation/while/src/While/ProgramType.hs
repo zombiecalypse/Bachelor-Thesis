@@ -1,5 +1,8 @@
+{-# LANGUAGE FlexibleInstances, UndecidableInstances #-}
 module While.ProgramType(Block, WhileStatement(..), Program(..)) where
 import While.DataExpression
+import While.Tree
+import Data.Maybe (fromMaybe)
 
 type Block = [WhileStatement]
 
@@ -17,3 +20,39 @@ data Program = Program {
 	output :: Name
 	}
 	deriving (Show, Eq)
+
+instance TreeBijection DataExpression where
+	toTree NilExp = Sym "nil"
+	toTree (HdExp a) = Sym "hd" `Cons` toTree a
+	toTree (TlExp a) = Sym "tl" `Cons` toTree a
+	toTree (ConsExp a b) = Sym "cons" `Cons` toTree a `Cons` toTree b
+	toTree (Var a) = (Sym "var") `Cons` (Sym a)
+	toTree (Symbol a) = Sym "symbol" `Cons` Sym a
+	toTree (FunctionCall name input) = Sym "call" `Cons` Sym name `Cons` toTree input
+	fromTree (Sym "nil") = NilExp
+	fromTree (Sym "hd" `Cons` a) = HdExp $ fromTree a
+	fromTree (Sym "tl" `Cons` a) = TlExp $ fromTree a
+	fromTree (Sym "cons" `Cons` a `Cons` b) = ConsExp (fromTree a) (fromTree b)
+	fromTree (Sym "var" `Cons` Sym a) = Var a
+	fromTree (Sym "symbol" `Cons` Sym a) = Symbol a
+	fromTree (Sym "call" `Cons` Sym a `Cons` b) = FunctionCall a $ fromTree b
+
+instance TreeBijection WhileStatement where
+	toTree (Assign name exp) = Sym ":=" `Cons` Sym name `Cons` toTree exp
+	toTree (For name exp block) = Sym "for" `Cons` Sym name `Cons` toTree exp `Cons` toTree block
+	toTree (While exp block) = Sym "for" `Cons` toTree exp `Cons` toTree block
+	toTree (IfElse exp ifblock elseblock) = Sym "if" `Cons` toTree exp `Cons` toTree ifblock `Cons` toTree elseblock
+	fromTree (Sym ":=" `Cons` Sym name `Cons` a) = Assign name $ fromTree a
+	fromTree (Sym "for" `Cons` Sym name `Cons` exp `Cons` block) = For name (fromTree exp) (fromTree block)
+	fromTree (Sym "while" `Cons` exp `Cons` block) = While (fromTree exp) (fromTree block)
+	fromTree (Sym "if" `Cons` exp `Cons` ifblock `Cons` elseblock) = IfElse (fromTree exp) (fromTree ifblock) (fromTree elseblock)
+
+instance (TreeBijection a) => TreeBijection [a] where
+	toTree [] = Nil
+	toTree (x:xs) = toTree x `Cons` toTree xs
+	fromTree Nil = []
+	fromTree (a `Cons` b) = fromTree a : fromTree b
+
+instance TreeBijection Integer where
+	toTree = intAsTree
+	fromTree = fromMaybe 0 . treeAsInt

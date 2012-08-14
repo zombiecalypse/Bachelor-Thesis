@@ -29,3 +29,4 @@ braces     = P.braces     lexer
 brackets   = P.brackets   lexer
 whiteSpace = P.whiteSpace lexer
 semi       = P.semi       lexer
+natural    = P.natural    lexer

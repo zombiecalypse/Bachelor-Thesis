@@ -4,6 +4,7 @@ import While.DataExpression
 import While.ProgramType
 import System.Environment (getArgs)
 import Text.Parsec
+import Text.Parsec.Char (char)
 import Text.ParserCombinators.Parsec.Prim (parseFromFile)
 
 nilExp = do {
@@ -41,9 +42,15 @@ varExp = do {
 	return $ Var dat
 } <?> "variable"
 
+symExp = do {
+	char ':';
+	name <- identifier;
+	return $ Symbol name;
+} <?> "Symbol"
+
 numExp = do {
-	dat <- many1 digit;
-	return $ intAsData $ read dat
+	dat <- natural;
+	return $ intAsData dat
 } <?> "number"
 
 evalExp = do {
@@ -51,9 +58,8 @@ evalExp = do {
 	argument <- parens dataExpression;
 	return $ FunctionCall name argument
 } <?> "function call"
-	
-	
-bareDataExpression = nilExp <|> numExp <|> hdExp <|> tlExp <|> consExp <|> varExp <|> evalExp
+
+bareDataExpression = nilExp <|> numExp <|> hdExp <|> tlExp <|> consExp <|> varExp <|> evalExp <|> symExp
 dataExpression = (try (parens bareDataExpression) <|> bareDataExpression) <?> "Data Expression"
 
 parseData = parse dataExpression "(unknown)"

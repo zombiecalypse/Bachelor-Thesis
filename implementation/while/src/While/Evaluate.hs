@@ -22,6 +22,9 @@ import While.Tree
 
 evalData :: DataExpression -> Evaluation Tree
 evalData NilExp = return Nil
+evalData (Symbol s) = do
+	guardDialect "Only nil is allowed" $ (== DefineAsYouGo) . symbols
+	return $ Sym s
 evalData (HdExp y) = do 
 	ev <- evalData y
 	context <- get
@@ -33,7 +36,7 @@ evalData (TlExp y) = do
 	context <- get
 	case ev of
 		Cons _ x -> return x
-		Nil -> fail ("Tl of nil" ++ show context)
+		Nil -> fail ("Tl of nil -- " ++ show context)
 evalData (ConsExp x y) = do
 	guardAllowed "Cons is not possible" D.cons
 	ev_left <- evalData x
@@ -44,11 +47,12 @@ evalData (Var name) = do
 	return $ lookup name context
 		where
 			lookup n (Context {dict = d, parentContext = Nothing}) 
-				| n `M.member` d = (M.!) d n
+				| n `M.member` d = d M.! n
 				| otherwise = Nil
 			lookup n (Context { dict = d, parentContext = (Just p) }) 
-				| n `M.member` d = (M.!) d n
+				| n `M.member` d = d M.! n
 				| otherwise = lookup n p
+
 evalData (FunctionCall name arg) = do
 	dialect <- getDialect
 	case D.calling dialect of
@@ -66,20 +70,20 @@ evalData (FunctionCall name arg) = do
 					procs <- getPrograms
 					context <- get
 					put (mempty { functionName = name, parentContext = Just context })
-					r <- interpretProcedure ((M.!) procs name) arg
+					r <- interpretProcedure (procs M.! name) arg
 					put context
 					return r
 
 setVal name val = do {
-	context@(Context {dict = d, parentContext = _}) <- get;
+	context@(Context {dict = d}) <- get;
 	put (context {dict = M.insert name val d})
 }
  
 sizeof :: DataExpression -> Evaluation Integer
 sizeof dat = do
-	ev <- evalData dat;
-	let ds = dataSize ev in
-		return ds 
+	ev <- evalData dat
+	let ds = dataSize ev
+	return ds 
 
 usingData :: DataExpression -> Evaluation ()
 usingData dat = do {
@@ -124,7 +128,6 @@ evalStatement f@(For name dataExp block) = do
 			modify (\l -> l {dict = M.insert name a (dict l)})
 			evalBlock block
 			evalFor b
-{- TODO evalStatement (For ...) -}
 
 evalBlock b = forM_ b evalStatement
 
