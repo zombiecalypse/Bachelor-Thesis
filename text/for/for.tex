@@ -81,10 +81,56 @@ functions are \FOR computable:
 	\item Exponentiation -- as repeated multiplication.
 	\item Unary/binary conversion.
 	\item Testing if a given number is prime.
+	\item ...
 \end{itemize}
 
 As we can see, it is relatively simple to generate huge numbers using the 
 \FOR language and then generate lists with that length.
+
+\lineofthought{Thm: Algorithm $C$ with $T(C)\in O(f(n))$, $f(n) \in \FOR$, 
+	then $\interpret{C}\in \FOR$}
+
+At first glance it seems that any function can be computed this way, but 
+sadly, that is not the case.
+
+\begin{theorem}
+Intuitively the interpretation of a \FOR program should be computable. We can 
+do it in an algorithmic way and so it is only reasonable to expect \FOR to be 
+able to interpret itself. As we will see, that can not be the case:
+
+Assume, there was a procedure in \FOR $exec$ that takes $(program.input)$ as 
+its argument. Now the following procedure would surely be a \FOR program too:
+
+\begin{verbatim}
+inverse read X {
+  result := [exec](X)
+  if result {
+    Y := FALSE
+  } else {
+  Y := TRUE
+  }
+} write Y
+\end{verbatim}
+
+We have 
+\[ \interpret{inverse}(program.input) = \begin{cases}
+		\mathtt{TRUE}, &\text{ if }\interpret{program}(input) = \mathtt{FALSE} \\
+		\mathtt{FALSE}, &\text{ otherwise }
+	\end{cases} \]
+
+It outputs {\tt TRUE} iff the given program outputs {\tt FALSE}. What then 
+is $\interpret{inverse}(inverse.inverse)$? Assume first that it is 
+{\tt TRUE}, then by definition it is {\tt FALSE} -- and vice versa! So it 
+neither returns {\tt TRUE} {\em nor} {\tt FALSE}. The only way that would 
+work would be if it didn't return anything at all, but as we have seen, all 
+\FOR programs terminate in finite time, so that can not be the case. 
+Therefore {\tt inverse} can not be a \FOR program and by extension {\tt exec} 
+is not a \FOR program.
+\end{theorem}
+
+
+This is unfortunate, not only because we have seen that there are functions 
+that are not \FOR computable, but that in general, any language that 
 
 \lineofthought{
 	\begin{itemize}
