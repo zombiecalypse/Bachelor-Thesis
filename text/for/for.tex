@@ -93,11 +93,15 @@ As we can see, it is relatively simple to generate huge numbers using the
 At first glance it seems that any function can be computed this way, but 
 sadly, that is not the case.
 
-\begin{theorem}
 Intuitively the interpretation of a \FOR program should be computable. We can 
 do it in an algorithmic way and so it is only reasonable to expect \FOR to be 
 able to interpret itself. As we will see, that can not be the case:
 
+\begin{theorem}
+	There is no \FOR program $exec$ that takes $(program.input)$ as its 
+	argument and returns $\interpret{program}(input)$.
+\end{theorem}
+\begin{proof}
 Assume, there was a procedure in \FOR $exec$ that takes $(program.input)$ as 
 its argument. Now the following procedure would surely be a \FOR program too:
 
@@ -107,7 +111,7 @@ inverse read X {
   if result {
     Y := FALSE
   } else {
-  Y := TRUE
+    Y := TRUE
   }
 } write Y
 \end{verbatim}
@@ -125,23 +129,17 @@ neither returns {\tt TRUE} {\em nor} {\tt FALSE}. The only way that would
 work would be if it didn't return anything at all, but as we have seen, all 
 \FOR programs terminate in finite time, so that can not be the case. 
 Therefore {\tt inverse} can not be a \FOR program and by extension {\tt exec} 
-is not a \FOR program.
-\end{theorem}
-
+is not a \FOR program. 
+\footnote{This is the quitessential uncomputability 
+	proof: A coding of the function is given that can be evaluated, but running 
+  the program on itself leads to complications.}
+\end{proof}
 
 This is unfortunate, not only because we have seen that there are functions 
-that are not \FOR computable, but that in general, any language that 
+that are not \FOR computable, but that in general, any language that supports 
+the building blocks of {\tt inverse} either doesn't support 
+self-interpretation or it contains programs that will not halt.
 
-\lineofthought{
-	\begin{itemize}
-		\item number of steps computable $\rightarrow$ function that takes this 
-			may steps is computable.
-	\end{itemize}
-}
-\subsection{Non-\FOR computability}
-\lineofthought{
-	\begin{itemize}
-		\item Ackermann
-		\item Self-interpretation
-	\end{itemize}
-}
+As we try to capture {\em all} intuitively computable functions, it is not 
+acceptable to leave self-interpretation out, so in the next chapter, we will 
+explore a language that will contain non-halting programs.
