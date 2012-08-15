@@ -65,6 +65,27 @@ and the else-block -- if any -- otherwise. Finally, there is the eponymous
 \end{enumerate}
 
 \subsection{\FOR computability}
+The probably most important property of the \FOR language is that programs in 
+it always terminate. The reason for this is, that upon entering the for loop, 
+the number of repetitions is fixed as the length of the evaluated expression. 
+Since we can't build an infinite expression in the finite time before the 
+loop, the program terminates.
+
+When experimenting with the language, one quickly finds, that many important 
+functions are \FOR computable:
+
+\begin{itemize}
+	\item Constant functions.
+	\item Addition.
+	\item Multiplication -- as repeated addition.
+	\item Exponentiation -- as repeated multiplication.
+	\item Unary/binary conversion.
+	\item Testing if a given number is prime.
+\end{itemize}
+
+As we can see, it is relatively simple to generate huge numbers using the 
+\FOR language and then generate lists with that length.
+
 \lineofthought{
 	\begin{itemize}
 		\item number of steps computable $\rightarrow$ function that takes this 
