@@ -35,7 +35,7 @@ structure stems from the building of linked lists.}
 .
 \begin{figure}[htb]
 	\begin{center}
-		\includegraphics[height=3cm]{for/images/conscell}
+		\includegraphics[height=3cm]{introduction/for/images/conscell}
 	\end{center}
 	\caption{The {\tt cons} cell}
 \end{figure}
@@ -107,7 +107,7 @@ its argument. Now the following procedure would surely be a \FOR program too:
 
 \begin{verbatim}
 inverse read X {
-  result := [exec](X)
+  result := [exec](X.X)
   if result {
     Y := FALSE
   } else {
@@ -117,13 +117,13 @@ inverse read X {
 \end{verbatim}
 
 We have 
-\[ \interpret{inverse}(program.input) = \begin{cases}
-		\mathtt{TRUE}, &\text{ if }\interpret{program}(input) = \mathtt{FALSE} \\
+\[ \interpret{inverse}(program) = \begin{cases}
+		\mathtt{TRUE}, &\text{ if }\interpret{program}(program) = \mathtt{FALSE} \\
 		\mathtt{FALSE}, &\text{ otherwise }
 	\end{cases} \]
 
 It outputs {\tt TRUE} iff the given program outputs {\tt FALSE}. What then 
-is $\interpret{inverse}(inverse.inverse)$? Assume first that it is 
+is $\interpret{inverse}(inverse)$? Assume first that it is 
 {\tt TRUE}, then by definition it is {\tt FALSE} -- and vice versa! So it 
 neither returns {\tt TRUE} {\em nor} {\tt FALSE}. The only way that would 
 work would be if it didn't return anything at all, but as we have seen, all 
@@ -143,3 +143,52 @@ self-interpretation or it contains programs that will not halt.
 As we try to capture {\em all} intuitively computable functions, it is not 
 acceptable to leave self-interpretation out, so in the next chapter, we will 
 explore a language that will contain non-halting programs.
+
+\subsection{The \FOR in real programming languages}
+It turns out, that while the {\tt for} keyword exists in most languages in 
+one form or another, few acurately model the \FOR languages intention. 
+Foremost most languages cheat around the property of \FOR loops always 
+terminating: In C-like languages, the loop variable is not immutable and therefore
+\begin{verbatim}
+	for (int i = 0; i < 10; i++) {
+	  // ...
+	}
+\end{verbatim}
+might very well not terminate, if {\tt i} is decremented in the body. 
+Iterator-based loops can be tricked by implementing an iterator that does not 
+halt, i.e. produces a new value on any {\tt next}.
+
+\subsection{The \FOR in mathematics and logic}
+The \FOR computable functions match a category of functions known as 
+primitive recursive. A function is primitive recursive, if it is either
+\begin{enumerate}
+	\item A successor function $S_i(x_1,\dots,x_n) = x_i+1$
+	\item A projection function $P_i(x_1,\dots,x_n) = x_i$
+	\item In the form of primitive recursion:
+		\begin{equation*}
+			f(n,x_1,\dots,x_n) = \begin{cases}
+				g(x_1,\dots,x_n), &\text{ if }n=0\\
+				h(f(n-1, x_1, \dots, x_n), x_1,\dots,x_n),&\text{ else}
+			\end{cases}
+		\end{equation*}
+		Where $g$ and $h$ are primitive recursive.
+\end{enumerate}
+It is easy to see that \FOR can compute any primitive recursive function:
+The successor function and the projections are trivial, for the primitive 
+recursion, we have programs $\interpret{G}=g$ and $\interpret{H}=h$ by 
+induction assumtion\citationneeded. 
+
+\begin{verbatim}
+F read NX {
+  N := hd NX
+  Xs := tl NX
+  Repetitions := [unary](N)
+  Result := [G](Xs)
+  Counter := 0
+  FOR I IN Repetitions {
+    Result := [H](Result.Xs)
+  }
+} write Result
+\end{verbatim}
+
+The other direction is in the exercises \TODO.

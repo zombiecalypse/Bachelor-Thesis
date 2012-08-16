@@ -1,0 +1,42 @@
+\section{The {\tt WHILE} Language\timeestimation{15h}}
+\label{sec:WHILE}
+In the last chapter we saw an example of a function that is not computable 
+with a \FOR program\footnote{The semantic function of \FOR}. However with a 
+simple addition to the language, we gain all we need for a language.
+
+The new statement is called \WHILE, and it does what one would expect:
+
+\begin{itemize}
+	\item It takes an expression and a block.
+	\item If the evaluation of the expression yields {\tt nil}, it does nothing.
+	\item Otherwise, it executes the block and repeats this procedure.
+\end{itemize}
+
+This new statement does not necessarily terminate, in fact {\tt WHILE 
+(nil.nil) \{\}} would never halt. This means, that the semantic function 
+does not give a total function back -- for some inputs the interpretation of 
+the source does not halt.
+
+\begin{defn}
+	A partial function from $A$ to $B$ is a function 
+	\[ f:A\rightarrow B_\bot = B\cup \{\bot\}\]
+	where $\bot$ signifies that no value exists for that input.
+
+	The semantic function of a not always terminating language $L$ is then a
+	function 
+	\[ \interpret[L]{.}: L \rightarrow (A\rightarrow B_\bot) \]
+
+	For example $\interpret[A](nil) = \bot$ means, that the program $A$ does 
+	not terminate on the input $nil$.
+\end{defn}
+
+Looking back at the proof of the uncomputable function in \FOR called
+$inverse$, that took a program and returned the boolean inverse of that
+programs output when run with itself as input. We asked what
+$\interpret{inverse}(inverse)$ would be. Since it can't be $TRUE$ nor
+$FALSE$, it must be $\bot$. This can also be seen in that
+$\interpret{eval}(inverse.inverse)$ is just an infinite recursion. 
+
+Of course it could be that while this proof does not work, something else might
+prevent us from implementing the {\tt eval} procedure. As we will see in
+\ref{sec:self}, that is not the case.

@@ -1,18 +1,24 @@
-text=/home/aaron/Bachelor/text filter="*.mdown **/*.tex *.bib" {
+text=/home/aaron/Bachelor/text filter="*.mdown *.tex *.bib" {
  README.mdown
  abstract.tex
  appendix.tex
- completeness/completeness.tex
- complexity/complexity.tex
- for/for.tex
- introduction/introduction.tex
- langcomplexity/langcomplexity.tex
  main.tex
- robustness/robustness.tex
- self/self.tex
- transforms/transforms.tex
- while/while.tex
  biblio.bib
+ intro=introduction filter="**/*.tex" {
+  for/for.tex
+  introduction/introduction.tex
+  while/while.tex
+ }
+ complexity=complexity filter="**/*.tex" {
+  complexity/complexity.tex
+  langcomplexity/langcomplexity.tex
+  robustness/robustness.tex
+ }
+ computability=computability filter="**/*.tex" {
+  completeness/completeness.tex
+  self/self.tex
+  transforms/transforms.tex
+ }
 }
 implementation=/home/aaron/Bachelor/implementation {
  Makefile
