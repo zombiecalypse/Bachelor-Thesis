@@ -1,3 +1,3 @@
 s read X {
-	X := :While
+	X := :While;
 } write X

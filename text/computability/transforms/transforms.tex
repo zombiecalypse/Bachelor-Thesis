@@ -29,14 +29,67 @@ code nonetheless. Typically, we want our computer to interpret what we mean
 in our high-level programming language. An {\em interpreter} is such a program.
 
 \begin{defn}
-	An {\em interpreter} of $A$ is a program 
-	\[\interpret[P]{interp}: A \times \Input[A] \longrightarrow \Output[A] \]
-	\[ \interpret[P]{interp}(a, d) = \interpret[A]{a}(d) \]
+	An {\em interpreter} of $A$ is a program $interp$ such that
+	\begin{equation*}
+		\begin{split}
+			\interpret[P]{interp}&: A \times \Input[A] \longrightarrow \Output[A] \\
+			\interpret[P]{interp}&(a, d) = \interpret[A]{a}(d)
+		\end{split}
+	\end{equation*}
 \end{defn}
 
-\lineofthought{ A language $A$ that can interpret $B$ is at least as powerful as $B$ }
+An interpreter typically parses the program code to a Abstract Syntax Tree 
+(AST), in which the relations of the statements can easily be infered. For 
+example, the AST of
 
-\lineofthought{Interpreter are easier to write, but have an interpretation overhead}
+\begin{verbatim}
+	unary_length read X {
+	  Y := nil
+	  FOR Z IN X {
+	    Y := cons nil Y
+	  }
+	} write Y
+\end{verbatim}
+
+might look like
+
+\begin{verbatim}
+	(PROCEDURE unary_length X Y
+	  (
+	    (ASSIGN Y nil)
+	    (FOR Z X
+	      (ASSIGN Y (cons nil (VAR Y)))
+	    )
+	  )
+	)
+\end{verbatim}
+
+Since parsing is not part of this text, we will assume, that a convenient 
+format is already given.\footnote{If you are interested in the whole story, 
+	\cite{aho2007compilers} offers a good introduction into the theory and the 
+	appendix \ref{sec:implementingWhile} explains how the implementation of 
+\WHILE works.}
+
+What does it mean, if we can express an interpreter for $A$ in the language 
+$B$? It means, that we can solve any problem in $B$ using a program in $A$, 
+in the worst case using an interpreter. This allows us to classify languages 
+in the following way.
+
+\begin{defn}
+	The language $A$ is {\em at least as powerful} as $B$, if there is an 
+	interpreter for $B$ in $A$.
+
+	Similarly, $A$ are {\em equally powerful} if $A$ can interpret $B$ and vice versa.
+\end{defn}
+
+Interpreters are typically the first step in implementing a language: they 
+are relatively easy to write and therefore allow experimenting. The downside 
+is that working on the AST and constantly translating typically takes longer 
+than an equivalent $A$ program would take. This {\em overhead} is often 
+just a fixed factor, but that factor could be 100, making the interpreted program a 
+hundred times slower than the native one.
+
+\lineofthought{Python, Ruby, ... are languages, that only offer interpretation}
 % subsection Interpreter (end)
 \subsection{Compiler} % (fold)
 \label{sub:Compiler}

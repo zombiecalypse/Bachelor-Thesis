@@ -1,5 +1,5 @@
 test read X {
-	for Z=X {
-		Y := cons nil Y
+	for Z in X {
+		Y := cons nil Y;
 	}
 } write Y

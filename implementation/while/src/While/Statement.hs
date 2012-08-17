@@ -27,7 +27,7 @@ fileExpression = do
 	optional whiteSpace
 	return progs
 
-blockExp = (braces $ statement `sepBy1` (whiteSpace <|> optional semi) ) <?> "block"
+blockExp = (braces $ statement `sepBy` whiteSpace ) <?> "block"
 
 statement = 
 		try forExpression <|>
@@ -39,6 +39,7 @@ assignmentExpression = do {
 	name <- identifier;
 	reservedOp ":=";
 	dataexp <- dataExpression;
+	semi;
 	return (Assign name dataexp)
 	} <?> "assignment"
 
@@ -52,7 +53,7 @@ whileExpression = do {
 forExpression = do {
 	reserved "for";
 	name <- identifier;
-	reservedOp "=";
+	reserved "in";
 	dataexp <- dataExpression;
 	blockVal <- blockExp;
 	return $ For name dataexp blockVal

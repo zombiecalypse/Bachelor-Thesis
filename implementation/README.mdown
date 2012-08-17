@@ -1,5 +1,0 @@
-# Code of Aaron Karper's Bachelor Thesis
-
-Requirements:
-- LaTeX-makefile
-- cabal

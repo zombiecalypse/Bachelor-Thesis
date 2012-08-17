@@ -1,3 +1,3 @@
 identity read X {
-	X := X
+	X := X;
 } write X

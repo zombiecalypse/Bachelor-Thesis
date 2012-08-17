@@ -1,3 +1,3 @@
 error read X {
-	X := tl nil
+	X := tl nil;
 } write X

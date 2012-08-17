@@ -1,7 +1,5 @@
-# Bachelor Thesis
-## Text
-Topics on computability and complexity with modern language
+# Code of Aaron Karper's Bachelor Thesis
 
-## Implementation
-Implementation of the `WHILE` programming language (which is designed to be
-barely turing complete) and as a test of a turing machine language.
+Requirements:
+- LaTeX-makefile
+- cabal

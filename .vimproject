@@ -9,15 +9,15 @@ text=/home/aaron/Bachelor/text filter="*.mdown *.tex *.bib" {
   introduction/introduction.tex
   while/while.tex
  }
- complexity=complexity filter="**/*.tex" {
-  complexity/complexity.tex
-  langcomplexity/langcomplexity.tex
-  robustness/robustness.tex
- }
  computability=computability filter="**/*.tex" {
   completeness/completeness.tex
   self/self.tex
   transforms/transforms.tex
+ }
+ complexity=complexity filter="**/*.tex" {
+  complexity/complexity.tex
+  langcomplexity/langcomplexity.tex
+  robustness/robustness.tex
  }
 }
 implementation=/home/aaron/Bachelor/implementation {

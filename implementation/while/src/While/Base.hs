@@ -11,7 +11,7 @@ whileGrammar = javaStyle
 	P.nestedComments = True,
 	P.identStart = letter <|> char '_',
 	P.identLetter = alphaNum <|> char '_',
-	P.reservedNames = ["read", "write", "while", "end", "hd", "tl", "nil", "for"],
+	P.reservedNames = ["read", "write", "while", "end", "hd", "tl", "nil", "for", "in"],
 	P.reservedOpNames = ["=", ".", ":="],
 	P.caseSensitive = True
 }

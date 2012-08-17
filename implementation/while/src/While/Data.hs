@@ -6,37 +6,20 @@ import System.Environment (getArgs)
 import Text.Parsec
 import Text.Parsec.Char (char)
 import Text.ParserCombinators.Parsec.Prim (parseFromFile)
+import Text.Parsec.Expr
+
+binaryOp name fun assoc = Infix (do{ reservedOp name; return fun }) assoc
+prefix name fun = Prefix (do{ reserved name; return fun }) 
+
+table = [ [ prefix "hd" HdExp, prefix "tl" TlExp ],
+	[binaryOp "." (ConsExp) AssocRight] ]
 
 nilExp = do {
 	reserved "nil";
 	return NilExp
 }
-hdExp = do {
-	reserved "hd";
-	dat <- dataExpression;
-	return $ HdExp dat
-}
-tlExp = do {
-	reserved "tl";
-	dat <- dataExpression;
-	return $ TlExp dat
-}
-
-consExp = (consExplicit <|> parens consDotted) <?> "cons expression"
-	where
-		consExplicit = do {
-    	reserved "cons";
-    	dat1 <- dataExpression;
-    	dat2 <- dataExpression;
-    	return $ ConsExp dat1 dat2
-		}
-		consDotted = do {
-			dat1 <- dataExpression;
-			reservedOp ".";
-			dat2 <- dataExpression;
-			return $ ConsExp dat1 dat2
-		}
-
+operators = buildExpressionParser table term
+ 
 varExp = do {
 	dat <- identifier;
 	return $ Var dat
@@ -59,8 +42,9 @@ evalExp = do {
 	return $ FunctionCall name argument
 } <?> "function call"
 
-bareDataExpression = nilExp <|> numExp <|> hdExp <|> tlExp <|> consExp <|> varExp <|> evalExp <|> symExp
-dataExpression = (try (parens bareDataExpression) <|> bareDataExpression) <?> "Data Expression"
+term = parens dataExpression <|> nilExp <|> numExp <|> varExp <|> symExp <|> evalExp
+
+dataExpression = operators <?> "Data Expression"
 
 parseData = parse dataExpression "(unknown)"
 
