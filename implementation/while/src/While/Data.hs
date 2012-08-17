@@ -12,7 +12,8 @@ binaryOp name fun assoc = Infix (do{ reservedOp name; return fun }) assoc
 prefix name fun = Prefix (do{ reserved name; return fun }) 
 
 table = [ [ prefix "hd" HdExp, prefix "tl" TlExp ],
-	[binaryOp "." (ConsExp) AssocRight] ]
+	[binaryOp "." (ConsExp) AssocRight],
+	[binaryOp "=" EqualityExp AssocNone]]
 
 nilExp = do {
 	reserved "nil";

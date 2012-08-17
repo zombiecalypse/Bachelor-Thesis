@@ -51,10 +51,13 @@ implementation=/home/aaron/Bachelor/implementation {
 	}
 	examples=examples filter="*" {
    error.wl
+   error_parse.wl
    example.wl
+   for.wl
    function_call.wl
    identity.wl
    simple_call.wl
+   symbol.wl
 	}
  }
 }

@@ -5,6 +5,7 @@ import Data.Monoid (Monoid, mempty, mappend)
 
 flatSize (Var _) = 1
 flatSize (Symbol _) = 1
+flatSize (EqualityExp a b) = 1
 flatSize (HdExp x) = flatSize x - 1
 flatSize (TlExp x) = flatSize x - 1
 flatSize (ConsExp x y) = 1 + flatSize x + flatSize y
@@ -13,12 +14,13 @@ flatSize (FunctionCall _ _) = 0
 
 type Name = String
 data DataExpression =
-	NilExp                                 |
-	HdExp DataExpression                   |
-	TlExp DataExpression                   |
-	ConsExp DataExpression DataExpression  |
-	Var Name                               |
-	Symbol Name                            |
+	NilExp                                     |
+	HdExp       DataExpression                 |
+	TlExp       DataExpression                 |
+	ConsExp     DataExpression DataExpression  |
+	EqualityExp DataExpression DataExpression  |
+	Var Name                                   |
+	Symbol Name                                |
 	FunctionCall Name DataExpression
 	deriving (Show, Eq)
 

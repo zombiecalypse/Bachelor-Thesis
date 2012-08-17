@@ -26,6 +26,12 @@ instance TreeBijection [Tree] where
 	toTree = mconcat
 	fromTree (Cons a b) = a:(fromTree b)
 
+instance TreeBijection Bool where
+	toTree True = Cons Nil Nil
+	toTree False = Nil
+	fromTree Nil = False
+	fromTree _ = True
+
 dataSize :: Tree -> Integer
 dataSize Nil = 0
 dataSize (Sym _) = 1

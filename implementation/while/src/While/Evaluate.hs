@@ -31,17 +31,41 @@ evalData (HdExp y) = do
 	case ev of 
 		Cons x _ -> return x
 		Nil -> fail ("Hd of nil -- " ++ show context)
+		Sym _ -> fail ("Hd of symbol -- " ++ show context)
 evalData (TlExp y) = do
 	ev <- evalData y
 	context <- get
 	case ev of
 		Cons _ x -> return x
 		Nil -> fail ("Tl of nil -- " ++ show context)
+		Sym _ -> fail ("Tl of symbol -- " ++ show context)
 evalData (ConsExp x y) = do
 	guardAllowed "Cons is not possible" D.cons
 	ev_left <- evalData x
 	ev_right <- evalData y
 	return $ Cons ev_left ev_right
+evalData (EqualityExp x y) = do
+	ev_left <- evalData x
+	ev_right <- evalData y
+	equality ev_left ev_right
+	where
+		tTrue = return $ Cons Nil Nil
+		fFalse = return Nil
+		equality left right = do
+				tick 1
+				case (left,right) of
+					(Nil, Nil) -> tTrue
+					(Nil, _) -> fFalse
+					(_, Nil) -> fFalse
+					(Sym a,Sym b) -> if a==b then tTrue else fFalse
+					(Sym a, _) -> fFalse
+					(_, Sym a) -> fFalse
+					(Cons x y, Cons a b) -> do
+							ev_left <- equality x a
+							case ev_left of
+								Nil -> fFalse
+								(Cons Nil Nil) -> equality y b
+				
 evalData (Var name) = do
 	context <- get
 	return $ lookup name context
@@ -155,22 +179,27 @@ runProgram d a i = interpret $ runEvaluation d a mempty (interpretProgram a i) w
 	interpret (Right (r, env, context)) = compileReport r env context
 	compileReport r (Sum {getSum = ticks}, Max {getMax = space}) context = Report {spaceUsed = space, commandsExecuted = ticks, returnValue = r, reportedContext = context}
 
-data OutputFormat = TreeFormat | ListFormat | IntegerFormat deriving (Show, Eq)
+data OutputFormat = TreeFormat | ListFormat | IntegerFormat | BoolFormat deriving (Show, Eq)
 
 data Options = Options {
+	optHelp   :: Bool,
 	optFormat :: OutputFormat,
 	optInput  :: Either ParseError DataExpression
 } deriving (Show)
 
 defaultOptions = Options {
+	optHelp  = False,
 	optFormat = TreeFormat,
 	optInput = Right NilExp
 }
 
 options = [ 
+	Option "h" ["help"] (NoArg (\o -> do{putStr $ usageInfo header options; fail "help needed"})) "print this help message",
 	Option "I" ["int"] (NoArg (\o -> return o { optFormat = IntegerFormat} )) "write output as integer",
-	Option "L" ["list"] (NoArg (\o -> return o { optFormat = ListFormat} )) "write output as integer",
-	Option "i" ["input"] (OptArg _readInput "DataExpression") "use this input instead of nil" ]
+	Option "L" ["list"] (NoArg (\o -> return o { optFormat = ListFormat} )) "write output as list",
+	Option "B" ["bool"] (NoArg (\o -> return o { optFormat = BoolFormat} )) "write output as bool",
+	Option "i" ["input"] (OptArg _readInput "DataExpression") "use this input instead of nil" ] 
+	where header = "Usage: eval [OPTION...] files..."
 
 _readInput (Just exp) o = return o { optInput = parseData exp }
 _readInput Nothing o = return o { optInput = Right NilExp }
@@ -192,6 +221,7 @@ format f (Report { returnValue = r, commandsExecuted = nc, spaceUsed = ns, repor
 	where 
 		retFormat TreeFormat = show
 		retFormat ListFormat = show . asList
+		retFormat BoolFormat = show . (fromTree :: Tree -> Bool)
 		retFormat IntegerFormat = show . fromMaybe (error "NaN") . asNumber
 	
 main dialect = do
