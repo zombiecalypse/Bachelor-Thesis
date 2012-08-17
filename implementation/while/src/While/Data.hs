@@ -23,7 +23,7 @@ operators = buildExpressionParser table term
 varExp = do {
 	dat <- identifier;
 	return $ Var dat
-} <?> "variable"
+} <?> "Variable"
 
 symExp = do {
 	char ':';
