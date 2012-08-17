@@ -42,7 +42,14 @@ evalExp = do {
 	return $ FunctionCall name argument
 } <?> "function call"
 
-term = parens dataExpression <|> nilExp <|> numExp <|> varExp <|> symExp <|> evalExp
+consExp = do {
+	reserved "cons";
+	dat1 <- dataExpression;
+	dat2 <- dataExpression;
+	return $ ConsExp dat1 dat2
+}
+
+term = parens dataExpression <|> nilExp <|> numExp <|> consExp <|> varExp <|> symExp <|> evalExp
 
 dataExpression = operators <?> "Data Expression"
 
