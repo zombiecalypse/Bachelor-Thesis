@@ -10,7 +10,7 @@ text=/home/aaron/Bachelor/text filter="*.mdown *.tex *.bib" {
   while/while.tex
  }
  computability=computability filter="**/*.tex" {
-  completeness/completeness.tex
+  ompleteness/completeness.tex
   self/self.tex
   transforms/transforms.tex
  }

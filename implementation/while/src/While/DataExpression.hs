@@ -5,6 +5,7 @@ import Data.Monoid (Monoid, mempty, mappend)
 
 flatSize (Var _) = 1
 flatSize (Symbol _) = 1
+flatSize (Source _) = 1
 flatSize (EqualityExp a b) = 1
 flatSize (HdExp x) = flatSize x - 1
 flatSize (TlExp x) = flatSize x - 1
@@ -21,6 +22,7 @@ data DataExpression =
 	EqualityExp DataExpression DataExpression  |
 	Var Name                                   |
 	Symbol Name                                |
+	Source Name                                |
 	FunctionCall Name DataExpression
 	deriving (Show, Eq)
 
@@ -71,7 +73,7 @@ binary = IntegerFormat {
 
 literal :: Tree -> DataExpression
 literal Nil = NilExp
-literal (Cons a b) = (literal a) `ConsExp` (literal b)
+literal (a `Cons` b) = (literal a) `ConsExp` (literal b)
 
 intAsData = literal . fromInt binary
 intAsTree = fromInt binary
