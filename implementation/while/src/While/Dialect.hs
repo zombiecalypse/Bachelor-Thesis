@@ -11,7 +11,8 @@ data WhileDialect = WhileDialect {
 	assignment :: Allow,
 	while      :: Allow,
 	for        :: Allow,
-	cons       :: Allow
+	cons       :: Allow,
+	universal  :: Allow
 } deriving (Show, Eq)
 
 whileLanguage = WhileDialect {
@@ -21,7 +22,8 @@ whileLanguage = WhileDialect {
 	assignment = Allow,
 	while = Allow,
 	for = Allow,
-	cons = Allow
+	cons = Allow,
+	universal = Disallow
 }
 
 forLanguage = whileLanguage {

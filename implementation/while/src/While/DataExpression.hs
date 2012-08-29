@@ -12,6 +12,7 @@ flatSize (TlExp x) = flatSize x - 1
 flatSize (ConsExp x y) = 1 + flatSize x + flatSize y
 flatSize NilExp = 0
 flatSize (FunctionCall _ _) = 0
+flatSize (UniversalCall _ _) = 0
 
 type Name = String
 data DataExpression =
@@ -23,7 +24,8 @@ data DataExpression =
 	Var Name                                   |
 	Symbol Name                                |
 	Source Name                                |
-	FunctionCall Name DataExpression
+	FunctionCall Name DataExpression           |
+	UniversalCall DataExpression DataExpression
 	deriving (Show, Eq)
 
 instance Monoid DataExpression where
