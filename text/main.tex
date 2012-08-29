@@ -15,19 +15,25 @@
 \usepackage{graphicx}
 \usepackage{varioref}
 \usepackage{syntax}
+\usepackage{exercise}
+\usepackage{xspace}
 
-\newcommand{\pfunc}{\xrightarrow{p}}
-\newcommand{\peq}{\simeq}
-\newcommand{\listof}[1]{\left< #1 \right> }
-\newcommand{\coded}[1]{\ulcorner #1 \urcorner }
-\newcommand{\WHILE}{\texttt{WHILE} }
-\newcommand{\FOR}{\texttt{FOR} }
+\newcommand*{\pfunc}{\xrightarrow{p}}
+\newcommand*{\peq}{\simeq}
+\newcommand*{\listof}[1]{\left< #1 \right> }
+\newcommand*{\coded}[1]{\ulcorner #1 \urcorner }
+\newcommand*{\WHILE}{\ensuremath{\mathtt{WHILE}}\xspace}
+\newcommand*{\FOR}{\ensuremath{\mathtt{FOR}}\xspace}
+\newcommand*{\TM}{\ensuremath{\mathtt{TM}}\xspace}
 
 % Note Commands
 \newcommand{\timeestimation}[1]{ \footnote{#1} }
 \newcommand{\citationneeded}{{\em (citation needed) } }
 \newcommand{\lineofthought}[1]{{\bf [#1] }}
 \newcommand{\TODO}{\ensuremath{\left<\mathbf{TODO}\right> }}
+\newcommand{\lepower}{\leq}
+\newcommand{\gepower}{\geq}
+\newcommand{\epower}{\equiv}
 
 % Disabled Note Commands
 %\newcommand{\timeestimation}[1]{}
@@ -41,6 +47,10 @@
 	\ifthenelse{\isempty{#1}}{}{_{#1}}}}
 \newcommand{\Output}[1][]{\ensuremath{O
 	\ifthenelse{\isempty{#1}}{}{_{#1}}}}
+\newcommand{\Compiler}[3][]{\ensuremath{compile_{#2\rightarrow #3}
+	\ifthenelse{\isempty{#1}}{}{ ^{#1}}}}
+\newcommand{\Interpreter}[2][]{\ensuremath{interpret_{#2}
+	\ifthenelse{\isempty{#1}}{}{ ^{#1}}}}
 \newtheorem{prop}{Proposition}
 \newtheorem{theorem}{Theorem}
 \theoremstyle{definition}
@@ -74,7 +84,6 @@
 \bibliography{biblio}{}
 \bibliographystyle{plain}
 
-\clearpage
 \begin{appendices}
   \include*{appendix}
 \end{appendices}

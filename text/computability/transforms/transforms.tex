@@ -68,17 +68,6 @@ format is already given.\footnote{If you are interested in the whole story,
 	building tools for a new language and the appendix
 	\ref{sec:implementingWhile} explains how the implementation of \WHILE works.}
 
-What does it mean, if we can express an interpreter for $A$ in the language 
-$B$? It means, that we can solve any problem in $B$ that can be solved in $A$, 
-in the worst case using an interpreter. This allows us to classify languages 
-in the following way.
-
-\begin{defn}
-	The language $A$ is {\em at least as powerful} as $B$, if there is an 
-	interpreter for $B$ in $A$.
-
-	Similarly, $A$ are {\em equally powerful} if $A$ can interpret $B$ and vice versa.
-\end{defn}
 
 Interpreters are typically the first step in implementing a language: they 
 are relatively easy to write and therefore allow experimenting. The downside 
@@ -108,6 +97,34 @@ compiler}.
 	Normally $P=B$, but if it is {\em not}, then $compile$ is a so-called {\em
 	cross-compiler}.
 \end{defn}
+
+What does it mean, if we can express an compiler for $A$ in the language 
+$B$? It means, that we can solve any problem in $B$ that can be solved in $A$, 
+by compiling the $A$ solution to $B$. This allows us to classify languages 
+in the following way.
+
+\begin{defn}
+	\label{def:power}
+	The language $A$ is {\em at least as powerful} as $B$, if there is an 
+	compiler $\Compiler{B}{A}\in A$. We write $A \lepower B$.
+
+	Similarly, $A$ are {\em equally powerful} or {\em Turing equivalent} if $A$
+	can compile $B$ and vice versa. We write $A \epower B$.
+\end{defn}
+
+\begin{theorem}
+	\begin{enumerate}
+		\item $\lepower$ is reflexive, that is $A\lepower A$.
+		\item $\lepower$ is transitive, that is if $A\lepower B\lepower C$, then $A\lepower C$.
+	\end{enumerate}
+\end{theorem}
+\begin{proof}
+	\begin{enumerate}
+		\item The compiler is the identity.
+		\item \[\Compiler[C]{A}{B} = \interpret[A]{\Compiler{B}{C}}(\Compiler{A}{B})\]
+			and then we can compose $\interpret[C]{\Compiler{B}{C}} \circ \interpret[C]{\Compiler[C]{A}{B}}$
+	\end{enumerate}
+\end{proof}
 
 \subsubsection{How a modern compiler works}
 A compiler typically has three stages, a frontend, a middle, and a backend.
@@ -149,10 +166,8 @@ first translation.
 \subsection{Interpretation versus compilation}
 \lineofthought{When is it better to interpret, when should one compile?}
 
-\subsection{Futamura Projections} % (fold)
-\label{sub:Futamura}
 \subsubsection{Specializer} % (fold)
-\label{ssub:Specializer}
+\label{sub:Specializer}
 While programmers generally know the notions of a compiler and possibly of an 
 interpreter, the {\em specializer} is less well known. {\em Specialization} 
 is the process of fixing a certain value in the source code, even though it 
@@ -174,11 +189,11 @@ example, if we encountered the call {\tt fib(n, true)} for the function
 
 \begin{verbatim}
 	int fib(int n, bool debug) {
-		if (debug) printf("Call with %d", n);
+	  if (debug) printf("Call with %d", n);
 
-		if (n == 0 || n == 1) return 0;
+	 	if (n == 0 || n == 1) return 0;
 
-		return fib(n-1) + fib(n-2);
+	 	return fib(n-1) + fib(n-2);
 	}
 \end{verbatim}
 then the specializer might remove the first test and just leave the {\tt 
@@ -197,6 +212,7 @@ that. This sounds easier than it is:
 For a deeper look at the applications and implementations of specializers, 
 see \cite{jones1993partial}.
 
+
 \subsubsection{Futamura Projections} % (fold)
 \label{ssub:Futamura Projections}
 The notion of a specializer as a transformer of source code has lead to some 
@@ -206,23 +222,23 @@ Projections:
 
 \begin{enumerate}
 	\item \begin{align*}
-			\interpret[P]{\interpret[P]{spec}(interp_A, source)}(inp)
-			&= \interpret[P]{interp_A}(source.inp) \\
+			\interpret[P]{\interpret[P]{spec}(\Interpreter{A}, source)}(inp)
+			&= \interpret[P]{\Interpreter{A}}(source.inp) \\
 			&= \interpret[A]{source}(inp)
 	\end{align*}
 		So we can get an executable, if we specialize the interpreter with the 
 		source of our program.
 	\item \begin{equation*}
 			\begin{split}
-			compiler_{A\rightarrow P} &= \interpret[P]{spec}(spec, interp_A) \\
-			\interpret[P]{\interpret[P]{spec}(spec, interp_A)}(source)
-			&= \interpret[P]{spec}(interp_A.source)
+			compiler_{A\rightarrow P} &= \interpret[P]{spec}(spec, \Interpreter{A}) \\
+				\interpret[P]{\interpret[P]{spec}(spec, \Interpreter{A})}(source)
+				&= \interpret[P]{spec}(\Interpreter{A}.source)
 		\end{split}
 	\end{equation*}
 		Therefore we can get a compiler, if we specialize the specializer with the interpreter.
 	\item \begin{align*}
-			\interpret[P]{\interpret[P]{spec}(spec.spec)}(interp_A)
-			&= \interpret[P]{spec}(spec.interp_A)
+			\interpret[P]{\interpret[P]{spec}(spec.spec)}(\Interpreter{A})
+			&= \interpret[P]{spec}(spec.\Interpreter{A})
 	\end{align*}
 		So we can get a program, that takes an interpreter for any language $A$ 
 		and produces a compiler for $A$ from it.
@@ -237,6 +253,7 @@ specializer will not catch every possible optimization. In fact, optimizing
 the intermediate format allows many other optimizations besides the
 specialization and so a pragmatic compiler writer will prefer to do such 
 things by hand, instead of enhancing the specializer.
+
 \lineofthought{ 
 	Use types to visualize (
 	$\interpret[P]{spec}: Input_1 \rightarrow \coded{\left( Input_2 \rightarrow Output \right)}$)
@@ -257,7 +274,7 @@ things by hand, instead of enhancing the specializer.
 	not the case: PyPy uses Just-In-Time (JIT) specialization and compilation
 	techniques in part described in \cite{psycho}.
 
-	While the approach described in \ref{ssub:Specializer} is understood to be 
+	While the approach described in \ref{sub:Specializer} is understood to be 
 	executed before the actual program is run, it is also possible to run it 
 	in parallel to the actual computation: Now the specializer can use 
 	statistical information on the values. For example, while it might not be 
@@ -271,5 +288,19 @@ things by hand, instead of enhancing the specializer.
 
 % paragraph The PyPy project (end)
 
-% subsubsection Specializer (end)
-% subsection Futamura (end)
+\subsubsection{Theoretical Results}
+\label{ssub:spec theo}
+Proposing that we can statically fix arguments in our program leads important results:
+\begin{theorem}
+	\label{thm:power-interpreter}
+	If there is an interpreter $\Interpreter{B}\in A$ then $B\leq A$.
+\end{theorem}
+\begin{proof}
+	By the second Futamura projection 
+	$\Compiler{B}{A} = \interpret[A]{spec}(spec, \Interpreter{B})$
+\end{proof}
+
+Note however that the reversal is not necessarily true: For example, we know, that 
+\FOR is has no $\Interpreter{\FOR}$, but $\FOR \leq \FOR$ still holds. We 
+will see later that a self-interpreter allows us to identify the two notions.
+% subsection Specializer (end)

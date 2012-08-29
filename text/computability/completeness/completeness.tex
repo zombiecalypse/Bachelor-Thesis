@@ -1,5 +1,104 @@
 \section{Turing-Completeness of a Language}
 \label{sec:Turing Completeness}
+In the dawn of computer science there were serveral ideas what computable 
+means. Does it mean, that a machine can compute it, as Turing suggested? Or 
+should we define some functions that should be computable and how they can be
+combined to discuss the computability of a problem?
+
+As it turned out, it does not matter -- the problems that can be solved in 
+each of them are the same. This was shown by proving that the different 
+mechanisms can simulate each other. By extension, a new formulism only needs 
+to be able to simulate any of the existing formalisms to be at least as 
+powerful as any of them. Thus came the expression {\em Turing complete} to 
+describe, that a certain formalism can build any Turing machine.
+
+\subsection{The Turing Machine}
+The Turing Machine (\TM) is a formalism that focuses on a possible physical 
+implementation of a computing machine, although far from what is used today. 
+It features an potentially infinite amount of tape on which the machine 
+operates. From this tape, the machine can read and write the current cell and 
+move its read-write-head one cell to the left or the right. Finally, the 
+machine has a finite number of ``states of mind", comparable to a finite 
+state machine.
+
+In order to formally analyse the \TM, we can code what such a machine would 
+do in the following way:
+
+\begin{defn}
+	\label{def:tm}
+	A Turing Machine is a % TODO
+\end{defn}
+
+\begin{example}
+	Adding one to a binary number.
+\end{example}
+
+\subsection{\WHILE is Turing complete}
+By definition \ref{def:power}, we would need a compiler from \TM to \WHILE, 
+but by \ref{thm:power-interpreter}, an interpreter suffices. Implementing such an 
+interpreter will be the following exercise.
+
+\begin{Exercise}[title={Interpreter for \TM},label={exc:tm},difficulty=2]
+	\Question Show that we can implement a dictionary datastructure in \WHILE. 
+		Implement {\tt insert} and {\tt lookup}.
+	\Question Show how you can code the transition function in your map.
+	\Question Implement the tape
+		\subQuestion Can you keep track of your position in a list with two stacks?
+		\subQuestion Implement the left and right movement 
+		$\interpret{{\tt left}},\interpret{{\tt right}} : Tape \rightarrow Tape$ . Note that the list is 
+			only potentially infinite, so you might in actuality run into the current edge.
+	\Question Plug the pieces together to implement an interpreter {\tt turing(TM)} for turing machines.
+\end{Exercise}
+
+\subsubsection{\TM  is \WHILE-complete}
+It could now be, that \WHILE is more powerful than \TM, so that one can 
+actually compute more with a \WHILE program than one could with Turing 
+Machines alone.
+
+\begin{Exercise}[title={Interpreter for \WHILE in \TM},difficulty=4]
+	In this exercise, we will build up a language that can be expressed in \TM 
+	and will finally include \WHILE. This is complex, but you might solve 
+	many low level implementation problems of programming languages in the progress.
+	\Question Show an $n$-taped \TM to the one taped (where $n$ is of course fixed at
+		compilation time). A $n$-taped turing machine has $n$ tapes that can be 
+		independently moved and writen.
+	\Question Show that you can use ``functions":
+		\subQuestion Show that you can copy one tape to the current position on a 
+			second tape.
+		\subQuestion Show that for all \TM's {\tt A} and {\tt B} exists a turing 
+			machine {\tt A;B} such that $\interpret[\TM]{A;B}(x) \peq
+			\interpret[\TM]{B}(\interpret[\TM]{A}(x))$, i.e. that you can execute
+			\TM's one after another.
+		\subQuestion Argue how this could be used to implement a function call.
+	\Question Show that you can implement a {\tt while} construct
+		\subQuestion Given a \TM $A$ that prints {\tt T} or {\tt F} on a tape and 
+			another \TM $B$, construct a \TM {\tt if A \{B\}} that runs $A$ 
+			and then $B$ only if the second tape shows $T$.
+		\subQuestion Modify this so that $B$ gets executed as long as $A$ returns {\tt T}.
+	\Question Implement the {\tt cons} datastructure on the tape of a turing 
+	machine. Note that you can add another tape to ``take notes" by merit of the first question.
+		\subQuestion Implement {\tt cons}. {\em Hint: Be literal about 
+		expressions like {\tt cons (cons nil nil) (cons nil nil)}.} 
+		\subQuestion Implement {\tt hd} and {\tt tl}.
+	\Question Show that you can implement a map, that can be used to save the variables.
+		\subQuestion Implement a list of pairs.
+		\subQuestion Given a name on one tape, can you look up the pair in the 
+			list of tuples on a second tape that contains this name as the first
+			component?
+		\subQuestion Implement changing the variables by striking out the old 
+			pair and appending a new one.
+	\Question Argue, how you could now interpret \WHILE
+\end{Exercise}
+
+\subsubsection{The structured program theorem}
+\lineofthought{
+	\begin{enumerate}
+		\item run programs one after another ({\tt ;})
+		\item run either this or that ({\tt if})
+		\item run until predicate is false ({\tt while})
+	\end{enumerate}
+	$\Rightarrow$ Turing complete
+}
 \lineofthought{
 	List some surprisingly turing complete things, e.g. cellular automata (Rule 110), 
 	string rewriting, ...
@@ -11,6 +110,22 @@
 
 	Note that when there are side effects, we might be interested that a program
 	does {\em not} terminate (e.g. our OS).
+
+	Common features of turing complete languages: They can use their own 
+	description (recursion theorem), if there is a primrec subset $P$, then you 
+	can describe all programs with $P$ and one ''loop`` of $A\setminus P$ 
+	(normal form theorem)
+}
+
+\subsection{Properties of Turing complete languages}
+
+\lineofthought{
+	\begin{itemize}
+		\item Recursion theorem (explain the construction of the $Y$ combinator)
+		\item Normal form theorem
+		\item Can't solve the halting problem
+		\item Can't deduce a property of $\interpret{f}$ from $f$ alone in full generality. (Rice)
+	\end{itemize}
 }
 \subsection{Why are most programming languages Turing Complete?} % (fold)
 \label{sub:Why are most programming languages Turing Complete?}
