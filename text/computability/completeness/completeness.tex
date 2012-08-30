@@ -186,6 +186,10 @@ problem for those. In fact, if we can compile {\tt loopInverse} into a
 language, then the new language can not solve its own halting problem, even 
 if it was more powerful than \WHILE.
 
+\begin{theorem}
+	No language more powerful than \WHILE can solve its own halting problem.
+\end{theorem}
+
 \subsection{The Normal Form Theorem}
 \begin{theorem}[Normal Form Theorem]
 	Every \WHILE program can be transformed into a \WHILE program with exactly 
@@ -205,25 +209,25 @@ powerful. This lead Alonzo Church to conjegure, that what the human sees
 as intuitively computable, is adequately formalized by any of these 
 competitors. This is known as Church's Thesis (or Church-Turing Thesis).
 
-\begin{quote}
+\begin{theorem}[Church's Thesis]
 	The Turing Machine adequately models what we hold for intuitively computable.
-\end{quote}
+\end{theorem}
 
 We saw that \WHILE too is a competitor, since it is equally powerful to any 
 of the other formalisms. We could then formulate it as follows:
 
-\begin{quote}
+\begin{theorem}
 	There is no intuitive extension of \WHILE that is more powerful than \WHILE.
-\end{quote}
+\end{theorem}
 
 For example, we could add procedure calls, but that would not make any 
 functions computable that were not computable before.
 
 The thesis can not be formally proven, since it connects the informal concept 
 of ``intuitively computable" with the formal Turing Machines, however the 
-evidence that no-one has since found a physical mechanism, that could be 
-exploited to calculate more than a \TM gives a strong indication, that the 
-Church-Turing Thesis is true.
+evidence that no-one has since build a computer, that could be exploited to
+calculate more than a \TM gives a strong indication, that the Church-Turing
+Thesis is true.
 
 \subsubsection{\dots or is it?}
 There has been some work, what would happen, if you added certain 
@@ -251,10 +255,10 @@ stronger than \TM. Faster yes, but not really stronger.
 
 On a larger scale, it is possible to construct a computing device that orbits 
 around a rotating black hole. An observer falling into the black hole could 
-then use the infinite computation time in subjectively finite 
-time\footnote{See \cite{etesi2002blackhole} for the whole discussion on the 
-feasability and the mathematical proof}. It has however been noted, that
-falling into a black hole might not be a good idea\citationneeded.
+then observe the infinite computation time of the orbiting machine in
+subjectively finite time\footnote{See \cite{etesi2002blackhole} for the whole
+discussion on the feasability and the mathematical proof}. It has however been
+noted, that falling into a black hole might not be a good idea\citationneeded.
 
 \lineofthought{
 	List some surprisingly turing complete things, e.g. cellular automata (Rule 110), 
