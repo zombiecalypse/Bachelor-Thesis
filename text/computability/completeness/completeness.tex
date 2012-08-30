@@ -12,6 +12,9 @@ to be able to simulate any of the existing formalisms to be at least as
 powerful as any of them. Thus came the expression {\em Turing complete} to 
 describe, that a certain formalism can build any Turing machine.
 
+This chapter is build as exercises, because solving the problems gives a good 
+impression, how one could go about proving other things to be turing complete.
+
 \subsection{The Turing Machine}
 The Turing Machine (\TM) is a formalism that focuses on a possible physical 
 implementation of a computing machine, although far from what is used today. 
@@ -48,6 +51,7 @@ interpreter will be the following exercise.
 		$\interpret{{\tt left}},\interpret{{\tt right}} : Tape \rightarrow Tape$ . Note that the list is 
 			only potentially infinite, so you might in actuality run into the current edge.
 	\Question Plug the pieces together to implement an interpreter {\tt turing(TM)} for turing machines.
+		\subQuestion How many nested {\tt while} loops do you need?
 \end{Exercise}
 
 \subsubsection{\TM  is \WHILE-complete}
@@ -87,8 +91,81 @@ Machines alone.
 			component?
 		\subQuestion Implement changing the variables by striking out the old 
 			pair and appending a new one.
-	\Question Argue, how you could now interpret \WHILE
+	\Question Argue, how you could now interpret \WHILE.
 \end{Exercise}
+
+These two exercises show, that $\WHILE\epower\TM$. This is important, since 
+when showing something to be \WHILE-complete, we don't need to implement the 
+\WHILE, but can use \TM instead, which is much simpler.
+
+\subsection{The Normal Form Theorem}
+\begin{theorem}[Normal Form Theorem]
+	Every \WHILE program can be transformed into a \WHILE program with exactly 
+	one {\tt while} loop. That is, all the inner constructs are taken from \FOR.
+\end{theorem}
+\begin{proof}
+	Lets call the language of \WHILE programs, that are in the normal form $\WHILE_1$.
+	We have seen that we can transform $\WHILE \rightarrow \TM$ and 
+	$\TM \rightarrow \WHILE_1$. If we chain these (informal) compilation processes to 
+	get a compiler $\WHILE \rightarrow \WHILE_1$.
+\end{proof}
+
+\subsection{Church's Thesis}
+As mentioned, when the notion of computability was first developed, there 
+were competing formalisms, but as it turned out, they were all equally 
+powerful. This lead Alonzo Church to conjegure, that what the human sees 
+as intuitively computable, is adequately formalized by any of these 
+competitors. This is known as Church's Thesis (or Church-Turing Thesis).
+
+\begin{quote}
+	The Turing Machine adequately models what we hold for intuitively computable.
+\end{quote}
+
+We saw that \WHILE too is a competitor, since it is equally powerful to any 
+of the other formalisms. We could then formulate it as follows:
+
+\begin{quote}
+	There is no intuitive extension of \WHILE that is more powerful than \WHILE.
+\end{quote}
+
+For example, we could add procedure calls, but that would not make any 
+functions computable that were not computable before.
+
+The thesis can not be formally proven, since it connects the informal concept 
+of ``intuitively computable" with the formal Turing Machines, however the 
+evidence that no-one has since found a physical mechanism, that could be 
+exploited to calculate more than a \TM gives a strong indication, that the 
+Church-Turing Thesis is true.
+
+\subsubsection{\dots or is it?}
+There has been some work, what would happen, if you added certain 
+functionalities to Turing Machines (and by extension to \WHILE). 
+
+Turing himself analysed socalled oracle machines, which are basically Turing 
+Machines, but can answer specific questions to an oracle on a different tape, 
+that would answer if a specific predicate is true for the value of the tape.
+The halting problem for Turing Machines is not solvable on a normal \TM, but 
+we could add an oracle for it. This would be more powerful than \TM, but it 
+is not intuitively clear how one could build such an oracle. Also, we would 
+find, that the oracle machine could not solve its own halting problem -- for 
+very much the same reason that the original \TM can't solve its own.
+
+Another line of thought is that, when we talk about these formalisms, we 
+don't really care if humans find it intuitively computable, but rather that 
+we could actually build a machine that computes it. This gives us the 
+physical Church-Turing thesis: It is not possible to build a computer that 
+can not be simulated on a \TM.
+
+This is a thesis, that {\em can} be put to the test. While \TM rely on 
+classical mechanics, some thought has been put into quantum computing. The 
+model that is used to build quantum computers (qubits) are however not 
+stronger than \TM. Faster yes, but not really stronger.
+
+On a larger scale, it is possible to construct a computing device that orbits 
+around a rotating black hole. An observer falling into the black hole could 
+then use the infinite computation time in subjectively finite time. It has 
+however been noted, that falling into a black hole might not be a good 
+idea\citationneeded.
 
 \subsubsection{The structured program theorem}
 \lineofthought{

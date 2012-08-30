@@ -4,17 +4,17 @@ text=/home/aaron/Bachelor/text filter="*.mdown *.tex *.bib" {
  appendix.tex
  main.tex
  biblio.bib
- intro=introduction filter="**/*.tex" {
+ 01intro=introduction filter="**/*.tex" {
   for/for.tex
   introduction/introduction.tex
   while/while.tex
  }
- computability=computability filter="**/*.tex" {
-  ompleteness/completeness.tex
+ 02computability=computability filter="**/*.tex" {
+  completeness/completeness.tex
   self/self.tex
   transforms/transforms.tex
  }
- complexity=complexity filter="**/*.tex" {
+ 03complexity=complexity filter="**/*.tex" {
   complexity/complexity.tex
   langcomplexity/langcomplexity.tex
   robustness/robustness.tex
