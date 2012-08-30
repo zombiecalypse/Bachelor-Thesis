@@ -29,11 +29,11 @@ do in the following way:
 
 \begin{defn}
 	\label{def:tm}
-	A Turing Machine is a % TODO
+	A Turing Machine is a \TODO
 \end{defn}
 
 \begin{example}
-	Adding one to a binary number.
+	Adding one to a binary number. \TODO
 \end{example}
 
 \subsection{\WHILE is Turing complete}
@@ -97,6 +97,88 @@ Machines alone.
 These two exercises show, that $\WHILE\epower\TM$. This is important, since 
 when showing something to be \WHILE-complete, we don't need to implement the 
 \WHILE, but can use \TM instead, which is much simpler.
+
+\subsubsection{The structured program theorem}
+\lineofthought{
+	\begin{enumerate}
+		\item run programs one after another ({\tt ;})
+		\item run either this or that ({\tt if})
+		\item run until predicate is false ({\tt while})
+	\end{enumerate}
+	$\Rightarrow$ Turing complete
+}
+
+\subsection{The Halting Problem} \label{sec:halt}
+We saw in the introduction, that there are problems, that can be solved in
+\WHILE, that can not be solved in \FOR and also that serveral formalisms are
+equally powerful to \WHILE, so that one can wonder, if this literally solves
+all problems.
+
+Unfortunately, a simple cardinality argument shows that this is not the case: 
+There are only countably infinitely many \WHILE programs, as there are only 
+so many finite strings, some of which are also \WHILE programs.
+
+The set of functions $\N \rightarrow \N$ however is bigger, as every freshmen 
+course in mathematics will show.
+
+Therefore, there must be some functions that can not be computed with \WHILE 
+programs. This proof is unsatisfying, as it does not give a problem that 
+can't be solved. In fact, we would again describe problems in a finite way, 
+so the argument is mood.
+
+There are however many problems that can explicitely stated but not solved by 
+any algorithm. The perhaps most notoric is the halting problem:
+
+\begin{theorem}[Halting Problem]
+	There can be no program $\mathtt{halt?}\in \WHILE$ such that 
+	\begin{align*}
+		\interpret{\mathtt{halt?}}&:\WHILE\times \Input[\WHILE] \longrightarrow \{True, False\}\\
+		\interpret{\mathtt{halt?}}&(p, i) =\begin{cases}
+			False, &\text{ if }\interpret{p}(i)=\bot\\
+			True, &\text{ else}
+		\end{cases}
+	\end{align*}
+	So $\mathtt{halt?}$ answers if a given program with a certain input will halt.
+\end{theorem}
+\begin{proof}
+	The proof is a variation of the quintessential uncomputability proof: We 
+	assume that we had $\mathtt{halt?}$ and construct a program, that leads to a
+	contradiction. The program is a variation of {\tt inverse}:
+
+	\begin{verbatim}
+		loopInverse read P {
+		  if [halt?](P.P) {
+		    while True { }
+		  }
+		} write P
+	\end{verbatim}
+
+	So we should get
+	\begin{equation*}
+	 \interpret{loopInverse}(p) = \begin{cases}
+			\bot, &\text{ if }\interpret{p}(p) \neq \bot\\
+			p,& \text{ else} 
+		\end{cases}
+	\end{equation*}
+	what then is $\interpret{loopInverse}(loopInverse)$? Either it loops or it 
+	returns, so lets first assume that it loops:
+
+	\begin{align*}
+		\interpret{loopInverse}(loopInverse) &= \bot &\Rightarrow \\ 
+		\interpret{halt?} &= False &\Rightarrow \\ 
+		\interpret{loopInverse}(loopInverse) &= loopInverse\neq \bot
+	\end{align*}
+
+	So on the other hand, what if it didn't loop?
+
+	\begin{align*}
+		\interpret{loopInverse}(loopInverse) &\neq\bot &\Rightarrow \\
+		\interpret{halt?} &= True & \Rightarrow \\
+		\interpret{loopInverse}(loopInverse) &= \bot
+	\end{align*}
+
+	Therefore no such \WHILE program can exist.
+\end{proof}
 
 \subsection{The Normal Form Theorem}
 \begin{theorem}[Normal Form Theorem]
@@ -163,19 +245,11 @@ stronger than \TM. Faster yes, but not really stronger.
 
 On a larger scale, it is possible to construct a computing device that orbits 
 around a rotating black hole. An observer falling into the black hole could 
-then use the infinite computation time in subjectively finite time. It has 
-however been noted, that falling into a black hole might not be a good 
-idea\citationneeded.
+then use the infinite computation time in subjectively finite 
+time\footnote{See \cite{etesi2002blackhole} for the whole discussion on the 
+feasability and the mathematical proof}. It has however been noted, that
+falling into a black hole might not be a good idea\citationneeded.
 
-\subsubsection{The structured program theorem}
-\lineofthought{
-	\begin{enumerate}
-		\item run programs one after another ({\tt ;})
-		\item run either this or that ({\tt if})
-		\item run until predicate is false ({\tt while})
-	\end{enumerate}
-	$\Rightarrow$ Turing complete
-}
 \lineofthought{
 	List some surprisingly turing complete things, e.g. cellular automata (Rule 110), 
 	string rewriting, ...
