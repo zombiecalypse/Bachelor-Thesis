@@ -180,6 +180,12 @@ any algorithm. The perhaps most notoric is the halting problem:
 	Therefore no such \WHILE program can exist.
 \end{proof}
 
+Lets reflect on this proof: While it does use \WHILE, it would be easy to 
+translate {\tt loopInverse} into other languages and give a halting 
+problem for those. In fact, if we can compile {\tt loopInverse} into a 
+language, then the new language can not solve its own halting problem, even 
+if it was more powerful than \WHILE.
+
 \subsection{The Normal Form Theorem}
 \begin{theorem}[Normal Form Theorem]
 	Every \WHILE program can be transformed into a \WHILE program with exactly 
