@@ -1,4 +1,4 @@
-\documentclass{book}
+\documentclass[oneside]{book}
 \usepackage[utf8x]{inputenc}
 \usepackage{amsmath}
 \usepackage{amssymb}
@@ -17,10 +17,12 @@
 \usepackage{syntax}
 \usepackage{exercise}
 \usepackage{xspace}
+\usepackage{algorithm}
+\usepackage[noend]{algpseudocode}
 
 \newcommand*{\pfunc}{\xrightarrow{p}}
 \newcommand*{\peq}{\simeq}
-\newcommand*{\listof}[1]{\left< #1 \right> }
+\newcommand*{\listOf}[1]{\left< #1 \right> }
 \newcommand*{\coded}[1]{\ulcorner #1 \urcorner }
 \newcommand*{\WHILE}{\ensuremath{\mathtt{WHILE}}\xspace}
 \newcommand*{\FOR}{\ensuremath{\mathtt{FOR}}\xspace}
@@ -60,6 +62,7 @@
 
 \author{Aaron Karper}
 \title{A Programming Language Oriented Approach to Computability}
+\date{}
 \begin{document}
 \maketitle
 \tableofcontents

@@ -37,22 +37,96 @@ do in the following way:
 \end{example}
 
 \subsection{\WHILE is Turing complete}
-By definition \ref{def:power}, we would need a compiler from \TM to \WHILE, 
-but by \ref{thm:power-interpreter}, an interpreter suffices. Implementing such an 
+By definition~\ref{def:power}, we would need a compiler from \TM to \WHILE, 
+but by~\ref{thm:power-interpreter}, an interpreter suffices. Implementing such an 
 interpreter will be the following exercise.
 
 \begin{Exercise}[title={Interpreter for \TM},label={exc:tm},difficulty=2]
-	\Question Show that we can implement a dictionary datastructure in \WHILE. 
+	\Question Show that we can implement a dictionary datastructure in \WHILE\@.
 		Implement {\tt insert} and {\tt lookup}.
 	\Question Show how you can code the transition function in your map.
 	\Question Implement the tape
 		\subQuestion Can you keep track of your position in a list with two stacks?
 		\subQuestion Implement the left and right movement 
-		$\interpret{{\tt left}},\interpret{{\tt right}} : Tape \rightarrow Tape$ . Note that the list is 
+		$\interpret{{\tt left}},\interpret{{\tt right}} : Tape \rightarrow Tape$. Note that the list is 
 			only potentially infinite, so you might in actuality run into the current edge.
 	\Question Plug the pieces together to implement an interpreter {\tt turing(TM)} for turing machines.
 		\subQuestion How many nested {\tt while} loops do you need?
 \end{Exercise}
+\begin{Answer}
+	\Question Since execution time is not an issue, we can implement this as a 
+	list of pairs:
+
+\begin{verbatim}
+    lookup read (Table.Key) {
+      FOR (K.Value) IN Table {
+        if [and](K = Key . [not](Result)) {
+          Result := Value
+        }
+      }
+    } Write Result
+
+    insert read (Table.(Key.Value)) {
+      Outtable := Nil
+      FOR (K.V) IN Table {
+        if K = Key {
+          Outtable := cons (Key.Value) Outtable
+        }
+        else {
+          Outtable := cons (K.V) Outtable
+        }
+      }
+    } write Outtable
+\end{verbatim}
+
+If you wanted to get rid of the copying of the whole list, you could also 
+just prepend the new pair, since the lookup takes the first match.
+	\Question The transition function 
+	$\delta: TapeAlphabet \times State \rightarrow TapeAlphabet \times State\times \{L,N,R\}$
+	can be coded by taking the alphabet and the states as symbols (or numbers) 
+	and storing {\tt ((in-letter.in-state).(out-letter.out-state.direction))} 
+	in the map {\tt M}. Now $\delta = \interpret{spec}(lookup.M)$.
+	\Question
+		\subQuestion We can do that by keeping one stack {\tt left} and one for 
+		{\tt right}, the idea being, that the top of the {\tt left} stack is the 
+		cell adjacent to the current to the left and the top of {\tt right} is 
+		the same to the right. $Tape$ could now look like {\tt (left.current.right)}
+		\subQuestion 
+\begin{verbatim}
+  left read (left.current.right) {
+    right := cons current right
+    if left {
+      current := hd left
+      left := tl left
+    }
+    else {
+      current := :blank
+    }
+  } write (left.current.right)
+\end{verbatim}
+and analogously for {\tt right}.
+	\Question
+\begin{verbatim}
+  TM-step read (state.(left.current.right).transition-map)) {
+    (state.current.dir) := [lookup](transition-map.(state.current))
+
+    if (dir = :left) {
+      (left.current.right) := [left](left.current.right)
+    }
+    if (dir = :right) {
+      (left.current.right) := [right](left.current.right)
+    }
+  } write (state.(left.current.right))
+
+  TM-run read (start-state.tape.transition-map.end-states) {
+    current-state := start-state
+    while [not]([contains](end-states.current-state)) {
+      (current-state.tape) := [TM-step](current-state.tape.transition-map)
+    }
+  } write (current-state.tape)
+\end{verbatim}
+	This needs just the main loop.
+\end{Answer}
 
 \subsubsection{\TM  is \WHILE-complete}
 It could now be, that \WHILE is more powerful than \TM, so that one can 
@@ -65,15 +139,12 @@ Machines alone.
 	many low level implementation problems of programming languages in the progress.
 	\Question Show an $n$-taped \TM to the one taped (where $n$ is of course fixed at
 		compilation time). A $n$-taped turing machine has $n$ tapes that can be 
-		independently moved and writen.
-	\Question Show that you can use ``functions":
-		\subQuestion Show that you can copy one tape to the current position on a 
-			second tape.
-		\subQuestion Show that for all \TM's {\tt A} and {\tt B} exists a turing 
+		independently moved and writen. {\em Hint: Unify the tapes and mark where 
+		you are.}
+	\Question Show that for all \TM's {\tt A} and {\tt B} exists a turing 
 			machine {\tt A;B} such that $\interpret[\TM]{A;B}(x) \peq
 			\interpret[\TM]{B}(\interpret[\TM]{A}(x))$, i.e. that you can execute
-			\TM's one after another.
-		\subQuestion Argue how this could be used to implement a function call.
+			\TM's one after another.  
 	\Question Show that you can implement a {\tt while} construct
 		\subQuestion Given a \TM $A$ that prints {\tt T} or {\tt F} on a tape and 
 			another \TM $B$, construct a \TM {\tt if A \{B\}} that runs $A$ 
@@ -93,6 +164,36 @@ Machines alone.
 			pair and appending a new one.
 	\Question Argue, how you could now interpret \WHILE.
 \end{Exercise}
+\begin{Answer}
+	\Question As we have only a limited amount of tape used, we can always move 
+		to the far left side of our tape. Now imagine a memory/tape layout like 
+		this (in the example for $n=2$):
+		\begin{center}
+			\includegraphics[width=0.49\textwidth]{computability/completeness/pictures/multitape}
+		\end{center}
+		where the $*_n$ means {\em tape $n$ is currently at the following value}. 
+		
+		Now design the states and transitions such that
+		\begin{algorithmic}[1]
+			\ForAll{tape $t$}
+				\State move to the far left.
+				\State assume state $(s, t)$, where $s$ is the state of the multi-tape machine.
+				\State move right until you find $*_t$.
+				\State execute the step, that the multi-tape machine would make.
+				\State move $*_t$ left or right, if necessary.
+			\EndFor
+		\end{algorithmic}
+		While this leads to a lot more states, it makes it possible to execute 
+		more than one tape simultanously.
+	\Question {\tt A;B} inherits the end-states of {\tt B} and the 
+		starting-state of {\tt A}. The internal states of {\tt A} and {\tt B} 
+		need to be disjunct, otherwise the machine could {\em jump over} from 
+		{\tt A} to {\tt B} or vice versa. To ensure that, we call the states in 
+		the new machine $(s, A)$ or $(s, B)$, depending on whether $s$ is from 
+		{\tt A} or {\tt B}. Now $\delta((s,A), x) = \delta_A(s,x)$ and
+		$\delta((s,B), x) = \delta_B(s,x)$. Finally, we connect the two machines:
+		$\forall e\in Endstates_A: \delta((e, A), x) = (start_B, x, N)$
+\end{Answer}
 
 These two exercises show, that $\WHILE\epower\TM$. This is important, since 
 when showing something to be \WHILE-complete, we don't need to implement the 
