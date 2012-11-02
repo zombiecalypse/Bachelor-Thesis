@@ -1,0 +1,72 @@
+DIGRAPH binadder {
+NODE [shape="circle", label=""]
+rankdir="LR"
+subgraph { rank= same
+left_nocarry [shape=Mcircle]
+left_onecarry
+}
+subgraph { rank= same
+right_nocarry_move
+right_onecarry_move
+right_twocarry_move
+}
+subgraph { rank= same
+right_nocarry
+right_onecarry
+right_twocarry
+}
+subgraph { rank= same
+NODE [rank=3]
+eq_nocarry_move 
+eq_onecarry_move
+eq_twocarry_move
+eq_threecarry_move
+}
+
+subgraph { rank= same
+NODE [rank=4]
+eq_nocarry 
+eq_onecarry
+eq_twocarry
+eq_threecarry
+}
+
+subgraph { rank= same
+NODE [rank=5]
+left_nocarry_move 
+left_onecarry_move
+}
+
+left_nocarry -> right_nocarry_move [label = "0|x|R"]
+left_nocarry -> right_onecarry_move [label = "1|x|R"]
+
+left_onecarry -> right_onecarry_move [label = "0|x|R"]
+left_onecarry -> right_twocarry_move [label = "1|x|R"]
+
+right_nocarry_move -> right_nocarry [label = "+|+|R"]
+right_onecarry_move -> right_onecarry [label = "+|+|R"]
+right_twocarry_move -> right_twocarry [label = "+|+|R"]
+
+right_nocarry -> eq_nocarry_move [label = "0|x|R"]
+right_nocarry -> eq_onecarry_move [label = "1|x|R"]
+right_onecarry -> eq_onecarry_move [label = "0|x|R"]
+right_onecarry -> eq_twocarry_move [label = "1|x|R"]
+right_twocarry -> eq_threecarry_move [label = "1|x|R"]
+right_twocarry -> eq_twocarry_move [label = "0|x|R"]
+
+eq_nocarry_move ->  eq_nocarry [label = "=|=|R"]
+eq_onecarry_move -> eq_onecarry [label = "=|=|R"]
+eq_twocarry_move -> eq_twocarry [label = "=|=|R"]
+eq_threecarry_move -> eq_threecarry [label = "=|=|R"]
+
+eq_nocarry -> left_nocarry_move [label = "#|0|N"]
+eq_onecarry -> left_nocarry_move [label = "#|1|N"]
+eq_twocarry -> left_onecarry_move [label = "#|0|N"]
+eq_threecarry -> left_onecarry_move [label = "#|1|N"]
+
+left_nocarry_move -> left_nocarry [label = "#|#|R"]
+left_onecarry_move -> left_onecarry [label = "#|#|R"]
+
+left_nocarry_move -> left_nocarry_move [label="_|_|L"]
+left_onecarry_move -> left_onecarry_move [label="_|_|L"]
+}

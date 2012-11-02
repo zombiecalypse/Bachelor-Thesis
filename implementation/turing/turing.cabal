@@ -6,8 +6,11 @@ license: AllRightsReserved
 license-file: ""
 copyright:
 maintainer:
-build-depends: HUnit -any, base -any, parsec -any, haskell98 -any, mtl -any,
-				containers -any
+build-depends: 
+    base,
+    containers,
+    parsec,
+    mtl
 stability: None whatsoever
 homepage:
 package-url:

@@ -53,9 +53,12 @@ asTape :: [Char] -> [TapeVal]
 asTape = map (TapeVal . \x -> [x])
 
 state (TuringMachine _ _ x _ _) = x
+tape :: TuringMachine -> [TapeVal]
+tape (TuringMachine l r _ _ _) = reverse l ++ r
 
 parseMachineAndAct :: String -> String -> String
-parseMachineAndAct s g = show $ state ((toTuring s) `actOn` (asTape g))
+parseMachineAndAct s g = (show $ state ended) ++ "\n" ++ (show $ tape ended)
+	where ended = ((toTuring s) `actOn` (asTape g))
 
 
 main = do

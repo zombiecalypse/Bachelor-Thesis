@@ -7,7 +7,35 @@ description of any programs in itself and apply it to some input.
 For computability, self interpretation can be seen as some kind of gold
 standard\citationneeded. This stems from the fact, that a simpler model of
 computation, primitive recursive functions, are not self interpreting.
-\lineofthought{How important {\em is} self-interpretation? 
-Self-interpretation is a very fast way to turing completeness, since once
-universality is an operation, all programming constructs are then mere
-transformation of data. See also Kleene's Partial Recursive Functions.}
+
+\subsection{Recursion Theorem}
+\begin{theorem}
+	For any procedure $p\in \WHILE$ there is a procecure $p'\in \WHILE$ so 
+	that $\interpret{p'}(x) = \interpret{p}(p.x)$. This can uniformly be 
+	computed by $Y\in \WHILE$, i.e. $\interpret{\interpret{Y}(p)}(x) = \interpret{p}(p.x)$
+
+	Every procedure of $\WHILE$ might as well use its own source code.
+\end{theorem}
+\begin{proof}
+
+\end{proof}
+
+This is not trivial: In \FOR, this would not be possible: 
+\begin{example}
+	There is no equivalent to $Y$ for \FOR:
+\end{example}
+
+\paragraph{Why is it called the {\em recursion} theorem?}
+Since we have our own source, we can implement recursion with our interpreter:
+\begin{verbatim}
+fibonacci read (source.X) {
+  if ([or](X = 0, X = 1)) {
+    Y := 1
+  } else {
+    Y := [interpreter](source.(X-1)) + [interpreter](source.(X-2))
+  }
+} write Y
+\end{verbatim}
+
+\subsubsection{How this translates into logic}
+

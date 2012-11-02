@@ -23,17 +23,23 @@ text=/home/aaron/Bachelor/text filter="*.mdown *.tex *.bib" {
 implementation=/home/aaron/Bachelor/implementation {
  Makefile
  README.mdown
- turing=turing filter="*.hs" {
-  Parser.hs
-  Runner.hs
+ turing=turing filter="*.hs *.tm" {
+  addition.tm
+  example.tm
+  src=src filter="**/*.hs" {
+   Turing/Parser.hs
+   Turing/Runner.hs
+   eval.hs
+  }
  }
- while=while/ filter="*.cabal TODO" {
+ while=while/ filter="*.cabal TODO Makefile" {
   while.cabal
   TODO
+  Makefile
 	executables=src filter="*.hs" {
    data.hs
-   eval-while.hs
    eval-for.hs
+   eval-while.hs
    statement.hs
 	}
 	lib=src/While filter="*.hs" {
@@ -50,6 +56,7 @@ implementation=/home/aaron/Bachelor/implementation {
    Tree.hs
 	}
 	examples=examples filter="*" {
+   eq.wl
    error.wl
    error_parse.wl
    example.wl

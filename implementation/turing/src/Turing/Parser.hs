@@ -4,21 +4,26 @@ import Text.ParserCombinators.Parsec
 data Exp = Startstate StateIdentifier | Endstate StateIdentifier | Transition StateIdentifier TapeVal StateIdentifier TapeVal Movement
 	deriving (Show,Eq,Ord)
 data TapeVal = TapeVal String | Blank | AnyChar
-	deriving (Show,Eq,Ord)
+	deriving (Eq,Ord)
+instance Show TapeVal where
+	show Blank = "#"
+	show AnyChar = "*"
+	show (TapeVal s) = "<"++s++">"
 data StateIdentifier = StateIdentifier String
-	deriving (Show,Eq,Ord)
+	deriving (Eq,Ord)
+instance Show StateIdentifier where
+	show (StateIdentifier s) = s
 data Movement = L | N | R
 	deriving (Show,Ord,Eq)
 
-turingFile = endBy expression separator
+turingFile = expression `endBy` separator
 
-separator = do{
-	many $ string " ";
-	optional (string ";");
-	many $ string " ";
-	eol;
-	many $ string " ";
-}
+separator = many (do
+	many $ string " "
+	optional (string ";")
+	many $ string " "
+	eol
+	many $ string " ")
 expression = transition <|> endstate <|> startstate
 
 

@@ -19,22 +19,124 @@ impression, how one could go about proving other things to be turing complete.
 The Turing Machine (\TM) is a formalism that focuses on a possible physical 
 implementation of a computing machine, although far from what is used today. 
 It features an potentially infinite amount of tape on which the machine 
-operates. From this tape, the machine can read and write the current cell and 
-move its read-write-head one cell to the left or the right. Finally, the 
-machine has a finite number of ``states of mind", comparable to a finite 
-state machine.
+operates and which it uses as storage. From this tape, the machine can read and
+write the current cell and move its read-write-head one cell to the left or the
+right. Finally, the machine has a finite number of ``states of mind",
+comparable to a finite state automaton.
 
 In order to formally analyse the \TM, we can code what such a machine would 
 do in the following way:
 
 \begin{defn}
 	\label{def:tm}
-	A Turing Machine is a \TODO
+	A Turing Machine $T$ is a tuple $(Q, \Sigma, \Gamma, \delta, q_0, q_{accept}, q_{reject})$
+	where 
+	\begin{itemize}
+		\item $Q$ are the states of mind the machines can be in.
+		\item $\Gamma$ is the tape alphabet, that can be used during the computation.
+		\item $\Sigma\subset \Gamma$ is the input alphabet, of which the initial tape is a word.
+		\item $\delta:Q\times \Gamma \rightarrow Q\times \Gamma\times \{L, N, R\}$ 
+			is the transition function, which codes, how the \TM reacts to a state 
+			and the current symbol -- i.e.\ what will be the new state of mind, what 
+			symbol will be written and in which direction the head will move.
+		\item $q_0\in Q$ gives the initial state.
+		\item $q_{accept}, q_{reject}\in Q$ signify that the machine has stopped --
+			successfully or not.
+	\end{itemize}
+
+	To run a \TM means to give it a word $w\in\Sigma^*$, place the head at some 
+	cell on the tape and then execute the transitions indicated by the transition
+	function until we get into any of the states $q_{accept}$ or $q_{reject}$.
+
+	A {\em configuration} of a turing machine is then a tuple 
+	$(l, c, r, s) \in \Gamma^*\times \Gamma \times \Gamma^*\times Q$ 
+	and we have 
+	\begin{equation*}
+		\interpret[\TM]{T}(l, c, r, s) = \begin{cases}
+			(l, c, r, s), &\text{ if } s \in \{q_{accept}, q_{reject}\} \\
+			(l, \tilde{c}, r, \tilde{s}) , &\text{ if } \delta(s,c) = (\tilde{s}, \tilde{c}, N)\\
+			(\tilde{c}\, l , first(r), rest(r), \tilde{s}) , &\text{ if } \delta(s,c) = (\tilde{s}, \tilde{c}, R)\\
+			(rest(l), first(l), \tilde{c}\, r, \tilde{s}) , &\text{ if } \delta(s,c) = (\tilde{s}, \tilde{c}, L)
+		\end{cases}
+	\end{equation*}
+
+	\begin{figure}[htb]
+		\includegraphics[width=0.95\textwidth]{computability/completeness/pictures/turingtape}
+		\caption{Tape of the turing machine}
+	\end{figure}
 \end{defn}
 
-\begin{example}
-	Adding one to a binary number. \TODO
+\begin{example}[Adding two binary numbers]
+	When we implement binary addition, we first need to think about how to 
+	represent the problem. One of the easiest way to do that is to use {\tt 0} 
+	and {\tt 1} to represent the digits, {\tt +} to separate the arguments, 
+	{\tt =} ending the tape and assume that the numbers start with the least
+	significant number on the left (which is the reverse of the usual notation,
+	but easier to calculate with).
+	
+	\begin{algorithmic}[1]
+		\State Start with $carry=0$ in mind.
+		\If {tape shows 0}
+				\State keep same $carry$ in mind
+		\ElsIf {tape shows 1} 
+			\If {$carry=0$}
+				\State have $carry=1$ in mind
+			\ElsIf {$carry=1$}
+				\State have $carry=2$ in mind
+			\EndIf
+		\ElsIf {tape shows +}
+			\State keep same $carry$ in mind
+			\State have $finished = 1$ in mind
+		\EndIf
+		\State Move to the right until you hit {\tt +}.
+		\If {tape shows 0}
+				\State keep same $carry$ in mind
+		\ElsIf {tape shows 1}
+			\If {$carry=0$}
+				\State have $carry=1$ in mind
+			\ElsIf {$carry=1$}
+				\State have $carry=2$ in mind
+			\ElsIf {$carry=2$}
+				\State have $carry=3$ in mind
+			\EndIf
+		\ElsIf {tape shows +}
+			\State keep same $carry$ in mind
+			\If {$finished=1$}
+				\State have $finished = 2$ in mind
+			\EndIf
+		\EndIf
+		\State Move to the right until you hit {\tt =}.
+		\State Move to the right until you hit \#.
+		\If {$carry=0$}
+			\State write {\tt 0}
+			\State have $carry=0$ in mind
+		\ElsIf {$carry=1$}
+			\State write {\tt 1}
+			\State have $carry=0$ in mind
+		\ElsIf {$carry=2$}
+			\State write {\tt 0}
+			\State have $carry=1$ in mind
+		\ElsIf {$carry=3$}
+			\State write {\tt 1}
+			\State have $carry=1$ in mind
+		\EndIf
+		\If {$finished=2$}
+			\State You're done
+		\Else
+			\State move to the far left
+		\EndIf
+	\end{algorithmic}
+	The following shows the state transitions for the main loop of this 
+	algorithm, the number of states would nearly double, if the $finished$ 
+	states would be taken into account.
+
+	\begin{center}
+		\includegraphics[width=0.99\textwidth]{computability/completeness/pictures/binary-adder}
+	\end{center}
 \end{example}
+
+Seeing how complex turing machines get, it seems surprising, that it can code 
+any machine or language.
 
 \subsection{\WHILE is Turing complete}
 By definition~\ref{def:power}, we would need a compiler from \TM to \WHILE, 
@@ -156,12 +258,11 @@ Machines alone.
 		expressions like {\tt cons (cons nil nil) (cons nil nil)}.} 
 		\subQuestion Implement {\tt hd} and {\tt tl}.
 	\Question Show that you can implement a map, that can be used to save the variables.
-		\subQuestion Implement a list of pairs.
-		\subQuestion Given a name on one tape, can you look up the pair in the 
-			list of tuples on a second tape that contains this name as the first
-			component?
-		\subQuestion Implement changing the variables by striking out the old 
-			pair and appending a new one.
+		\subQuestion Given a name $a$ on one tape, can you look through a list of 
+			pairs and write $b$ on another tape if the coding of $(a.b)$ can be found in list.
+		\subQuestion Implement changing the variables.
+		\subQuestion Argue, why it is not possible to simulate \WHILE by using 
+			one tape per variable.
 	\Question Argue, how you could now interpret \WHILE.
 \end{Exercise}
 \begin{Answer}
@@ -193,21 +294,49 @@ Machines alone.
 		{\tt A} or {\tt B}. Now $\delta((s,A), x) = \delta_A(s,x)$ and
 		$\delta((s,B), x) = \delta_B(s,x)$. Finally, we connect the two machines:
 		$\forall e\in Endstates_A: \delta((e, A), x) = (start_B, x, N)$
+	\Question 
+		\subQuestion By the first question, we can assume, that {\tt A}  uses exactly 
+			one tape, and also that it is different from the one, that {\tt B} 
+			uses. Use a similar construction as with the last question:
+			\[\forall e\in Endstates_A: \delta((e,A), (\_, T)) = (start_B, (\_, T), (N, N))\]
+			and
+			\[\forall e\in Endstates_A: \delta((e,A), (\_, F)) = (end, (\_, F), (N, N))\]
+
+			To round things up, connect the ends of {\tt B} to the $end$ state.
+		\subQuestion
+			Add the following constraint:
+			\[\forall e \in Endstates_B: \delta((e,B), \_)= (start_A, \_, (N, N))\]
+	\Question
+		\subQuestion We introduce the turingletters $\turingletter{nil}, \turingletter{cons(},
+			\turingletter{)}, \turingletter{,}$ to the alphabet. Now given two tapes, we first 
+			write our return value on a third (empty) tape: first write
+			$\turingletter{cons(}$ moving right, then we copy the first tape and add
+			$\turingletter{,}$. Finally we copy the second tape and close with $\turingletter{)}$.
+			Note here that {\tt cons} and its friends are part of the \WHILE language,
+			and $\turingletter{cons(}$, \dots are letters we can put on a tape of a turing
+			machine. 
+			\subQuestion Here we get a tape on which 
+			$\turingletter{cons(}\dots\turingletter{,}\dots\turingletter{)}$ is stored. The problem here is 
+			that we need to consider the nesting of {\tt cons}. For this, we use an 
+			auxillary tape $aux$ and write a simple stack. 
+		\begin{algorithmic}[1]
+			\State write $x$ and move to the right on $aux$ if the current input is $\turingletter{cons(}$.
+			\State move left on $aux$ if the current input is $\turingletter{)}$.
+			\State start copying input to output after encountering $,$.
+			\State halt when the $aux$ tape reaches a blank after moving left.
+		\end{algorithmic}
+			The machine for {\tt hd} then is analogous.
+	\subQuestion 
+		\begin{algorithmic}[1]
+			\ForAll pairs $p$ on the tape
+			\EndFor
+		\end{algorithmic}
+
 \end{Answer}
 
 These two exercises show, that $\WHILE\epower\TM$. This is important, since 
 when showing something to be \WHILE-complete, we don't need to implement the 
 \WHILE, but can use \TM instead, which is much simpler.
-
-\subsubsection{The structured program theorem}
-\lineofthought{
-	\begin{enumerate}
-		\item run programs one after another ({\tt ;})
-		\item run either this or that ({\tt if})
-		\item run until predicate is false ({\tt while})
-	\end{enumerate}
-	$\Rightarrow$ Turing complete
-}
 
 \subsection{The Halting Problem} \label{sec:halt}
 We saw in the introduction, that there are problems, that can be solved in
@@ -220,12 +349,10 @@ There are only countably infinitely many \WHILE programs, as there are only
 so many finite strings, some of which are also \WHILE programs.
 
 The set of functions $\N \rightarrow \N$ however is bigger, as every freshmen 
-course in mathematics will show.
-
-Therefore, there must be some functions that can not be computed with \WHILE 
-programs. This proof is unsatisfying, as it does not give a problem that 
-can't be solved. In fact, we would again describe problems in a finite way, 
-so the argument is mood.
+course in mathematics will show, therefore, there must be some functions that
+can not be computed with \WHILE programs. This proof is unsatisfying, as it
+does not give a problem that can't be solved. In fact, we would again describe
+problems in a finite way, so the argument is mood.
 
 There are however many problems that can explicitely stated but not solved by 
 any algorithm. The perhaps most notoric is the halting problem:
@@ -287,9 +414,74 @@ problem for those. In fact, if we can compile {\tt loopInverse} into a
 language, then the new language can not solve its own halting problem, even 
 if it was more powerful than \WHILE.
 
-\begin{theorem}
+\begin{corrolary}
 	No language more powerful than \WHILE can solve its own halting problem.
+\end{corrolary}
+
+\subsection{Rice's Theorem}
+Now maybe the Halting Problem is very special and maybe we're not even that 
+interested in the halting of the machine. Maybe we're interested in another 
+property $P$, for example ``if the machine halts, its result is the fibonacci 
+frequence" or ``the machine leaves this part of the memory untouched".
+
+Such procedures would certainly be useful for specification, security, etc.\ but
+Rice proved in 1953 that these procedures cannot exist either.
+
+\begin{theorem}[Rice]
+	If there is a property 
+	\[ P: (\Input[\WHILE]\rightarrow \Output[\WHILE])\rightarrow \{True, False\}\] 
+		such that there are procedures $x$ and $y\in \WHILE$ such that 
+		$P(\interpret{x})=True$ and $P(\interpret{y}) = False$ then there can be 
+		no procedure $\interpret{p}: \WHILE \rightarrow \{True, False\}$ that corresponds to $P$.
+
+		So if we have a non-trivial property of functions, we cannot write a
+		program, that can deduce if the property holds based on the source of a
+		procedure alone.
 \end{theorem}
+\begin{proof}
+	We can easily see that the halting problem is a special case of this, but 
+	in fact, with a simple construction, all cases come down to it.
+
+	First we note that a procedure $\interpret{z}(x)\peq \bot \forall x$ must 
+	either have the property $P$ or not. Since $p$ halts, we can check that in 
+	advance. Assume that $\interpret{p}(z)=False$, then we can build a program 
+	that can solve the halting problem:
+
+	\begin{verbatim}
+maybe-p: read (Q.I.X) {
+  [interpreter](Q,I)
+  Y := [known-p](X)
+} write Y
+
+halt: read (Q,I) {
+  known-p-or-z := [spec](maybe-p.Q.I)
+  Y := [p](known-p-or-z)
+} write Y
+\end{verbatim}
+	The trick here is that 
+	\[
+		\interpret{\interpret{spec}(\mathtt{maybe-p}, \mathtt{Q}, \mathtt{I})}(x)\peq \begin{cases}
+			\interpret{z}, &\text{ if } \interpret{Q}(I) \peq \bot\\
+			\interpret{known-p}, &\text{ else }			
+		\end{cases}
+	\]
+	
+	and therefore 
+	$\interpret{\mathtt{halt}}(q,i)\peq True\Leftrightarrow \interpret{\interpret{spec}(\mathtt{maybe-p}, \mathtt{q}, \mathtt{i})} \peq \interpret{\mathtt{known-p}}\Leftrightarrow$
+	$\interpret{q}(i)$ halts and vice versa for the contrary case.
+\end{proof}
+
+\subsubsection{So how do we deduce properties about programs then?}
+Rice tells us, that it is not possible to deduce for example, 
+that the result of a computation is a {\tt String}. Yet the Java compiler 
+does it all the time. How is this possible?
+
+The trick is that Rice tells us that the problem can't be solved {\em in full
+generality}. So instead of accepting all programs, we accept only the ones for
+which we {\em can} prove the property. This throws away an infinitude of
+perfectly reasonable programs, which would keep the property, only because we
+can't prove it, but this way, we can be sure that for any program we accept,
+the property {\em does} hold.
 
 \subsection{The Normal Form Theorem}
 \begin{theorem}[Normal Form Theorem]
@@ -310,16 +502,16 @@ powerful. This lead Alonzo Church to conjegure, that what the human sees
 as intuitively computable, is adequately formalized by any of these 
 competitors. This is known as Church's Thesis (or Church-Turing Thesis).
 
-\begin{theorem}[Church's Thesis]
+\begin{thesis}[Church's Thesis]
 	The Turing Machine adequately models what we hold for intuitively computable.
-\end{theorem}
+\end{thesis}
 
 We saw that \WHILE too is a competitor, since it is equally powerful to any 
 of the other formalisms. We could then formulate it as follows:
 
-\begin{theorem}
+\begin{thesis}
 	There is no intuitive extension of \WHILE that is more powerful than \WHILE.
-\end{theorem}
+\end{thesis}
 
 For example, we could add procedure calls, but that would not make any 
 functions computable that were not computable before.
@@ -334,7 +526,7 @@ Thesis is true.
 There has been some work, what would happen, if you added certain 
 functionalities to Turing Machines (and by extension to \WHILE). 
 
-Turing himself analysed socalled oracle machines, which are basically Turing 
+Turing himself analysed so-called oracle machines, which are basically Turing 
 Machines, but can answer specific questions to an oracle on a different tape, 
 that would answer if a specific predicate is true for the value of the tape.
 The halting problem for Turing Machines is not solvable on a normal \TM, but 
@@ -351,8 +543,8 @@ can not be simulated on a \TM.
 
 This is a thesis, that {\em can} be put to the test. While \TM rely on 
 classical mechanics, some thought has been put into quantum computing. The 
-model that is used to build quantum computers (qubits) are however not 
-stronger than \TM. Faster yes, but not really stronger.
+model that is currently used to build quantum computers (qubits) are however
+not stronger than \TM. Faster yes, but not really stronger.
 
 On a larger scale, it is possible to construct a computing device that orbits 
 around a rotating black hole. An observer falling into the black hole could 
@@ -361,42 +553,71 @@ subjectively finite time\footnote{See \cite{etesi2002blackhole} for the whole
 discussion on the feasability and the mathematical proof}. It has however been
 noted, that falling into a black hole might not be a good idea\citationneeded.
 
-\lineofthought{
-	List some surprisingly turing complete things, e.g. cellular automata (Rule 110), 
-	string rewriting, ...
-
-	Churches thesis: There is no intuitive extension to {\tt  WHILE} that is 
-	stronger than {\tt WHILE}.
-
-	Approximations of results, ... also work (linear slow-down). 
-
-	Note that when there are side effects, we might be interested that a program
-	does {\em not} terminate (e.g. our OS).
-
-	Common features of turing complete languages: They can use their own 
-	description (recursion theorem), if there is a primrec subset $P$, then you 
-	can describe all programs with $P$ and one ''loop`` of $A\setminus P$ 
-	(normal form theorem)
-}
+Finally, the notion of a computer running and halting after some time might 
+be flawed. There is no procedure, that can compute $\pi$ to its full extend, 
+but many approximation procedures, which can give a arbitrarily precise 
+result. Is $\pi$ then intuitively computable?
 
 \subsection{Properties of Turing complete languages}
+There are some common elements in the languages that are Turing complete. As we
+have seen, any Turing complete language is unable to solve it's own halting
+problem -- and by extension any halting problem of a Turing complete language.
 
-\lineofthought{
-	\begin{itemize}
-		\item Recursion theorem (explain the construction of the $Y$ combinator)
-		\item Normal form theorem
-		\item Can't solve the halting problem
-		\item Can't deduce a property of $\interpret{f}$ from $f$ alone in full generality. (Rice)
-	\end{itemize}
-}
-\subsection{Why are most programming languages Turing Complete?} % (fold)
+Often, it is not obvious, that a certain formalism is Turing complete.
+
+\subsubsection{Conway's Game of Life}
+In 1970, the British mathematician John H. Conway devised a ``game" on an 
+infinite squared paper: we start with some squares marked as ``alive" and 
+then we update the paper in the following way\footnote{The general machine 
+	that updates cells only taking the cells neighbors into account is called a 
+cellular automata}:
+
+\begin{itemize}
+	\item A dead square becomes alive, if it has exactly three 
+		neighbors\footnote{diagonal cells are neighbors too},that 
+		are alive. Imagine that the cells around it would reproduce and the 
+		offspring move into this square.
+	\item If the cell is alive, it stays alive if only if it has two or three 
+		living neighbors.
+\end{itemize}
+
+These extremely simple rules still make up a turing complete language. How 
+could one guess that it was?
+
+The first hint is the discrete infinite data structure. We have an unlimited (but 
+never infinite) number of squares that are alive. 
+
+This is a necessary condition to be Turing complete. Imagine, that we only
+allow a limited data structure, for example a Turing tape that has $n$ cells
+and an alphabet of $k$ letters. Each cell has therefore only $k$ possible
+configurations, and all the cells combined have only $k^n$ possible states.
+Since our machine only has a limited number of states, it can be in, say $m$,
+and the head has only $n$ posible positions to be in, after at most 
+$n\, m\, k^n$ steps of the machine we must have reached a state that we have
+seen before.  The transition function does only depend on these factors,
+therefore the loop will start again and nothing new will come of it.
+
+Another hint is that there is no obvious way to deduce certain properties 
+without running the whole machine -- ``Is this cell alive after $n$ turns" 
+can only be anwered after running $n$ turns.
+\TODO
+
+\paragraph{Why are most programming languages Turing Complete?} % (fold)
 \label{sub:Why are most programming languages Turing Complete?}
-\lineofthought{
-	While most algorithms used today are guaranteed to stop, proving this for all
-	programs of a language is often hard. Things like recursion is no longer
-	possible, unbound conditional loops (`while`) don't work and there are real
-	problems that can not be solved this way. 
+Not being able to tell if a program will stop nor any other interesting 
+properties seems like a bad start. Further, we use mostly algorithms that are
+guaranteed to hold in finite time. In short, we seldom truly need a Turing 
+complete language, but still every major programming language is Turing 
+complete. 
 
-	Compare however Coq, that is {\em not} Turing Complete, but still used.
-}
+The reason for this is that programmers don't want to think about the halting 
+of their programs, because normally they obviously do. Proving that might not 
+be trivial and might require the programmer to rewrite the program in such a 
+way, that a computer can prove it. So while it would be possible to to 
+implement most algorithms in a weaker language, it would be impractical. We
+couldn't use any unboundedd loop constructs or true recursion.
+
+In some areas, this is acceptable: In formal logic and interactive 
+proof-finding, Coq\footnote{\url{http://coq.inria.fr/}} is used, eventhough it has 
+no unbounded recursion and every piece of code terminates.
 % subsection Why are most programming languages Turing Complete? (end)
