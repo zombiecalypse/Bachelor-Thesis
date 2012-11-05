@@ -5,24 +5,55 @@ Self interpretation is the ability of an formalism to support an
 description of any programs in itself and apply it to some input.
 
 For computability, self interpretation can be seen as some kind of gold
-standard\citationneeded. This stems from the fact, that a simpler model of
-computation, primitive recursive functions, are not self interpreting.
+standard\citationneeded. This stems from the fact, that the simpler model of
+computation, \FOR, are not self interpreting.
 
 \subsection{Recursion Theorem}
-\begin{theorem}
+\begin{theorem}[Recursion Theorem]
 	For any procedure $p\in \WHILE$ there is a procecure $p'\in \WHILE$ so 
-	that $\interpret{p'}(x) = \interpret{p}(p.x)$. This can uniformly be 
-	computed by $Y\in \WHILE$, i.e. $\interpret{\interpret{Y}(p)}(x) = \interpret{p}(p.x)$
+	that $\interpret{p'}(x) = \interpret{p}(p'.x)$. This can uniformly be 
+	computed by $Y\in \WHILE$, i.e. $\interpret{\interpret{Y}(p)}(x) = \interpret{p}(\interpret{Y}(p).x)$
 
 	Every procedure of $\WHILE$ might as well use its own source code.
 \end{theorem}
 \begin{proof}
+	Instead of giving $Y$ and explaining how it works, here is how one could 
+	figure out how to do it:
 
+	\begin{enumerate}
+		\item We start with $\interpret{h}(x):\peq \interpret{spec}(x.x)$, 
+			because that gives us 
+			\begin{equation*}
+				\begin{split}
+					\interpret{\interpret{h}(f)}(x)
+					&\peq \interpret{\interpret{spec}(f.f)}(x)\\
+					&\peq \interpret{f}(f.x)
+				\end{split}
+			\end{equation*}
+			a procedure, that passes a given function as the first argument to 
+			itself. This is not the full solution though: It uses the original 
+			procedure $f$, not the transformed $\interpret{h}(f)$. Unfortunately, 
+			we can't just write 
+			$\interpret{h'}(x):\peq \interpret{spec}(x.\interpret{h}(x))$, because 
+			that would give the same problem. 
+		\item 
+	\end{enumerate}
+\TODO
 \end{proof}
 
-This is not trivial: In \FOR, this would not be possible: 
+Just as the proof, this result is not trivial: In \FOR, this would not be possible: 
 \begin{example}
 	There is no equivalent to $Y$ for \FOR:
+	\TODO
+\end{example}
+
+\begin{example}[Quines]
+	A {\em quine} is a program, that outputs its own source. It is a fun 
+	exercise for all students of computer science to find a quine in their 
+	favourite language. The existence of quines is ensured by the recursion theorem:
+	Simply take the program $\interpret{id}(x)\peq x$ and then 
+	$\interpret{\interpret{Y}(id)}() \peq = \interpret{id}(\interpret{Y}(id))$ 
+	is a quine.
 \end{example}
 
 \paragraph{Why is it called the {\em recursion} theorem?}
@@ -37,5 +68,38 @@ fibonacci read (source.X) {
 } write Y
 \end{verbatim}
 
-\subsubsection{How this translates into logic}
+\subsection{How this translates into logic}
+The notion of computability is closely related to that of decidability in 
+logic. A statement is {\em decidable}\/ if either itself or its negation can be 
+proven. For many years, it was thought that given a set of axioms strong 
+enough every statement in mathematics was decidable, but as we will 
+see, that is not the case.
 
+Without going too far into formal logic, I can only say that a successful 
+proof of a statement can be seen as a trace of a program that finds the 
+statement from the axioms. The other direction is true as well: A program can 
+be understood as a description of a constructive proof,\footnote{This
+equivalence goes extremely deep, see Curry-Howals-Correspondence\TODO check
+name and link}. In short: Formal logic (over the natural numbers) is Turing
+complete!
+
+Since a proof is nothing but a finite string of symbols, we can code it as a
+natural number. But since the domain, on which we use formal logic is natural
+numbers, this also means that we can produce predicates about other predicates,
+for example {\tt the first argument is a proof of the second argument}.
+
+This is where the recursion theorem comes in: According to it, and this is a 
+bit informal, since first, we'd need to translate it into its logical 
+equivalent, every predicate can assume, that its first argument is the coding 
+of itself.
+
+Then what happens, if we apply this to the predicate {\tt "no number codes a proof 
+of the first argument"}? We'd have that {\tt "no number codes a proof of this
+statement"}. Assume that it is false, then there {\em is}\/ a proof for the 
+statement, but since the statement is false, we'd have a contradiction in our 
+formal system. And if the statement is true? Then there is a true statement 
+expressable in the system, that can not be proven. This is known as {\em Gödel's 
+incompleteness theorem}. \lineofthought{This might profit from a bit more 
+	formality. Then again, I can't assume that the reader knows {\em anything} 
+about formal logic. If I did that, I'd have to spend a page or two explaining 
+the notions.}
