@@ -16,6 +16,7 @@ text=/home/aaron/Bachelor/text filter="*.mdown *.tex *.bib" {
  }
  03complexity=complexity filter="**/*.tex" {
   complexity/complexity.tex
+  hierarchy/hierarchy.tex
   langcomplexity/langcomplexity.tex
   robustness/robustness.tex
  }

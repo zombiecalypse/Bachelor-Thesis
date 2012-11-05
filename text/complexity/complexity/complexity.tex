@@ -6,16 +6,16 @@ problem, but takes hundreds of years to complete for any reasonable input? This
 is where the field of complexity theory sets in: it characterises the solvable
 problems by their "difficulty".
 
-The most intuitive measure of difficulty is arguably time-complexity, i.e. how
+The most intuitive measure of difficulty is arguably time-complexity, i.e.\ how
 long any algorithm will take to solve the problem in the worst case. Also
-space-complexity needs to be considered, i.e. how much storage one needs to
+space-complexity needs to be considered, i.e.\ how much storage one needs to
 complete the computation.
 
 Since bigger problems are harder to solve and bigger problems need more data to
 describe it fully, we analyse the asymptotic complexity in the size of the
-input, i.e. how the time and space needed develop as the input grows towards
+input, i.e.\ how the time and space needed develop as the input grows towards
 infinity. The most important distinctions here will be if there is a linear
-relation or a polynomial of higher order - or something worse, e.g. exponential
+relation or a polynomial of higher order - or something worse, e.g.\ exponential
 time/space.
 
 Another important classification is that of non-determinism: if we could guess
@@ -29,11 +29,13 @@ intuitively computable in a certain bound and even more than in computability,
 this question seems to rely on the chosen formalism, but we will see that the
 distinctions are quite robust. Still the question remains, if some
 extraordinary feat of engineering can build a machine that is much faster than
-our WHILE language.
+our \WHILE language\footnote{Quantum computing is faster than \WHILE. A 
+	quantum computer can search a list for an element in $O(\sqrt{n})$ time as 
+	shown in \cite{grover1996fast}.}
 
 \subsection{Time-complexity}
 We will denote the time that a program $P$ runs on an input $x$ by $T_P(x)$. To
-decide what that means, let's consider how long statements take to evaluate: we
+determine what that means, let's consider how long statements take to evaluate: we
 have only three kind of statements, assignment, if and while. Assigning a value
 can be thought of as writing an address, which can be done in one time-step. Of
 course, the right hand side might take some time to evaluate, so $T_{X := E} = 1
@@ -44,8 +46,80 @@ its evaluated zero or more times.
 As for expressions, nil takes no time at all, since its not computed and all
 other expressions take one step plus the evaluation of subexpressions.
 
-Since the halting problem is not solvable, we actually need to execute the
-program to know how menu steps it will take. Otherwise we could just check if
-the number of steps is finite to show that P halts.
+\subsection{Space-complexity}
+Not only time is a limited resource, also the memory that is used during the 
+computation can limit the applications of an algorithm. Some problems could 
+be solved for example just by reading the input and writing a fixed number of 
+items into the memory -- for example searching an element in a list --, others
+would need to increase their memory usage by a fixed amount each time the 
+input doubles, for example calculating the median of a list of numbers, and 
+some neen much more space.
 
+Formally, the space usage $S_p$ of the program $p$ is the maximum of the space
+usages of the states, it goes through. The space usage of a state is the sum of
+sizes of the variables in that state -- except for the input variable. If we
+took the input variable into account as well, we could never get a lower space
+usage than linear, since we have the input stored \lineofthought{Is this in the
+implementation? I think not, should probably update it}. We disallow writing to
+the input variable however, since we don't want to get ``free" storage. In 
+cases, where we need at least linear space, we can ignore that restriction, 
+because we could copy the input first.
 
+\begin{defn}[Complexity Classes]
+	\begin{equation*}
+		\begin{split}
+			\mathtt{TIME}_f &:= \{l\in \WHILE : \forall x\in \Input: T_l(x) \leq f(\abs{x})\} \\
+			\mathtt{SPACE}_f &:= \{l\in \WHILE : \forall x\in \Input: S_l(x) \leq f(\abs{x})\}
+		\end{split}
+	\end{equation*}
+	So
+	\begin{enumerate}
+		\item A program is in the complexity class $\mathtt{TIME}_f$, if its running time is always bound 
+			by $f$ of the size of the input.
+		\item A program is in the complexity class $\mathtt{SPACE}_f$, if its memory usage is always bound 
+			by $f$ of the size of the input.
+	\end{enumerate}
+	And we call a problem $P$ in a complexity class $C$, if there is an 
+	algorithm $p$ that solves it, such that $p\in C$.
+\end{defn}
+
+The most important complexity classes are those of the relatively slow 
+growing polynomial functions:
+
+\begin{defn}[Polynomial time and space]
+	\begin{equation*}
+		\begin{split}
+			\mathtt{PTIME} &:= \bigcup_{p\text{ is polynomial}}\mathtt{TIME}_p \\
+			&= \left\{l\in \WHILE: \exists p=\sum^n_{k=0}a_k\,x^k: \forall x\in \Input: T_l(x)\leq p(\abs{x})\right\}\\
+			\mathtt{PSPACE} &:= \bigcup_{p\text{ is polynomial}}\mathtt{SPACE}_p \\
+			&= \left\{l\in \WHILE: \exists p=\sum^n_{k=0}a_k\,x^k: \forall x\in \Input: S_l(x)\leq p(\abs{x})\right\} 
+		\end{split}
+	\end{equation*}
+
+	That is:
+	\begin{enumerate}
+		\item A program is in the complexity class $\mathtt{PTIME}$, if its running time is always bound 
+			by some polynomial.
+		\item A program is in the complexity class $\mathtt{PSPACE}$, if its memory usage is always bound 
+			by some polynomial.
+	\end{enumerate}
+\end{defn}
+
+On the other hand the exponential functions grow so fast, that an algorithm 
+taking exponentially long is often only feasible for small inputs.
+
+\begin{defn}[Exponential time and space]
+	\begin{equation*}
+		\begin{split}
+			\mathtt{EXPTIME} &:= \bigcup_{f(n)=2^{n^k}} \mathtt{TIME}_{f}\\
+			\mathtt{EXPSPACE} &:= \bigcup_{f(n)=2^{n^k}} \mathtt{SPACE}_{f}\\
+		\end{split}
+	\end{equation*}
+	So here
+	\begin{enumerate}
+		\item A program is in the complexity class $\mathtt{EXPTIME}$, if its running time is always bound 
+			by two to the power of some polynomial.
+		\item A program is in the complexity class $\mathtt{EXPSPACE}$, if its memory usage is always bound 
+			by two to the power of some polynomial.
+	\end{enumerate}
+\end{defn}
