@@ -11,19 +11,28 @@ hierarchy is in fact interleaved, as the following theorems will prove.
 \end{proof}
 
 \begin{theorem}
-	\[\SPACE[f(x)] \subset \TIME[2^{f(x)}]\]
+	There are $a>0$ and $q > 1$ and $\exp(x) := a\cdot q^x$ such that:
+	\[\SPACE[f] \subset \TIME[\exp\circ f]\]
 \end{theorem}
 \begin{proof}
 	\begin{enumerate}
-			\lineofthought{Ok, here we compare two different formalisms, which is possible, 
-			but not without lemata, \dots proving that the compilation has a 
-		certain efficiency. Maybe I should focus on \TIME and kick \SPACE in 
-	favour of non-determinism}
 		\item Assume that $P\in\SPACE[f(x)]$, then $\measurespace{P}(x)\leq f(\abs{x})\forall x$.
 		\item Assume that $\abs{x}$ is fixed, then in how many ways can the 
-			memory arranged to hold that property? We have if $n$ variables are 
-			present in the source that for all states 
-			$\sum_{k=1}^n\abs{Var_k} \leq f(\abs{x})$
-
+			memory arranged to hold that property? Each cell can hold any of the 
+			symbols of $\Gamma$, so there are $\abs{\Gamma}^{\abs{x}}$ ways to 
+			arrange that. Multiply that with the number of states that are not end 
+			states and you get the number of steps after either the machine is in a 
+			configuration it has seen before or goes to a new configuration -- 
+			necessarily an end-state. If the turing machine is in the same 
+			configuration, then it will necessarily act in precisely the same way 
+			as before, get to the same state again and again, and therefore loop. 
+		\item But since $\measurespace{P}(x)\leq f(\abs{x})$, 
+			$\measurespace{P}(x) \neq \infty$ and therefore 
+			\[\measuretime{P}(x)\leq (\abs{Q} - 2)\cdot\abs{\Gamma}^{\abs{x}}\]
 	\end{enumerate}
-	\end{proof}
+\end{proof}
+
+\begin{corrolary}
+	\[ %\LOGSPACE\subset
+		\PTIME\subset\PSPACE\subset\EXPTIME\subset\EXPSPACE \]
+\end{corrolary}

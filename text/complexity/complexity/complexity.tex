@@ -29,25 +29,38 @@ intuitively computable in a certain bound and even more than in computability,
 this question seems to rely on the chosen formalism, but we will see that the
 distinctions are quite robust. Still the question remains, if some
 extraordinary feat of engineering can build a machine that is much faster than
-our \WHILE language\footnote{Quantum computing is faster than \WHILE. A 
+our Turing machine model\footnote{Quantum computing is faster than \TM. A 
 	quantum computer can search a list for an element in $O(\sqrt{n})$ time as 
-	shown in \cite{grover1996fast}.}
+	shown in \cite{grover1996fast}.}. 
 
-\subsection{Time-complexity}
-We will denote the time that a program $P\in \WHILE$ runs on an input $x$ by
-$\measuretime[\WHILE]{P}(x)$ or just $\measuretime{P}(x)$. To determine what
-that means, let's consider how long statements take to evaluate: we have only
-three kind of statements, assignment, if and while. Assigning a value can be
-thought of as writing an address, which can be done in one time-step. Of
-course, the right hand side might take some time to evaluate, so
-$\measuretime{X := E} = 1 + \measuretime{E}$. If statements take one step to
-check if the value is nil and the evaluation, likewise for while.  Also
-depending on the runtime values, the block its evaluated zero or more times.
+Our high-level \WHILE language served us well in computability, but it would 
+probably be more confusing to start than the lower-level Turing machine.
 
-As for expressions, nil takes no time at all, since its not computed and all
-other expressions take one step plus the evaluation of subexpressions.
+For example, how would we measure the used space in a simple, yet realistic
+way: If I set {\tt Y := cons X X}, do I copy {\tt X} twice? Once?  Not at all?
+What happens if I reassign a variable, that was used earlier?  This discussion
+would surpass the scope of this text\footnote{\cite[p. 325f]{jones} gives a
+possible measure.}.
 
-\subsection{Space-complexity}
+\begin{defn}[Running time]
+	For a machine $m\in \TM$ and the input $x$, we will write 
+	$\measuretime[\TM]{m}(x)$ or just $\measuretime{m}(x)$ to denote the number 
+	of steps that $m$ needs to get from the starting state $q_0$ to the end state 
+	$e_{accept}$. If that does not happen, $\measuretime[\TM]{m}(x)=\infty$.
+\end{defn}
+
+%We will denote the time that a program $P\in \WHILE$ runs on an input $x$ by
+%$\measuretime[\WHILE]{P}(x)$ or just $\measuretime{P}(x)$. To determine what
+%that means, let's consider how long statements take to evaluate: we have only
+%three kind of statements, assignment, if and while. Assigning a value can be
+%thought of as writing an address, which can be done in one time-step. Of
+%course, the right hand side might take some time to evaluate, so
+%$\measuretime{X := E} = 1 + \measuretime{E}$. If statements take one step to
+%check if the value is nil and the evaluation, likewise for while.  Also
+%depending on the runtime values, the block its evaluated zero or more times.
+
+%As for expressions, nil takes no time at all, since its not computed and all
+%other expressions take one step plus the evaluation of subexpressions.
 Not only time is a limited resource, also the memory that is used during the 
 computation can limit the applications of an algorithm. Some problems could 
 be solved for example just by reading the input and writing a fixed number of 
@@ -56,25 +69,22 @@ would need to increase their memory usage by a fixed amount each time the
 input doubles, for example calculating the median of a list of numbers, and 
 some neen much more space.
 
-Unfortunately, the \WHILE language is not cut out to measure the used space 
-in a simple, yet realistic way: If I set {\tt Y := cons X X}, do I copy {\tt X}
-twice? Once?  Not at all? What happens if I reassign a variable, that was used
-earlier?  This discussion would surpass the scope of this
-text\footnote{\cite[p. 325f]{jones} gives a possible measure.}. So when 
-talking about the space usage of a program $P$, we assume that it is compiled 
-to a \TM and there we can measure the space usage quite comfortably:
 
-The space usage $\measurespace{M}(x)$ for $M\in \TM$ is the maximum of the 
-maximum of the space usage of the states of its computation.
+\begin{defn}[space usage]
+	The space usage $\measurespace{M}(x)$ for $M\in \TM$ is the maximum of the 
+	maximum of the space usage of the states of its computation or $\infty$ if 
+	the machine does not halt.
 
-The space usage of a state of computation is the number of cells between the 
-left-most and the right-most non-blank cell. For example {\tt \dots \# \# 0 1 
-0 0 0 1 0 1 1 \# \# \dots} would use 9 cells.
+	The space usage of a state of computation is the number of cells between the 
+	left-most and the right-most non-blank cell. For example {\tt \dots \# \# 0 1 
+	0 0 0 1 0 1 1 \# \# \dots} would use 9 cells.
+\end{defn}
+
 
 \begin{defn}[Complexity Classes]
 	\begin{equation*}
 		\begin{split}
-			\TIME[f]  &:= \{l\in \WHILE : \forall x\in \Input:  \measuretime{l}(x) \leq f(\abs{x})\} \\
+			\TIME[f]  &:= \{l\in \TM : \forall x\in \Input:  \measuretime{l}(x) \leq f(\abs{x})\} \\
 			\SPACE[f] &:= \{l\in \TM : \forall x\in \Input: \measurespace{l}(x) \leq f(\abs{x})\}
 		\end{split}
 	\end{equation*}
@@ -96,7 +106,7 @@ growing polynomial functions:
 	\begin{equation*}
 		\begin{split}
 			\PTIME &:= \bigcup_{p\text{ is polynomial}}\TIME[p] \\
-			&= \left\{l\in \WHILE \exists p=\sum^n_{k=0}a_k\,x^k: \forall x\in \Input: \measuretime{l}(x)\leq p(\abs{x})\right\}\\
+			&= \left\{l\in \TM \exists p=\sum^n_{k=0}a_k\,x^k: \forall x\in \Input: \measuretime{l}(x)\leq p(\abs{x})\right\}\\
 			\PSPACE &:= \bigcup_{p\text{ is polynomial}}\SPACE[p] \\
 			&= \left\{l\in \TM \exists p=\sum^n_{k=0}a_k\,x^k: \forall x\in \Input: \measurespace{l}(x)\leq p(\abs{x})\right\} 
 		\end{split}
