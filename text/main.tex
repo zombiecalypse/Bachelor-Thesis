@@ -39,6 +39,14 @@
 \newcommand{\gepower}{\geq}
 \newcommand{\epower}{\equiv}
 \newcommand{\abs}[1]{\left|#1\right|}
+\newcommand{\TIME}[1][]{\mathtt{TIME}\ifthenelse{\isempty{#1}}{}{_{#1}}}
+\newcommand{\SPACE}[1][]{\mathtt{SPACE}\ifthenelse{\isempty{#1}}{}{_{#1}}}
+\newcommand{\LOGTIME}{\mathtt{LOGTIME}}
+\newcommand{\LOGSPACE}{\mathtt{LOGSPACE}}
+\newcommand{\PTIME}{\mathtt{PTIME}}
+\newcommand{\PSPACE}{\mathtt{PSPACE}}
+\newcommand{\EXPTIME}{\mathtt{EXPTIME}}
+\newcommand{\EXPSPACE}{\mathtt{EXPSPACE}}
 
 % Disabled Note Commands
 %\newcommand{\timeestimation}[1]{}
@@ -47,15 +55,19 @@
 %\newcommand{\TODO}{}
 
 \newcommand{\interpret}[2][]{\ensuremath{\left\llbracket #2 \right\rrbracket
-	\ifthenelse{\isempty{#1}}{}{ _{#1}}}}
+	\ifthenelse{\isempty{#1}}{}{_{#1}}}}
 \newcommand{\Input}[1][]{\ensuremath{I
 	\ifthenelse{\isempty{#1}}{}{_{#1}}}}
 \newcommand{\Output}[1][]{\ensuremath{O
 	\ifthenelse{\isempty{#1}}{}{_{#1}}}}
 \newcommand{\Compiler}[3][]{\ensuremath{compile_{#2\rightarrow #3}
-	\ifthenelse{\isempty{#1}}{}{ ^{#1}}}}
+	\ifthenelse{\isempty{#1}}{}{^{#1}}}}
 \newcommand{\Interpreter}[2][]{\ensuremath{interpret_{#2}
-	\ifthenelse{\isempty{#1}}{}{ ^{#1}}}}
+	\ifthenelse{\isempty{#1}}{}{^{#1}}}}
+\newcommand{\measuretime}[2][]{\ensuremath{T_#2
+	\ifthenelse{\isempty{#1}}{}{^{#1}}}}
+\newcommand{\measurespace}[2][]{\ensuremath{S_#2
+	\ifthenelse{\isempty{#1}}{}{^{#1}}}}
 \newtheorem{prop}{Proposition}
 \newtheorem{theorem}{Theorem}
 \newtheorem{corrolary}{Corrolary}

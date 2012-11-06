@@ -34,14 +34,15 @@ our \WHILE language\footnote{Quantum computing is faster than \WHILE. A
 	shown in \cite{grover1996fast}.}
 
 \subsection{Time-complexity}
-We will denote the time that a program $P$ runs on an input $x$ by $T_P(x)$. To
-determine what that means, let's consider how long statements take to evaluate: we
-have only three kind of statements, assignment, if and while. Assigning a value
-can be thought of as writing an address, which can be done in one time-step. Of
-course, the right hand side might take some time to evaluate, so $T_{X := E} = 1
-+ T_E$. If statements take one step to check if the value is nil and the
-evaluation, likewise for while. Also depending on the runtime values, the block
-its evaluated zero or more times.
+We will denote the time that a program $P\in \WHILE$ runs on an input $x$ by
+$\measuretime[\WHILE]{P}(x)$ or just $\measuretime{P}(x)$. To determine what
+that means, let's consider how long statements take to evaluate: we have only
+three kind of statements, assignment, if and while. Assigning a value can be
+thought of as writing an address, which can be done in one time-step. Of
+course, the right hand side might take some time to evaluate, so
+$\measuretime{X := E} = 1 + \measuretime{E}$. If statements take one step to
+check if the value is nil and the evaluation, likewise for while.  Also
+depending on the runtime values, the block its evaluated zero or more times.
 
 As for expressions, nil takes no time at all, since its not computed and all
 other expressions take one step plus the evaluation of subexpressions.
@@ -55,28 +56,33 @@ would need to increase their memory usage by a fixed amount each time the
 input doubles, for example calculating the median of a list of numbers, and 
 some neen much more space.
 
-Formally, the space usage $S_p$ of the program $p$ is the maximum of the space
-usages of the states, it goes through. The space usage of a state is the sum of
-sizes of the variables in that state -- except for the input variable. If we
-took the input variable into account as well, we could never get a lower space
-usage than linear, since we have the input stored \lineofthought{Is this in the
-implementation? I think not, should probably update it}. We disallow writing to
-the input variable however, since we don't want to get ``free" storage. In 
-cases, where we need at least linear space, we can ignore that restriction, 
-because we could copy the input first.
+Unfortunately, the \WHILE language is not cut out to measure the used space 
+in a simple, yet realistic way: If I set {\tt Y := cons X X}, do I copy {\tt X}
+twice? Once?  Not at all? What happens if I reassign a variable, that was used
+earlier?  This discussion would surpass the scope of this
+text\footnote{\cite[p. 325f]{jones} gives a possible measure.}. So when 
+talking about the space usage of a program $P$, we assume that it is compiled 
+to a \TM and there we can measure the space usage quite comfortably:
+
+The space usage $\measurespace{M}(x)$ for $M\in \TM$ is the maximum of the 
+maximum of the space usage of the states of its computation.
+
+The space usage of a state of computation is the number of cells between the 
+left-most and the right-most non-blank cell. For example {\tt \dots \# \# 0 1 
+0 0 0 1 0 1 1 \# \# \dots} would use 9 cells.
 
 \begin{defn}[Complexity Classes]
 	\begin{equation*}
 		\begin{split}
-			\mathtt{TIME}_f &:= \{l\in \WHILE : \forall x\in \Input: T_l(x) \leq f(\abs{x})\} \\
-			\mathtt{SPACE}_f &:= \{l\in \WHILE : \forall x\in \Input: S_l(x) \leq f(\abs{x})\}
+			\TIME[f]  &:= \{l\in \WHILE : \forall x\in \Input:  \measuretime{l}(x) \leq f(\abs{x})\} \\
+			\SPACE[f] &:= \{l\in \TM : \forall x\in \Input: \measurespace{l}(x) \leq f(\abs{x})\}
 		\end{split}
 	\end{equation*}
 	So
 	\begin{enumerate}
-		\item A program is in the complexity class $\mathtt{TIME}_f$, if its running time is always bound 
+		\item A program is in the complexity class $\TIME[f]$, if its running time is always bound 
 			by $f$ of the size of the input.
-		\item A program is in the complexity class $\mathtt{SPACE}_f$, if its memory usage is always bound 
+		\item A program is in the complexity class $\SPACE[f]$, if its memory usage is always bound 
 			by $f$ of the size of the input.
 	\end{enumerate}
 	And we call a problem $P$ in a complexity class $C$, if there is an 
@@ -89,18 +95,18 @@ growing polynomial functions:
 \begin{defn}[Polynomial time and space]
 	\begin{equation*}
 		\begin{split}
-			\mathtt{PTIME} &:= \bigcup_{p\text{ is polynomial}}\mathtt{TIME}_p \\
-			&= \left\{l\in \WHILE: \exists p=\sum^n_{k=0}a_k\,x^k: \forall x\in \Input: T_l(x)\leq p(\abs{x})\right\}\\
-			\mathtt{PSPACE} &:= \bigcup_{p\text{ is polynomial}}\mathtt{SPACE}_p \\
-			&= \left\{l\in \WHILE: \exists p=\sum^n_{k=0}a_k\,x^k: \forall x\in \Input: S_l(x)\leq p(\abs{x})\right\} 
+			\PTIME &:= \bigcup_{p\text{ is polynomial}}\TIME[p] \\
+			&= \left\{l\in \WHILE \exists p=\sum^n_{k=0}a_k\,x^k: \forall x\in \Input: \measuretime{l}(x)\leq p(\abs{x})\right\}\\
+			\PSPACE &:= \bigcup_{p\text{ is polynomial}}\SPACE[p] \\
+			&= \left\{l\in \TM \exists p=\sum^n_{k=0}a_k\,x^k: \forall x\in \Input: \measurespace{l}(x)\leq p(\abs{x})\right\} 
 		\end{split}
 	\end{equation*}
 
 	That is:
 	\begin{enumerate}
-		\item A program is in the complexity class $\mathtt{PTIME}$, if its running time is always bound 
+		\item A program is in the complexity class $\PTIME$, if its running time is always bound 
 			by some polynomial.
-		\item A program is in the complexity class $\mathtt{PSPACE}$, if its memory usage is always bound 
+		\item A program is in the complexity class $\PSPACE$, if its memory usage is always bound 
 			by some polynomial.
 	\end{enumerate}
 \end{defn}
@@ -111,15 +117,15 @@ taking exponentially long is often only feasible for small inputs.
 \begin{defn}[Exponential time and space]
 	\begin{equation*}
 		\begin{split}
-			\mathtt{EXPTIME} &:= \bigcup_{f(n)=2^{n^k}} \mathtt{TIME}_{f}\\
-			\mathtt{EXPSPACE} &:= \bigcup_{f(n)=2^{n^k}} \mathtt{SPACE}_{f}\\
+			\EXPTIME &:= \bigcup_{p\text{ is polynomial}} \TIME[2^{p(x)}]\\
+			\EXPSPACE &:= \bigcup_{p\text{ is polynomial}} \SPACE[2^{p(x)}]\\
 		\end{split}
 	\end{equation*}
 	So here
 	\begin{enumerate}
-		\item A program is in the complexity class $\mathtt{EXPTIME}$, if its running time is always bound 
-			by two to the power of some polynomial.
-		\item A program is in the complexity class $\mathtt{EXPSPACE}$, if its memory usage is always bound 
-			by two to the power of some polynomial.
+		\item A program is in the complexity class $\EXPTIME$, if its running time is always bound 
+			by an exponential of some polynomial.
+		\item A program is in the complexity class $\EXPSPACE$, if its memory usage is always bound 
+		by an exponential of some polynomial.
 	\end{enumerate}
 \end{defn}

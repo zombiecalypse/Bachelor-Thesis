@@ -1,14 +1,29 @@
 \section{The complexity hierarchy}
+We can clearly see that $\LOGSPACE\subset \PSPACE\subset\EXPSPACE$ just because of 
+the functions involved, but the $\TIME$ and $\SPACE$ 
+hierarchy is in fact interleaved, as the following theorems will prove.
 \begin{theorem}
-	\[\mathtt{TIME}_f \subset \mathtt{SPACE}_f\]
+	\[\TIME[f] \subset \SPACE[f]\]
 \end{theorem}
 \begin{proof}
-	
+	On our tape, the only way to increase the number of cells used is to write 
+	something in an blank cell. That we can do at most once per step.
 \end{proof}
 
 \begin{theorem}
-	\[\mathtt{PSPACE} \subset \mathtt{EXPTIME}\]
+	\[\SPACE[f(x)] \subset \TIME[2^{f(x)}]\]
 \end{theorem}
 \begin{proof}
-	
-\end{proof}
+	\begin{enumerate}
+			\lineofthought{Ok, here we compare two different formalisms, which is possible, 
+			but not without lemata, \dots proving that the compilation has a 
+		certain efficiency. Maybe I should focus on \TIME and kick \SPACE in 
+	favour of non-determinism}
+		\item Assume that $P\in\SPACE[f(x)]$, then $\measurespace{P}(x)\leq f(\abs{x})\forall x$.
+		\item Assume that $\abs{x}$ is fixed, then in how many ways can the 
+			memory arranged to hold that property? We have if $n$ variables are 
+			present in the source that for all states 
+			$\sum_{k=1}^n\abs{Var_k} \leq f(\abs{x})$
+
+	\end{enumerate}
+	\end{proof}

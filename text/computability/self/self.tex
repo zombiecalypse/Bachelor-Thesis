@@ -58,7 +58,7 @@ computation, \FOR, are not self interpreting.
 	exercise for all students of computer science to find a quine in their 
 	favourite language. The existence of quines is ensured by the recursion theorem:
 	Simply take the program $\interpret{id}(x)\peq x$ and then 
-	$\interpret{\interpret{Y}(id)}() \peq = \interpret{id}(\interpret{Y}(id))$ 
+	$\interpret{\interpret{Y}(id)}() \peq \interpret{id}(\interpret{Y}(id))$ 
 	is a quine.
 \end{example}
 
@@ -81,13 +81,13 @@ proven. For many years, it was thought that given a set of axioms strong
 enough every statement in mathematics was decidable, but as we will 
 see, that is not the case.
 
-Without going too far into formal logic, I can only say that a successful 
-proof of a statement can be seen as a trace of a program that finds the 
-statement from the axioms. The other direction is true as well: A program can 
-be understood as a description of a constructive proof,\footnote{This
-equivalence goes extremely deep, see Curry-Howals-Correspondence\TODO check
-name and link}. In short: Formal logic (over the natural numbers) is Turing
-complete!
+Without going too far into formal logic, I can only say that a successful proof
+of a statement can be seen as a trace of a program that finds the statement
+from the axioms. The other direction is true as well: A program can be
+understood as a description of a constructive proof,\footnote{This equivalence
+	goes extremely deep, see Curry-Howard correspondence, see
+	\cite{girard1989proofs} for a thorough introduction to proofs as programs.}.
+	In short: Formal logic (over the natural numbers) is Turing complete!
 
 Since a proof is nothing but a finite string of symbols, we can code it as a
 natural number. But since the domain, on which we use formal logic is natural
