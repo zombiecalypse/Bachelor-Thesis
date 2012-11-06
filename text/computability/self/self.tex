@@ -17,10 +17,15 @@ computation, \FOR, are not self interpreting.
 	Every procedure of $\WHILE$ might as well use its own source code.
 \end{theorem}
 \begin{proof}
-	\TODO \lineofthought{I have yet to find a convincing and understandable 
-	proof, Jones "proves" it on p233, but that looks very circular to me. He 
-	argues from an implementation standpoint, but that's not the interesting
-	part!}
+	\TODO \lineofthought{
+		\begin{enumerate}
+			\item I have yet to find a convincing and understandable 
+					proof, Jones "proves" it on p233, but that looks very circular to me. He 
+					argues from an implementation standpoint, but that's not the interesting
+					part!
+			\item Found the proof in Van Dalen, so glad I had that lying around! 
+				Need to make it understandable though.
+		\end{enumerate}}
 
 	Instead of giving $Y$ and explaining how it works, here is how one could 
 	figure out how to do it:
@@ -41,16 +46,12 @@ computation, \FOR, are not self interpreting.
 			we can't just write 
 			$\interpret{h'}(x):\peq \interpret{spec}(x.\interpret{h}(x))$, because 
 			that would give the same problem. 
-		\item 
+		\item $\interpret{q}(m.e.x):\peq \interpret{e}(\interpret{spec}(m.m.e)$ 
+			and then $\interpret{Y}(p):\peq \interpret{spec}(q.q.p)$\footnote{Van 
+				Dalen: {\em Algorithms and Decision Problems: A Crash Course in 
+				Recursion Theory} \TODO citable}
 	\end{enumerate}
-\TODO
 \end{proof}
-
-Just as the proof, this result is not trivial: In \FOR, this would not be possible: 
-\begin{example}
-	There is no equivalent to $Y$ for \FOR:
-	\TODO
-\end{example}
 
 \begin{example}[Quines]
 	A {\em quine} is a program, that outputs its own source. It is a fun 
