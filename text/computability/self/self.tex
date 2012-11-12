@@ -28,7 +28,7 @@ computation, \FOR, are not self interpreting.
 		\end{enumerate}}
 
 	Instead of giving $Y$ and explaining how it works, here is how one could 
-	figure out how to do it:
+	figure out how to do it\footnote{The proof here is based on \cite{dalenrecursion}}:
 
 	\begin{enumerate}
 		\item We start with $\interpret{h}(x):\peq \interpret{spec}(x.x)$, 
@@ -46,8 +46,13 @@ computation, \FOR, are not self interpreting.
 			we can't just write 
 			$\interpret{h'}(x):\peq \interpret{spec}(x.\interpret{h}(x))$, because 
 			that would give the same problem. 
-		\item $\interpret{q}(m.e.x):\peq \interpret{e}(\interpret{spec}(m.m.e)$ 
-			and then $\interpret{Y}(p):\peq \interpret{spec}(q.q.p)$\footnote{Van 
+		\item Instead we need to repeat this process 
+			$\interpret{iterate\mhyphen combinator}(combinator.program.x):\peq 
+			\interpret{program}(\interpret{spec}(combinator.(combinator.program)).x)$. 
+			What does this do? We run the program and pass as its first argument 
+			the code of a program that is modified by the combinator once. 
+		\item
+			and then $\interpret{Y}(program):\peq \interpret{spec}(iterate\mhyphen combinator.(iterate\mhyphen combinator.program))$\footnote{Van 
 				Dalen: {\em Algorithms and Decision Problems: A Crash Course in 
 				Recursion Theory} \TODO citable}
 	\end{enumerate}

@@ -1,26 +1,48 @@
 \section{Complexity in Languages\timeestimation{30h}}
 \label{sec:complexity}
 While most languages we encounter are turing-complete, that does not need
-to be the case and in fact some non-turing-complete languages have very
-interesting properties. In this chapter, I'll discuss some variations of
-the languages seen so far that relate to special classes of complexity and
-the notion of being complex relative to a language.
-\subsection{Complexity by Dialect} % (fold)
-\label{sub:Complexity by Dialect}
-\subsubsection{$P$ complexity} % (fold)
-\label{ssub:P-complexity}
+to be the case. In this chapter, we will discuss the notion of a problem 
+description as a programming language.
 
-% subsubsection P-complexity (end)
-\subsubsection{$NP$ complexity} % (fold)
-\label{ssub:NP-complexity}
-
-% subsubsection NP-complexity (end)
-\subsubsection{An intrinsic view of $P \neq NP$} % (fold)
-\label{ssub:intrinsicPNP}
 \lineofthought{
-  Um zu zeigen, dass $NP \neq P$ ist, muss nun gezeigt werden, dass sich das 
-  Kommando {\tt CHOICE} nicht in die $P$ Sprache übersetzen lässt.
+	The closest connection might be Prolog, in which I state a problem 
+	description, and the system will figure out a solution. Prolog is Turing 
+	complete, but that stems from the fact that first order predicate 
+	logic is.
+
+	\begin{description}
+		\item[$A$ reduces to $B$] $\exists\Compiler[\WHILE]{A}{B}\in P$
+		\item[$a$ solves $P$] $\interpret[\WHILE]{a}(p.x)=\interpret[P]{p}(x)$
+		\item[$f: P\rightarrow Partition(P)$ parametrizes $P$] 
+			$\interpret{a}\circ f\in \PTIME$
+	\end{description}
+
+	Reductions are then cross compilations, algorithms are interpreter in the 
+	hosting language. It all fits together nicely. I could even add 
+	parametrizations as specializations, that massively reduce the complexity 
+	necessary for an interpreter.
 }
 
-% subsubsection P neq NP
-% subsection Complexity by Dialect (end)
+%and in fact some non-turing-complete languages have very
+%interesting properties. In this chapter, I'll discuss some variations of
+%the languages seen so far that relate to special classes of complexity and
+%the notion of being complex relative to a language.
+%\subsection{Complexity by Dialect} % (fold)
+%\label{sub:Complexity by Dialect}
+%\subsubsection{$P$ complexity} % (fold)
+%\label{ssub:P-complexity}
+
+%% subsubsection P-complexity (end)
+%\subsubsection{$NP$ complexity} % (fold)
+%\label{ssub:NP-complexity}
+
+%% subsubsection NP-complexity (end)
+%\subsubsection{An intrinsic view of $P \neq NP$} % (fold)
+%\label{ssub:intrinsicPNP}
+%\lineofthought{
+  %Um zu zeigen, dass $NP \neq P$ ist, muss nun gezeigt werden, dass sich das 
+  %Kommando {\tt CHOICE} nicht in die $P$ Sprache übersetzen lässt.
+%}
+
+%% subsubsection P neq NP
+%% subsection Complexity by Dialect (end)

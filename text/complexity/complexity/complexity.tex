@@ -33,8 +33,15 @@ our Turing machine model\footnote{Quantum computing is faster than \TM. A
 	quantum computer can search a list for an element in $O(\sqrt{n})$ time as 
 	shown in \cite{grover1996fast}.}. 
 
-Our high-level \WHILE language served us well in computability, but it would 
-probably be more confusing to start than the lower-level Turing machine.
+The problems we discuss are decision problems:
+\begin{defn}
+	A problem $P$ is called a {\em decision problem}, if the required output is 
+	$Bool = \{True, False\}$.
+\end{defn}
+
+Our high-level \WHILE language served us well in computability, but it would
+probably be more confusing to measure time and space requirements than on the
+lower-level Turing machine.
 
 For example, how would we measure the used space in a simple, yet realistic
 way: If I set {\tt Y := cons X X}, do I copy {\tt X} twice? Once?  Not at all?
@@ -139,3 +146,62 @@ taking exponentially long is often only feasible for small inputs.
 		by an exponential of some polynomial.
 	\end{enumerate}
 \end{defn}
+
+\section{The complexity hierarchy}
+We can clearly see that $\LOGSPACE\subseteq \PSPACE\subseteq\EXPSPACE$ just because of 
+the functions involved, but the $\TIME$ and $\SPACE$ 
+hierarchy is in fact interleaved, as the following theorems will prove.
+\begin{theorem}
+	\[\TIME[f] \subseteq \SPACE[f]\]
+\end{theorem}
+\begin{proof}
+	On our tape, the only way to increase the number of cells used is to write 
+	something in an blank cell. That we can do at most once per step.
+\end{proof}
+
+\begin{theorem}
+	There are $a>0$ and $q > 1$ and $\exp(x) := a\cdot q^x$ such that:
+	\[\SPACE[f] \subseteq \TIME[\exp\circ f]\]
+\end{theorem}
+\begin{proof}
+	\begin{enumerate}
+		\item Assume that $P\in\SPACE[f(x)]$, then $\measurespace{P}(x)\leq f(\abs{x})\forall x$.
+		\item Assume that $\abs{x}$ is fixed, then in how many ways can the 
+			memory arranged to hold that property? Each cell can hold any of the 
+			symbols of $\Gamma$, so there are $\abs{\Gamma}^{f(\abs{x})}$ ways to 
+			arrange that. Multiply that with the number of states that are not end 
+			states and you get the number of steps after either the machine is in a 
+			configuration it has seen before or goes to a new configuration -- 
+			necessarily an end-state. If the Turing machine is in the same 
+			configuration, then it will necessarily act in precisely the same way 
+			as before, get to the same configuration again and again, and therefore loop. 
+		\item But since $\measurespace{P}(x)\leq f(\abs{x})$, 
+			$\measurespace{P}(x) \neq \infty$ and therefore 
+			\[\measuretime{P}(x)\leq (\abs{Q} - 2)\cdot\abs{\Gamma}^{f(\abs{x})}\]
+	\end{enumerate}
+\end{proof}
+
+\begin{corrolary}
+	\[ %\LOGSPACE\subseteq
+		\PTIME\subseteq\PSPACE\subseteq\EXPTIME\subseteq\EXPSPACE \]
+\end{corrolary}
+
+Surprisingly, it is not known, if these inclusions are strict. It has not 
+been proven yet, that $\PTIME\neq \PSPACE$ or that $\PSPACE\neq\EXPTIME$. 
+Complexity theory is full of these uncertainities, even if it superficially 
+mirrors computability theory, it has proven to be hard on much more basic
+levels than computability has.
+
+\subsection{Hierarchy Theorems}
+
+\begin{theorem}[Time Hierarchy]
+	$\TIME[o\left(\frac{f(x)}{\log(f(x))}\right)] \neq \TIME[f(x)]$
+\end{theorem}
+
+\begin{theorem}[Space Hierarchy]
+	$\Theta(f(x)) \neq \Theta(g(x))$ then $\SPACE[O(f(x))] \neq \SPACE[O(g(x))]$
+\end{theorem}
+
+\lineofthought{
+	It is known, that $\PTIME \neq \EXPTIME$ and $\PSPACE \neq \EXPSPACE$
+}
