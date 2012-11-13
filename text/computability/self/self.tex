@@ -50,16 +50,40 @@ computation, \FOR, are not self interpreting.
 			$\interpret{iterate\mhyphen combinator}(combinator.program.x):\peq 
 			\interpret{program}(\interpret{spec}(combinator.(combinator.program)).x)$. 
 			What does this do? We run the program and pass as its first argument 
-			the code of a program that is modified by the combinator once. 
-		\item
-			and then $\interpret{Y}(program):\peq \interpret{spec}(iterate\mhyphen combinator.(iterate\mhyphen combinator.program))$\footnote{Van 
-				Dalen: {\em Algorithms and Decision Problems: A Crash Course in 
-				Recursion Theory} \TODO citable}
+			the code of a program that is modified by the combinator once. This is 
+			basically the step from above, only for $combinator$.
+
+			\begin{equation*}
+				\begin{split}
+					\interpret{iterate\mhyphen combinator}(c.program.x)
+					&\peq \interpret{program}(\interpret{spec}(c.c.program).x) \\
+					&\text{and to get the own source}\\
+					\interpret{\interpret{spec}(c.c.program)}(x)
+					&\overset{!}{\peq} \interpret{iterate\mhyphen combinator}(c.program.x)
+				\end{split}
+			\end{equation*}
+		\item From the equation above, we can see, that we need to wrap
+			$iterate\mhyphen combinator$ onto itself, 
+			$\interpret{Y}(program):\peq \interpret{spec}(iterate\mhyphen
+			combinator.(iterate\mhyphen combinator.program))$. 
+
+			This has the desired property:
+
+			\begin{equation*}
+				\begin{split}
+					\interpret{\interpret{Y}(program)}(x) 
+					&\peq \interpret{\interpret{spec}(iterate\mhyphen
+				combinator.(iterate\mhyphen combinator.program))}(x)\\
+				&\peq \interpret{iterate\mhyphen combinator}(iterate\mhyphen combinator.program.x) \\
+				&\peq \interpret{p}(\interpret{spec}(iterate\mhyphen combinator.iterate\mhyphen combinator.program).x)\\
+				&\peq \interpret{p}(\interpret{Y}(program).x)
+				\end{split}
+			\end{equation*}
 	\end{enumerate}
 \end{proof}
 
 \begin{example}[Quines]
-	A {\em quine} is a program, that outputs its own source. It is a fun 
+	A {\em quine}\/ is a program, that outputs its own source. It is a fun 
 	exercise for all students of computer science to find a quine in their 
 	favourite language. The existence of quines is ensured by the recursion theorem:
 	Simply take the program $\interpret{id}(x)\peq x$ and then 
