@@ -89,17 +89,60 @@ computation, \FOR, are not self interpreting.
 	Simply take the program $\interpret{id}(x)\peq x$ and then 
 	$\interpret{\interpret{Y}(id)}() \peq \interpret{id}(\interpret{Y}(id))$ 
 	is a quine.
+
+	This is unfortunately not how you program a quine. Few languages have a $Y$ 
+	procedure, and even if they had, they would use an own internal 
+	representation for the $program$ and not the source code. To program 
+	a quine, you have to execute the steps of $Y$ by hand. Because \WHILE does 
+	not handle strings, it might not be the best choice to implement the quine, 
+	so the following is written in {\tt Python}, but the same principle could 
+	easily be applied to create a quine for other languages as well.
+
+	\begin{enumerate}
+		\item We basically need to return $\interpret{id}(id)$ as a string, but 
+			in most languages, it's actually the other way around -- we define a 
+			function and can decide to code it (as a string). That is commonly 
+			denoted $id(\coded{id})$.
+		\item So let's define a function, that does the coding:
+\begin{verbatim}
+def quote(source):
+  return '"'*3 + source + '"'*3
+\end{verbatim}
+		\item Next, define a procedure, that prints its argument once without 
+			quotes, once with the quotes, so basically the literal string ${\tt id(\coded{id})}$.
+\begin{verbatim}
+def quined(source):
+  print source + '(' + quoted(source) + ')'
+\end{verbatim}
+		\item Finally, we can pass the source of the program to itself:
+\begin{verbatim}
+
+def quote(source):
+  return '"'*3+source+'"'*3
+def quined(source):
+  print source + '(' + quote(source) +')'
+
+quined("""
+def quote(source):
+  return '"'*3+source+'"'*3
+def quined(source):
+  print source + '(' + quote(source) +')'
+
+quined""")
+\end{verbatim}
+		This recipe can be ported to many languages, including {\tt C}, {\tt Java} or {\tt Haskell}.
+	\end{enumerate}
 \end{example}
 
 \paragraph{Why is it called the {\em recursion} theorem?}
 Since we have our own source, we can implement recursion with our interpreter:
 \begin{verbatim}
 fibonacci read (source.X) {
-  if ([or](X = 0, X = 1)) {
-    Y := 1
-  } else {
-    Y := [interpreter](source.(X-1)) + [interpreter](source.(X-2))
-  }
+if ([or](X = 0, X = 1)) {
+	Y := 1
+} else {
+	Y := [interpreter](source.(X-1)) + [interpreter](source.(X-2))
+}
 } write Y
 \end{verbatim}
 
@@ -114,9 +157,9 @@ Without going too far into formal logic, I can only say that a successful proof
 of a statement can be seen as a trace of a program that finds the statement
 from the axioms. The other direction is true as well: A program can be
 understood as a description of a constructive proof,\footnote{This equivalence
-	goes extremely deep, see Curry-Howard correspondence, see
-	\cite{girard1989proofs} for a thorough introduction to proofs as programs.}.
-	In short: Formal logic (over the natural numbers) is Turing complete!
+goes extremely deep, see Curry-Howard correspondence, see
+\cite{girard1989proofs} for a thorough introduction to proofs as programs.}.
+In short: Formal logic (over the natural numbers) is Turing complete!
 
 Since a proof is nothing but a finite string of symbols, we can code it as a
 natural number. But since the domain, on which we use formal logic is natural
@@ -135,6 +178,6 @@ statement, but since the statement is false, we'd have a contradiction in our
 formal system. And if the statement is true? Then there is a true statement 
 expressable in the system, that can not be proven. This is known as {\em Gödel's 
 incompleteness theorem}. \lineofthought{This might profit from a bit more 
-	formality. Then again, I can't assume that the reader knows {\em anything} 
+formality. Then again, I can't assume that the reader knows {\em anything} 
 about formal logic. If I did that, I'd have to spend a page or two explaining 
 the notions.}
