@@ -22,35 +22,35 @@
 
 \newcommand*{\pfunc}{\xrightarrow{p}}
 \newcommand*{\peq}{\simeq}
+\newcommand*{\floor}[1]{\left\lfloor #1 \right\rfloor}
 \newcommand*{\listOf}[1]{\left< #1 \right> }
 \newcommand*{\coded}[1]{\ulcorner #1 \urcorner }
 \newcommand*{\turingletter}[1]{\left< #1 \right> }
 \newcommand*{\WHILE}{\ensuremath{\mathtt{WHILE}}\xspace}
 \newcommand*{\FOR}{\ensuremath{\mathtt{FOR}}\xspace}
 \newcommand*{\TM}{\ensuremath{\mathtt{TM}}\xspace}
-\newcommand*{\N}{\ensuremath{\mathbf{N}}\xspace}
-
-% Note Commands
-\newcommand{\timeestimation}[1]{\footnote{#1} }
-\newcommand{\citationneeded}{{\em (citation needed) } }
-\newcommand{\lineofthought}[1]{{\bf [#1] }}
-\newcommand{\TODO}{\ensuremath{\left<\mathbf{TODO}\right> }}
+\newcommand*{\N}{\ensuremath{\mathbb{N}}\xspace}
 \newcommand{\lepower}{\leq}
 \newcommand{\gepower}{\geq}
 \newcommand{\epower}{\equiv}
 \newcommand{\abs}[1]{\left|#1\right|}
-\newcommand{\TIME}[1][]{\mathtt{TIME}\ifthenelse{\isempty{#1}}{}{_{#1}}}
-\newcommand{\SPACE}[1][]{\mathtt{SPACE}\ifthenelse{\isempty{#1}}{}{_{#1}}}
-\newcommand{\LOGTIME}{\mathtt{LOGTIME}}
-\newcommand{\LOGSPACE}{\mathtt{LOGSPACE}}
-\newcommand{\PTIME}{\mathtt{PTIME}}
-\newcommand{\PSPACE}{\mathtt{PSPACE}}
-\newcommand{\EXPTIME}{\mathtt{EXPTIME}}
-\newcommand{\EXPSPACE}{\mathtt{EXPSPACE}}
+\newcommand{\TIME}[1][]{\ensuremath{\mathtt{TIME}\ifthenelse{\isempty{#1}}{}{_{#1}}}}
+\newcommand{\SPACE}[1][]{\ensuremath{\mathtt{SPACE}\ifthenelse{\isempty{#1}}{}{_{#1}}}}
+\newcommand{\LOGTIME}{\ensuremath{\mathtt{LOGTIME}}}
+\newcommand{\LOGSPACE}{\ensuremath{\mathtt{LOGSPACE}}}
+\newcommand{\PTIME}{\ensuremath{\mathtt{PTIME}}}
+\newcommand{\PSPACE}{\ensuremath{\mathtt{PSPACE}}}
+\newcommand{\EXPTIME}{\ensuremath{\mathtt{EXPTIME}}}
+\newcommand{\EXPSPACE}{\ensuremath{\mathtt{EXPSPACE}}}
 \mathchardef\mhyphen="2D
 
+% Note Commands
+\newcommand{\citationneeded}{{\em (citation needed) } }
+\newcommand{\lineofthought}[1]{{\bf [#1] }}
+\newcommand{\TODO}{\ensuremath{\left<\mathbf{TODO}\right> }}
+
 % Disabled Note Commands
-%\newcommand{\timeestimation}[1]{}
+\newcommand{\timeestimation}[1]{}
 %\newcommand{\citationneeded}{}
 %\newcommand{\lineofthought}[1]{}
 %\newcommand{\TODO}{}
@@ -106,7 +106,7 @@
 \bibliography{biblio}{}
 \bibliographystyle{plain}
 
-\begin{appendices}
-  \include*{appendix}
-\end{appendices}
+%\begin{appendices}
+  %\include*{appendix}
+%\end{appendices}
 \end{document}

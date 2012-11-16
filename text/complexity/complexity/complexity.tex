@@ -15,7 +15,7 @@ Since bigger problems are harder to solve and bigger problems need more data to
 describe it fully, we analyse the asymptotic complexity in the size of the
 input, i.e.\ how the time and space needed develop as the input grows towards
 infinity. The most important distinctions here will be if there is a linear
-relation or a polynomial of higher order - or something worse, e.g.\ exponential
+relation or a polynomial of higher order -- or something worse, e.g.\ exponential
 time/space.
 
 Another important classification is that of non-determinism: if we could guess
@@ -26,10 +26,10 @@ a good guesser really helps).
 
 As in computability with the Church's thesis, there is the question of what is
 intuitively computable in a certain bound and even more than in computability,
-this question seems to rely on the chosen formalism, but we will see that the
+this question seems to rely on the chosen formalism, but most of the
 distinctions are quite robust. Still the question remains, if some
 extraordinary feat of engineering can build a machine that is much faster than
-our Turing machine model\footnote{Quantum computing is faster than \TM. A 
+our Turing machine model\footnote{Quantum computing is faster than \TM\@. A 
 	quantum computer can search a list for an element in $O(\sqrt{n})$ time as 
 	shown in \cite{grover1996fast}.}. 
 
@@ -40,7 +40,7 @@ The problems we discuss are decision problems:
 \end{defn}
 
 Our high-level \WHILE language served us well in computability, but it would
-probably be more confusing to measure time and space requirements than on the
+be more confusing to measure time and space requirements than on the
 lower-level Turing machine.
 
 For example, how would we measure the used space in a simple, yet realistic
@@ -80,11 +80,11 @@ some neen much more space.
 \begin{defn}[space usage]
 	The space usage $\measurespace{M}(x)$ for $M\in \TM$ is the maximum of the 
 	maximum of the space usage of the states of its computation or $\infty$ if 
-	the machine does not halt.
+	the machine does not halt -- even if it looped on the same cells over and over.
 
 	The space usage of a state of computation is the number of cells between the 
 	left-most and the right-most non-blank cell. For example {\tt \dots \# \# 0 1 
-	0 0 0 1 0 1 1 \# \# \dots} would use 9 cells.
+	0 0 \# 1 0 1 1 \# \# \dots} would use 9 cells.
 \end{defn}
 
 
@@ -169,10 +169,10 @@ hierarchy is in fact interleaved, as the following theorems will prove.
 		\item Assume that $\abs{x}$ is fixed, then in how many ways can the 
 			memory arranged to hold that property? Each cell can hold any of the 
 			symbols of $\Gamma$, so there are $\abs{\Gamma}^{f(\abs{x})}$ ways to 
-			arrange that. Multiply that with the number of states that are not end 
-			states and you get the number of steps after either the machine is in a 
-			configuration it has seen before or goes to a new configuration -- 
-			necessarily an end-state. If the Turing machine is in the same 
+			arrange that. Multiply that with the number of states that are not
+			endstates and you get the number of steps after either the machine is in
+			a configuration it has seen before or goes to a new configuration --
+			necessarily an endstate. If the Turing machine is in the same
 			configuration, then it will necessarily act in precisely the same way 
 			as before, get to the same configuration again and again, and therefore loop. 
 		\item But since $\measurespace{P}(x)\leq f(\abs{x})$, 
@@ -193,14 +193,94 @@ mirrors computability theory, it has proven to be hard on much more basic
 levels than computability has.
 
 \subsection{Hierarchy Theorems}
+While not much is known, there are two important {\em hierarchy theorems}, 
+which give proper inclusions. To formulate that, we need the notion of a {\em 
+time constructible function}\/:
+
+\begin{defn}
+	A function $f$ is called {\em time constructible}\/ if there is a 
+	$M\in\TM$, such that for sufficiently big $n$, $\TIME[M](1^n) = f(n)$.
+
+	A function $f$ is called {\em space constructible}\/ if there is a $M\in\TM$, 
+	such that for sufficiently big $n$, $\SPACE[M](1^n)=f(n)$.
+
+	Basically, this states, that there are Turing machines with this exact time 
+	or space requirement $f(x)$.
+\end{defn}
+\begin{example}
+	\begin{enumerate}
+		\item $f(x)=x$ is time and space 
+			constructible: Copy the input to the output tape.
+		\item If $f$ is space constructible, then $g(x)=(x+1)\cdot f(x)$ time and space
+			constructible. Run the machine from above on the output (the $x$) of the
+			constructing machine (the $+1$).
+		\item If $f$ is time/space constructible, then 
+			$\forall c\in \mathbb{N^+}: g(x)=c\cdot f(x)$ is time/space 
+			constructible: Run the constructing machine $M$ for $f$, but cicle through $c$ 
+			states for each step of $M$.
+		\item If $f$ and $g$ are time/space constructible, then $h(x) = f(x)+g(x)$ is time/space
+			constructible. Just run them one after the other. 
+		\item $f(x)=\sum^n_{k=0}c_k\cdot x^k$ is space and time constructible for 
+			$c_i\in N^+$. Follows from above.
+		\item $f(x)=2^x$ is time constructible: for the $k$th input symbol, count up 
+			to the number $1(0)^k$ in binary.
+		\item $f(x)=2^x$ is space constructible: First write $1$ on the output 
+			tape, then for each element of the input, copy the output tape to its own end.
+		\item If $f(x)\leq x$ for infinitely many $x$ then $f$ is {\em not}\/ time
+			constructible: We can't read the input, so we couldn't know, how long it
+			would have been.
+		\item This is not true for space constructible functions: We could even 
+			read the input and not write anything, thus $f(x)=0$ is time constructible.
+	\end{enumerate}
+\end{example}
 
 \begin{theorem}[Time Hierarchy]
-	$\TIME[o\left(\frac{f(x)}{\log(f(x))}\right)] \neq \TIME[f(x)]$
+	If $f$ is time-constructible, then
+	\[ \TIME[o\left(f(x)\right)] \neq \TIME[f(x)^3] \]
 \end{theorem}
+\begin{proof}
+	\begin{enumerate}
+		\item The proof will show, that we can find a function, that is in 
+			$\TIME[O(f(x)^3)]$, but not in any $\TIME[o\left(f(x)\right)]$
+		\item The function that does that is 
+			\[ \interpret{H_f}(M, n) \peq \begin{cases}
+					True, &\text{if }\TIME[M](n) \leq f(\abs(n))\,\text{and $M$ ends in $q_{accept}$}\\
+					False, &\text{otherwise}
+			\end{cases} \]
+			We can run $H_f$ by using an interpreter ($O(steps^2)$) and counting the steps on a 
+			separate tape, so pessimistically\footnote{The Time Hierarchy Theorem 
+			holds even for $\TIME[f(x)\cdot\log f(x)]$ with a trickier interpreter
+			and counting} this is in $\TIME[O(f(x)^3]$. 
+		\item On the other hand assume that $H_f\in \TIME[f(\floor{\frac{\abs{x}}{2}})]$, 
+			then $\interpret{G}(m) :\peq not\,\interpret{H_f}(m, m)$ runs only
+			\[f\left(\floor{\frac{2\abs{m}+1}{2}}\right)=f(\abs{m})\] steps. 
+		\item Thus 
+			\[\interpret{G}(G)\peq not\, \interpret{H_f}(G,G) \peq not\, True \peq False\]
+			, but that would imply, that $H_f$ would reject it, therefore 
+			\[\interpret{G}(G)\peq not\, \interpret{H_f}(G,G) \peq not\, False \peq True\]
+			and vice versa -- which is a contradiction. Therefore $G\not\in\TIME{f(x)}$ 
+			and $H_f\not\in\TIME{f\left(\floor{\frac{x}{2}}\right)}$
+	\end{enumerate}
+\end{proof}
+
+\begin{corrolary}
+	\[\PTIME\neq\EXPTIME\]
+\end{corrolary}
+\begin{proof}
+	$x^n$ is time computable for all $n\in \N$, but 
+	$x^{3n} < 2^x \Leftrightarrow 3n\cdot \log_2 x < x \Leftrightarrow \frac{\log_2 x}{x} < 3n$
+	, which holds for any $n$, if $x$ is big enough, so there is no polynomial 
+	close enough to the exponentials, that would allow the \PTIME\/ class to 
+	``jump'' into the \EXPTIME\/ class.
+\end{proof}
 
 \begin{theorem}[Space Hierarchy]
 	$\Theta(f(x)) \neq \Theta(g(x))$ then $\SPACE[O(f(x))] \neq \SPACE[O(g(x))]$
 \end{theorem}
+This theorem is much stronger than the time hierarchy theorem, because it 
+shows that any difference in the asymptotic behaviour leads to a different 
+computability class.
+
 
 \lineofthought{
 	It is known, that $\PTIME \neq \EXPTIME$ and $\PSPACE \neq \EXPSPACE$

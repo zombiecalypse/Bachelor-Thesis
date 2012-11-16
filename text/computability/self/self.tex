@@ -17,16 +17,6 @@ computation, \FOR, are not self interpreting.
 	Every procedure of $\WHILE$ might as well use its own source code.
 \end{theorem}
 \begin{proof}
-	\TODO \lineofthought{
-		\begin{enumerate}
-			\item I have yet to find a convincing and understandable 
-					proof, Jones "proves" it on p233, but that looks very circular to me. He 
-					argues from an implementation standpoint, but that's not the interesting
-					part!
-			\item Found the proof in Van Dalen, so glad I had that lying around! 
-				Need to make it understandable though.
-		\end{enumerate}}
-
 	Instead of giving $Y$ and explaining how it works, here is how one could 
 	figure out how to do it\footnote{The proof here is based on \cite{dalenrecursion}}:
 
@@ -138,11 +128,11 @@ quined""")
 Since we have our own source, we can implement recursion with our interpreter:
 \begin{verbatim}
 fibonacci read (source.X) {
-if ([or](X = 0, X = 1)) {
-	Y := 1
-} else {
-	Y := [interpreter](source.(X-1)) + [interpreter](source.(X-2))
-}
+  if ([or](X = 0, X = 1)) {
+    Y := 1
+  } else {
+    Y := [interpreter](source.(X-1)) + [interpreter](source.(X-2))
+  }
 } write Y
 \end{verbatim}
 
