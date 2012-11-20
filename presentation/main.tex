@@ -18,6 +18,8 @@
 \usepackage{xspace}
 \usepackage{algorithm}
 \usepackage[noend]{algpseudocode}
+\usepackage{listings}
+\lstnewenvironment{code}{\lstset{language=Haskell,basicstyle=\small}}{}
 
 \newcommand*{\pfunc}{\xrightarrow{p}}
 \newcommand*{\peq}{\simeq}
@@ -43,7 +45,7 @@
 \mathchardef\mhyphen="2D
 
 % Note Commands
-\newcommand{\citationneeded}{{\em (citation needed) } }
+\newcommand{\citationneeded}{\alert{(citation needed) } }
 \newcommand{\lineofthought}[1]{{\bf [#1] }}
 \newcommand{\TODO}{\ensuremath{\left<\mathbf{TODO}\right> }}
 
@@ -96,10 +98,10 @@
 }
 
 \subsection{Some Definitions}
-\frame{
+\begin{frame}
 	\frametitle{Semantic Function}
 	\pause
-	The {\em semantic function}\/ translates between the language $L$, we use to 
+	The \alert{semantic function}\/ translates between the language $L$, we use to 
 	describe a program and the mathematical objects $M$, it describes.
 
 	\pause
@@ -108,17 +110,261 @@
 		\interpret[\lambda \text{-calculus}]{\lambda x.\,x}(f) = id(f) = f
 	\end{equation*}
 	\pause
-	If given expricitly it gives a specification for the programming language.
-}
+	If given explicitly it gives a specification for the programming language.
+	\pause
 
-\section{Transforms}
+	The value $\bot$ denotes that an interpretation does not exists, i.e.\ that 
+	something is an error or does not terminate.
+\end{frame}
+
+\begin{frame}[fragile]
+	\frametitle{The {\tt Cons}\/ cell data structure}
+	\begin{center}
+	\begin{code}
+		data Cons = Nil | ConsCell { hd :: Cons, tl :: Cons }
+	\end{code}
+		\includegraphics[width=0.25\textwidth]{pictures/conscell}
+	\end{center}
+	The {\tt cons}\/ cell is a simple data structure that contains a head and a 
+	tail pointer. We denote this by {\tt (h.t)}\/ where {\tt h}\/ is the head and 
+	{\tt t}\/ is the tail.
+	\pause
+
+	Used to build simply linked lists, binary trees, \dots
+\end{frame}
+
+\subsection{\WHILE}
+\begin{frame}[fragile]
+	\frametitle{The \WHILE programming language}
+	\begin{itemize}
+		\item Very basic, but Turing complete language.
+		\item Imperative
+		\item Uses the {\tt cons} cell as basic data structure.
+	\end{itemize}
+	\begin{example}
+		\begin{verbatim}
+unary_minus_one read X {
+  if X {
+    X := tl X;
+  }
+} write X\end{verbatim}
+	\end{example}
+\end{frame}
+
+\begin{frame}[fragile]
+	\frametitle{The \WHILE programming language -- Syntax}
+	\begin{center}
+		\begin{tiny}
+			\begin{grammar}
+				<expression> ::= 
+									`nil' 
+						\alt 	`cons' <expression> <expression>
+						\alt 	`hd' <expression>
+						\alt 	`tl' <expression>
+						\alt 	<variable>
+
+				<statement-list> ::= <statement> ; \alt <statement> ; <statement-list>
+
+				<block> ::= `{' <statement-list> `}'
+
+				<statement> ::=
+									<variable> `:=' <expression>
+						\alt	`if' <expression> <block> <else-block>
+						\alt	`while' <expression> <block>
+						\alt	`for' <variable> `in' <expression> <block>
+					
+						<else-block> ::= <empty> \alt `else' <block>
+						
+						<program> ::= <name> `read' <variable> <block> `write' <variable>
+			\end{grammar}
+		\end{tiny}
+	\end{center}
+\end{frame}
+
+\begin{frame}[fragile]
+	\frametitle{The \WHILE programming language -- Semantics}
+	The data expressions might depend on the context $c$, which binds variable 
+	names to their values.
+
+	\begin{small}
+		\begin{align*}
+			\interpret{\mathtt{nil}}(c) &= Nil \\
+			\interpret{\mathtt{cons}\: A\: B}(c) &= ConsCell(\interpret{A}(c), \interpret{B}(c)) \\
+			\interpret{\mathtt{hd}\: A}(c) &= \begin{cases}
+				x, &\text{ if }\interpret{A}(c) = ConsCell(x, y)\\
+				\bot, &\text{ otherwise}
+			\end{cases}\\
+			\interpret{\mathtt{tl}\: A}(c) &= \begin{cases}
+				y, &\text{ if }\interpret{A}(c) = ConsCell(x, y)\\
+				\bot, &\text{ otherwise}
+			\end{cases}\\
+			\interpret{name}(c) &= \begin{cases}
+				x, &\text{ if } (name, x) \in c\\
+				Nil, &\text{ otherwise}
+			\end{cases}
+		\end{align*}
+	\end{small}
+\end{frame}
+
 \begin{frame}
-	\frametitle{Transforms}
+	\frametitle{The \WHILE programming language -- Semantics}
+	The statements change the context, so their interpretation returns the new context.
+	\begin{align*}
+		\interpret{name\: := a}(c) &= (c\setminus \{(name, x)\}) \cup (name, \interpret{a}(c)) \\
+		\interpret{\mathtt{if}\: a\: block}(c) &= \begin{cases}
+			c, &\text{ if }\interpret{a}(c)= Nil\\
+			\interpret{block}(c), &\text{ otherwise}
+		\end{cases}\\
+		\interpret{\mathtt{while}\: a\: b}(c) &= \begin{cases}
+			c, &\text{ if }\interpret{a}(c) = Nil\\
+			(\interpret{\mathtt{while}\: a\: b}\circ\interpret{b})(c), &\text{ otherwise}
+		\end{cases}
+	\end{align*}
+\end{frame}
+
+\begin{frame}
+	\frametitle{The \WHILE programming language -- Semantics}
+	The programs represent functions:
+
+	\begin{align*}
+		\interpret{a\: \mathtt{read}\: i\: block \: \mathtt{write}\: o}(x) &= 
+		(\interpret{o}\circ\interpret{block})(\{(i, x)\})
+	\end{align*}
+
+	For the rest of the presentation, we only interpret programs.
+\end{frame}
+
+\section{Futamura Projections}
+\subsection{Transforms}
+\begin{frame}
+	\frametitle{Programs acting on programs}
+	In any language $A$ we define:
+	\begin{description}
+		\item[interpreter] An \alert{interpreter}\/ for a language $L$ is a program $interpret$, such 
+			that \[\forall p\in L: \interpret[A]{interpret}(p,x) =\interpret[L]{p}(x)\]
+		\item[compiler] A \alert{compiler}\/ for a language $L$ is a program $compile$, 
+			such that 
+			\[\forall p\in L: \interpret[A]{\interpret[A]{compile}(p)}(x)= \interpret[L]{p}(x)\]
+		\item[specializer] A \alert{specializer}\/ is a program $spec$, such that 
+			\[\forall p\in A: \interpret[A]{\interpret[A]{spec}(p, x)}(y) = \interpret[A]{p}(x, y)\]
+	\end{description}
+\end{frame}
+
+\begin{frame}
+	\frametitle{Futamura Projections}
+
+	\begin{itemize}[<+->]
+		\item Interpreters are easy to write, but slow. Compilers on the other 
+			hand give fast programs, but are hard to write.
+		\item Specializers are often used, to create faster executables, because 
+			static analysis can optimize the procedures used.
+		\item The \alert{Futamura projections} show how executable programs,
+			interpreters and compilers are connected, if we assume a specializer.
+	\end{itemize}
+\end{frame}
+
+\subsection{The first Futamura Projection}
+\begin{frame}
+	\frametitle{The first Futamura Projection}
+	Given a program $p$ in a language $L$, can we make it an executable in $A$?
+	\pause
+
+	\invisible<1>{ 
+		Yes, $\interpret{spec}(interpret, p)$ is such a program:
+		\begin{align*}
+			\interpret[A]{\interpret[A]{spec}(interpret, p)}(x) 
+					&= \interpret[A]{interpret}(p, x)\\
+					&= \interpret[L]{p}(x)
+		\end{align*}
+	}
+\end{frame}
+
+\begin{frame}
+	\frametitle{The first Futamura Projection}
+	But is this useful?
+
+	\pause
+	\begin{itemize}
+		\item Many interpreted languages have libraries, that bundle the 
+			interpreter and the used libraries with the source code.
+			\begin{itemize}
+				\item {\tt bbfreeze} for {\tt Python}
+				\item {\tt releasy} for {\tt Ruby}
+				\item \dots
+			\end{itemize}
+		\item Specializer is here on the OS level, bundling libraries and executables.
+	\end{itemize}
+\end{frame}
+
+\subsection{The second Futamura Projection}
+\begin{frame}
+	\frametitle{The second Futamura Projection}
+	Do we need to write a compiler for $L$, if we already have an interpreter?
+	\pause
+
+	\invisible<1>{
+		No, we can modify the first projection, then 
+		$compile = \interpret{spec}(spec, interpret)$
+		\begin{align*}
+			\interpret[A]{\interpret[A]{\interpret[A]{spec}(spec, interpret)}(p)}(x)\\
+			&= \interpret[A]{\interpret{spec}(interpret, p)}(x)\\
+			&= \interpret[L]{p}(x)
+		\end{align*}
+	}
+\end{frame}
+
+\begin{frame}
+	\frametitle{The second Futamura Projection}
+	But isn't a hand-optimized compiler better?
+
+	\pause
+	\begin{itemize}[<+->]
+		\item The projection mostly saves programmer time, not execution time.
+		\item However the {\tt PyPy}\footnote{\url{http://pypy.org/}} project uses this
+			process to generate a highly optimized Just-in-Time compiler for the 
+			{\tt Python} programming language. \begin{itemize}[<3->]
+				\item This specialization process is on the language level, not the 
+					OS level. Calls are optimized -- libraries, executables, \dots are not the focus.
+			\end{itemize}
+	\end{itemize}
+\end{frame}
+
+\subsection{The third Futamura Projection}
+\begin{frame}
+	\frametitle{The third Futamura Projection}
+	How can we automate this process of transforming an interpreter to a compiler?
+
+	\pause
+	\invisible<1>{
+		$\interpret{spec}(spec, spec)$ takes an interpreter and returns a compiler.
+
+		\begin{align*}
+			\interpret{\interpret{spec}(spec, spec)}(interpret) 
+				&= \interpret{spec}(spec, interpret)
+		\end{align*}
+	}
+\end{frame}
+
+\begin{frame}
+	Has not yet been applied.
+	\begin{itemize}
+		\item The infrastructure is very different across language borders
+			\begin{itemize}
+				\item How libraries are managed
+				\item OS executable format is maximal consensus
+			\end{itemize}
+		\item Use seems limited
+	\end{itemize}
 \end{frame}
 
 \section{Implementation}
 \begin{frame}
 	\frametitle{Implementing \WHILE}
+\end{frame}
+
+\section{Questions}
+\begin{frame}
+	\frametitle{Questions}
 \end{frame}
 
 \end{document}
