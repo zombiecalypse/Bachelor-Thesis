@@ -65,6 +65,10 @@ implementation=/home/aaron/Bachelor/implementation {
    identity.wl
    simple_call.wl
    symbol.wl
+   turing.wl
 	}
  }
+}
+presentation="/home/aaron/Bachelor/presentation/" filter="*.tex" {
+ main.tex
 }

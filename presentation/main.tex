@@ -1,0 +1,124 @@
+\documentclass{beamer}
+\usetheme{Dresden}
+\setbeamercovered{transparent}
+% \beamertemplatenavigationsymbolsempty % Comment this out if you want a navigation bar
+
+\usepackage[utf8x]{inputenc}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsfonts}
+\usepackage{amsthm}
+\usepackage{ucs}
+\usepackage{cite}
+\usepackage{stmaryrd}
+\usepackage{hyperref}
+\usepackage{xifthen}
+\usepackage{graphicx}
+\usepackage{syntax}
+\usepackage{xspace}
+\usepackage{algorithm}
+\usepackage[noend]{algpseudocode}
+
+\newcommand*{\pfunc}{\xrightarrow{p}}
+\newcommand*{\peq}{\simeq}
+\newcommand*{\listOf}[1]{\left< #1 \right> }
+\newcommand*{\coded}[1]{\ulcorner #1 \urcorner }
+\newcommand*{\turingletter}[1]{\left< #1 \right> }
+\newcommand*{\WHILE}{\ensuremath{\mathtt{WHILE}}\xspace}
+\newcommand*{\FOR}{\ensuremath{\mathtt{FOR}}\xspace}
+\newcommand*{\TM}{\ensuremath{\mathtt{TM}}\xspace}
+\newcommand*{\N}{\ensuremath{\mathbb{N}}\xspace}
+\newcommand{\lepower}{\leq}
+\newcommand{\gepower}{\geq}
+\newcommand{\epower}{\equiv}
+\newcommand{\abs}[1]{\left|#1\right|}
+\newcommand{\TIME}[1][]{\mathtt{TIME}\ifthenelse{\isempty{#1}}{}{_{#1}}}
+\newcommand{\SPACE}[1][]{\mathtt{SPACE}\ifthenelse{\isempty{#1}}{}{_{#1}}}
+\newcommand{\LOGTIME}{\mathtt{LOGTIME}}
+\newcommand{\LOGSPACE}{\mathtt{LOGSPACE}}
+\newcommand{\PTIME}{\mathtt{PTIME}}
+\newcommand{\PSPACE}{\mathtt{PSPACE}}
+\newcommand{\EXPTIME}{\mathtt{EXPTIME}}
+\newcommand{\EXPSPACE}{\mathtt{EXPSPACE}}
+\mathchardef\mhyphen="2D
+
+% Note Commands
+\newcommand{\citationneeded}{{\em (citation needed) } }
+\newcommand{\lineofthought}[1]{{\bf [#1] }}
+\newcommand{\TODO}{\ensuremath{\left<\mathbf{TODO}\right> }}
+
+% Disabled Note Commands
+\newcommand{\timeestimation}[1]{}
+%\newcommand{\citationneeded}{}
+%\newcommand{\lineofthought}[1]{}
+%\newcommand{\TODO}{}
+
+\newcommand{\interpret}[2][]{\ensuremath{\left\llbracket #2 \right\rrbracket
+	\ifthenelse{\isempty{#1}}{}{_{#1}}}}
+\newcommand{\Input}[1][]{\ensuremath{I
+	\ifthenelse{\isempty{#1}}{}{_{#1}}}}
+\newcommand{\Output}[1][]{\ensuremath{O
+	\ifthenelse{\isempty{#1}}{}{_{#1}}}}
+\newcommand{\Compiler}[3][]{\ensuremath{compile_{#2\rightarrow #3}
+	\ifthenelse{\isempty{#1}}{}{^{#1}}}}
+\newcommand{\Interpreter}[2][]{\ensuremath{interpret_{#2}
+	\ifthenelse{\isempty{#1}}{}{^{#1}}}}
+\newcommand{\measuretime}[2][]{\ensuremath{T_#2
+	\ifthenelse{\isempty{#1}}{}{^{#1}}}}
+\newcommand{\measurespace}[2][]{\ensuremath{S_#2
+	\ifthenelse{\isempty{#1}}{}{^{#1}}}}
+\newtheorem{prop}{Proposition}
+\newtheorem{corrolary}{Corrolary}
+\newtheorem{thesis}{Thesis}
+\theoremstyle{definition}
+\newtheorem{defn}{Definition}
+
+\author{Aaron Karper}
+\title{A Programming Language Oriented Approach to Computability}
+\institute{Institute of Computer Science and Applied Mathematics\\Universität Bern}
+\date{2012}
+\begin{document}
+
+\frame{\maketitle}
+\frame{\tableofcontents}
+
+\section{Introduction}
+\subsection{Goal}
+\frame{
+	\frametitle{Goal}
+	\begin{itemize}[<+->]
+		\item Introduction to methods and theorems of computability and complexity
+		\item To be read in parallel to the Computability and Complexity Lecture 
+			by Prof. Strahm
+		\item Connect theory and practical application
+		\item With a formalism easily understandable by students in the fourth semester
+	\end{itemize}
+}
+
+\subsection{Some Definitions}
+\frame{
+	\frametitle{Semantic Function}
+	\pause
+	The {\em semantic function}\/ translates between the language $L$, we use to 
+	describe a program and the mathematical objects $M$, it describes.
+
+	\pause
+	For example:
+	\begin{equation*}
+		\interpret[\lambda \text{-calculus}]{\lambda x.\,x}(f) = id(f) = f
+	\end{equation*}
+	\pause
+	If given expricitly it gives a specification for the programming language.
+}
+
+\section{Transforms}
+\begin{frame}
+	\frametitle{Transforms}
+\end{frame}
+
+\section{Implementation}
+\begin{frame}
+	\frametitle{Implementing \WHILE}
+\end{frame}
+
+\end{document}
