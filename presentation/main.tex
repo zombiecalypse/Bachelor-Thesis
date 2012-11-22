@@ -19,6 +19,7 @@
 \usepackage{algorithm}
 \usepackage[noend]{algpseudocode}
 \usepackage{listings}
+
 \lstnewenvironment{code}{\lstset{language=Haskell,basicstyle=\small}}{}
 
 \newcommand*{\pfunc}{\xrightarrow{p}}
@@ -98,8 +99,7 @@
 }
 
 \subsection{Some Definitions}
-\begin{frame}
-	\frametitle{Semantic Function}
+\begin{frame}{Semantic Function}
 	\pause
 	The \alert{semantic function}\/ translates between the language $L$, we use to 
 	describe a program and the mathematical objects $M$, it describes.
@@ -117,8 +117,8 @@
 	something is an error or does not terminate.
 \end{frame}
 
-\begin{frame}[fragile]
-	\frametitle{The {\tt Cons}\/ cell data structure}
+\begin{frame}[fragile]{The {\tt Cons}\/ cell data structure}
+	
 	\begin{center}
 	\begin{code}
 		data Cons = Nil | ConsCell { hd :: Cons, tl :: Cons }
@@ -134,8 +134,8 @@
 \end{frame}
 
 \subsection{\WHILE}
-\begin{frame}[fragile]
-	\frametitle{The \WHILE programming language}
+\begin{frame}[fragile]{The \WHILE programming language}
+	
 	\begin{itemize}
 		\item Very basic, but Turing complete language.
 		\item Imperative
@@ -151,8 +151,8 @@ unary_minus_one read X {
 	\end{example}
 \end{frame}
 
-\begin{frame}[fragile]
-	\frametitle{The \WHILE programming language -- Syntax}
+\begin{frame}[fragile]{The \WHILE programming language -- Syntax}
+	
 	\begin{center}
 		\begin{tiny}
 			\begin{grammar}
@@ -181,8 +181,8 @@ unary_minus_one read X {
 	\end{center}
 \end{frame}
 
-\begin{frame}[fragile]
-	\frametitle{The \WHILE programming language -- Semantics}
+\begin{frame}[fragile]{The \WHILE programming language -- Semantics}
+	
 	The data expressions might depend on the context $c$, which binds variable 
 	names to their values.
 
@@ -206,8 +206,7 @@ unary_minus_one read X {
 	\end{small}
 \end{frame}
 
-\begin{frame}
-	\frametitle{The \WHILE programming language -- Semantics}
+\begin{frame}{The \WHILE programming language -- Semantics}
 	The statements change the context, so their interpretation returns the new context.
 	\begin{align*}
 		\interpret{name\: := a}(c) &= (c\setminus \{(name, x)\}) \cup (name, \interpret{a}(c)) \\
@@ -222,8 +221,7 @@ unary_minus_one read X {
 	\end{align*}
 \end{frame}
 
-\begin{frame}
-	\frametitle{The \WHILE programming language -- Semantics}
+\begin{frame}{The \WHILE programming language -- Semantics}
 	The programs represent functions:
 
 	\begin{align*}
@@ -236,8 +234,7 @@ unary_minus_one read X {
 
 \section{Futamura Projections}
 \subsection{Transforms}
-\begin{frame}
-	\frametitle{Programs acting on programs}
+\begin{frame}{Programs acting on programs}
 	In any language $A$ we define:
 	\begin{description}
 		\item[interpreter] An \alert{interpreter}\/ for a language $L$ is a program $interpret$, such 
@@ -250,9 +247,7 @@ unary_minus_one read X {
 	\end{description}
 \end{frame}
 
-\begin{frame}
-	\frametitle{Futamura Projections}
-
+\begin{frame}{Futamura Projections}
 	\begin{itemize}[<+->]
 		\item Interpreters are easy to write, but slow. Compilers on the other 
 			hand give fast programs, but are hard to write.
@@ -264,8 +259,7 @@ unary_minus_one read X {
 \end{frame}
 
 \subsection{The first Futamura Projection}
-\begin{frame}
-	\frametitle{The first Futamura Projection}
+\begin{frame}{The first Futamura Projection}
 	Given a program $p$ in a language $L$, can we make it an executable in $A$?
 	\pause
 
@@ -279,8 +273,7 @@ unary_minus_one read X {
 	}
 \end{frame}
 
-\begin{frame}
-	\frametitle{The first Futamura Projection}
+\begin{frame}{The first Futamura Projection}
 	But is this useful?
 
 	\pause
@@ -297,8 +290,7 @@ unary_minus_one read X {
 \end{frame}
 
 \subsection{The second Futamura Projection}
-\begin{frame}
-	\frametitle{The second Futamura Projection}
+\begin{frame}{The second Futamura Projection}
 	Do we need to write a compiler for $L$, if we already have an interpreter?
 	\pause
 
@@ -313,8 +305,7 @@ unary_minus_one read X {
 	}
 \end{frame}
 
-\begin{frame}
-	\frametitle{The second Futamura Projection}
+\begin{frame}{The second Futamura Projection}
 	But isn't a hand-optimized compiler better?
 
 	\pause
@@ -330,8 +321,7 @@ unary_minus_one read X {
 \end{frame}
 
 \subsection{The third Futamura Projection}
-\begin{frame}
-	\frametitle{The third Futamura Projection}
+\begin{frame}{The third Futamura Projection}
 	How can we automate this process of transforming an interpreter to a compiler?
 
 	\pause
@@ -358,8 +348,55 @@ unary_minus_one read X {
 \end{frame}
 
 \section{Implementation}
-\begin{frame}
-	\frametitle{Implementing \WHILE}
+\subsection{Implementing \WHILE}
+\begin{frame}{Implementing \WHILE}
+	\begin{itemize}[<+->]
+		\item Added some useful additions, like function calls and atomic symbols 
+		\item Implementation in {\tt Haskell}
+			\begin{itemize}
+				\item Elegant pattern matching via constructors
+				\item No lingering state
+				\item Parser combinator library {\tt Parsec} 
+			\end{itemize}
+	\end{itemize}
+\end{frame}
+
+\begin{frame}[t, fragile]
+	\begin{itemize}[<+->]
+		\item Parsing with the Parsec library
+		\item The semantic function is very useful
+		\item Pure language, therefore context must be given as an argument
+		\item Monads for implicit context
+	\end{itemize}
+	\begin{onlyenv}<1>
+\begin{code}
+consExp = do 
+  reserved "cons"
+  dat1 <- dataExpression
+  dat2 <- dataExpression
+  return (ConsExp dat1 dat2)
+\end{code}
+\end{onlyenv}
+	\begin{onlyenv}<2>
+\begin{code}
+evalData (ConsExp x y) = do
+  evleft  <- evalData x
+  evright <- evalData y
+  return (Cons evleft evright)
+\end{code}
+\end{onlyenv}
+	\begin{onlyenv}<4>
+\begin{code}
+evalData (Var name) = do
+  context <- get
+  return (lookup name context)
+\end{code}
+\end{onlyenv}
+\end{frame}
+
+\subsection{Demo}
+\begin{frame}{Demo: Implementing a Turing machine}
+	
 \end{frame}
 
 \section{Questions}
