@@ -67,7 +67,21 @@ reportDataUsage n = do
 type ContextDict = M.Map String Tree
 
 data Context = Context { functionName :: Name, dict :: ContextDict, parentContext :: Maybe Context }
-	deriving (Show, Eq)
+	deriving (Eq)
+
+instance (Show Context) where
+	show c = showInd c ""
+			where
+				showInd c ind = ind ++ "["++show (functionName c) ++ "]{\n" ++ 
+										showMap c ind ++
+										ind ++ "}" ++
+										case parentContext c of
+												Nothing -> ""
+												Just cc -> showInd cc (ind ++ "  ")
+				showMap c ind = foldl (++) "" (map (showPair (ind++"  ") (lengthOfLongestName $ dict c)) (M.toList $ dict c))
+				lengthOfLongestName m = maximum $ map (length . fst) $ M.toList m
+				showPair ind longest (str, tree) = ind ++ 
+									str ++ ":" ++ replicate (2 + longest - length str) ' ' ++ show tree ++ "\n"
 
 instance Monoid Context where
 	mempty = Context { functionName = "", dict = M.empty, parentContext = Nothing }

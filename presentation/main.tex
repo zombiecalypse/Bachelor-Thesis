@@ -78,7 +78,7 @@
 
 \author{Aaron Karper}
 \title{A Programming Language Oriented Approach to Computability}
-\institute{Institute of Computer Science and Applied Mathematics\\Universität Bern}
+\institute{Institute of Computer Science and Applied Mathematics\\ Universität Bern}
 \date{2012}
 \begin{document}
 
@@ -114,7 +114,7 @@
 	\pause
 
 	The value $\bot$ denotes that an interpretation does not exists, i.e.\ that 
-	something is an error or does not terminate.
+	an expression is an error or does not terminate.
 \end{frame}
 
 \begin{frame}[fragile]{The {\tt Cons}\/ cell data structure}
@@ -239,6 +239,7 @@ unary_minus_one read X {
 	\begin{description}
 		\item[interpreter] An \alert{interpreter}\/ for a language $L$ is a program $interpret$, such 
 			that \[\forall p\in L: \interpret[A]{interpret}(p,x) =\interpret[L]{p}(x)\]
+			\note{This is analogous to giving an implementation of the semantic function}
 		\item[compiler] A \alert{compiler}\/ for a language $L$ is a program $compile$, 
 			such that 
 			\[\forall p\in L: \interpret[A]{\interpret[A]{compile}(p)}(x)= \interpret[L]{p}(x)\]

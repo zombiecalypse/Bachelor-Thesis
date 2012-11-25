@@ -31,7 +31,7 @@ evalData (HdExp y) = do
 	case ev of 
 		Cons x _ -> return x
 		Nil -> fail ("Hd of nil -- " ++ show context)
-		Sym _ -> fail ("Hd of symbol -- " ++ show context)
+		Sym x -> fail ("Hd of symbol " ++ show (Sym x) ++ " -- " ++ show context)
 evalData (TlExp y) = do
 	ev <- evalData y
 	context <- get
