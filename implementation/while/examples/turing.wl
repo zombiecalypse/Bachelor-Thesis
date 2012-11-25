@@ -112,14 +112,30 @@ run_tm read TM {
 
 example read X {
 	TAPE := [make_band]((:bla).(:bla).(:bla).(:bla).(:bla).(:bla).nil);
-	MAP := [add_to_map](nil.((:bla).(:even)).((:o).(:odd).(:R).nil).nil);
-	MAP := [add_to_map](MAP.((:bla).(:odd)).((:o).(:even).(:R).nil).nil);
-	MAP := [add_to_map](MAP.(nil.(:odd)).(nil.(:odd_del).(:L).nil).nil);
-	MAP := [add_to_map](MAP.(nil.(:even)).(nil.(:even_del).(:L).nil).nil);
-	MAP := [add_to_map](MAP.(nil.(:odd_del)).((:odd).(:end).(:N).nil).nil);
-	MAP := [add_to_map](MAP.(nil.(:even_del)).((:even).(:end).(:N).nil).nil);
-	MAP := [add_to_map](MAP.((:o).(:odd_del)).(nil.(:odd_del).(:L).nil).nil);
-	MAP := [add_to_map](MAP.((:o).(:even_del)).(nil.(:even_del).(:L).nil).nil);
+	MAP := [add_to_map](MAP.  
+								((:bla).(:even)).
+								((:o).(:odd).(:R).nil).nil);
+	MAP := [add_to_map](MAP.
+								((:bla).(:odd)).
+								((:o).(:even).(:R).nil).nil);
+	MAP := [add_to_map](MAP.
+								(nil.(:odd)).
+								(nil.(:odd_del).(:L).nil).nil);
+	MAP := [add_to_map](MAP.
+								(nil.(:even)).
+								(nil.(:even_del).(:L).nil).nil);
+	MAP := [add_to_map](MAP.
+								(nil.(:odd_del)).
+								((:odd).(:end).(:N).nil).nil);
+	MAP := [add_to_map](MAP.
+								(nil.(:even_del)).
+								((:even).(:end).(:N).nil).nil);
+	MAP := [add_to_map](MAP.
+								((:o).(:odd_del)).
+								(nil.(:odd_del).(:L).nil).nil);
+	MAP := [add_to_map](MAP.
+								((:o).(:even_del)).
+								(nil.(:even_del).(:L).nil).nil);
 	STATE := (:even);
 	END := (:end);
 	TM := TAPE.STATE.MAP.END.nil;
