@@ -232,10 +232,9 @@ unary_minus_one read X {
 	For the rest of the presentation, we only interpret programs.
 \end{frame}
 
-\section{Futamura Projections}
-\subsection{Transforms}
+\section{Transforms}
 \begin{frame}{Programs acting on programs}
-	In any language $A$ we define:
+	In any programming language $A$ we define:
 	\begin{description}
 		\item[interpreter] An \alert{interpreter}\/ for a language $L$ is a program $interpret$, such 
 			that \[\forall p\in L: \interpret[A]{interpret}(p,x) =\interpret[L]{p}(x)\]
@@ -248,6 +247,20 @@ unary_minus_one read X {
 	\end{description}
 \end{frame}
 
+\begin{frame}{Comparing Programming Languages}
+	A language $A$ is \alert{at least as strong} as $B$, written $B\lepower A$, if there is a 
+	\alert{compiler} written in $A$ for $B$. 
+	\begin{example}
+		\begin{itemize}[<+->]
+			\item \WHILE is at least as strong as Turing machines and vice versa.
+			\item {\tt Haskell}  is at least as strong as \WHILE.
+			\item \WHILE is at least as strong as {\tt 3-SAT}.
+			\item {\tt 3-SAT} is at least as strong as any other problem in {\tt NP-TIME}.
+		\end{itemize}
+	\end{example}
+\end{frame}
+
+\subsection{Futamura Projections}
 \begin{frame}{Futamura Projections}
 	\begin{itemize}[<+->]
 		\item Interpreters are easy to write, but slow. Compilers on the other 
@@ -397,7 +410,7 @@ evalData (Var name) = do
 
 \subsection{Demo}
 \begin{frame}{Demo: Implementing a Turing machine}
-	
+	\note{I will not get through with this, but I can show off something}
 \end{frame}
 
 \section{Questions}
