@@ -275,8 +275,15 @@ time constructible function}\/:
 \end{proof}
 
 \begin{theorem}[Space Hierarchy]
-	$\Theta(f(x)) \neq \Theta(g(x))$ then $\SPACE[O(f(x))] \neq \SPACE[O(g(x))]$
+	If $f$ is space constructible, then $\SPACE[o(f(x))] \neq \SPACE[f(x)]$.
 \end{theorem}
+\begin{proof}
+	This proof is very similar to the Time Hierarchy theorem. Instead of 
+	counting the steps, we can write out $f(x)$ in unary on a second tape, and 
+	move this in parallel to the computation tape. If at any point, an unmarked 
+	cell is hit on the second tape, we know that we used more than $f(x)$ cells 
+	and reject.
+\end{proof}
 This theorem is much stronger than the time hierarchy theorem, because it 
 shows that any difference in the asymptotic behaviour leads to a different 
 computability class.

@@ -26,43 +26,100 @@
 \end{table}
 
 \subsection{The Elements} % (fold)
-\label{sub:The Elements}
+\label{sub:TheElements}
 The \FOR language contains only very basic commands, but they can be combined
 to implement a huge number of algorithms. As the data structure, we choose 
-the humble {\tt cons} cell, that contains only a reference as the head and 
+the humble $ConsCell$, that contains only a reference as the head and 
 another as the tail.\footnote{An observant reader will notice that this
-structure stems from the building of linked lists.}
-.
+structure stems from the building of linked lists.}.
 \begin{figure}[htb]
 	\begin{center}
 		\includegraphics[height=3cm]{introduction/for/images/conscell}
 	\end{center}
-	\caption{The {\tt cons} cell}
+	\caption{The $ConsCell$}
 \end{figure}
 
-The expression {\tt cons e1 e2} constructs such a cell with the evaluation of
-e1 in the head and the evaluation of e2 in the tail. The expression {\tt hd e1}
-yields the head of the evaluation of e1 and {\tt tl e1} its tail. Since all our
-current constructs need another expression, we also need a "bottom" to this
-regress. We add {\tt nil} as an expression, which is distinct from any {\tt
-cons e f}. We also want to refer to stored values, so an identifier (eg {\tt
-X}) can also be an expression.
+Because the head and the tail point to {\em something}, we also need some 
+atomic data, that it can point to. We introduce $Nil$, which points at 
+nothing and is the basis for the $ConsCell$ data.
 
-There are very few types of statements in \FOR, just three to be precise. The 
-first is the {\em assignment} {\tt X := e}, which assigns the variable {\tt X}
-the evaluation of {\tt e}. Later, when {\tt X} is used in an expression, it 
+The formal definitions of the semantics of \FOR can be seen in the tables 
+\ref{tab:for-sem-exp} and \ref{tab:for-sem-stat}, but to gain familiarity 
+with semantic functions, the following sections will explain the meaning of 
+the definitions.
+
+In the \FOR language, when we write the expression $\mathtt{cons}\: e_1\: e_2$, it
+will give us such a $ConsCell$ with the evaluation of $e_1$ in the head and the
+evaluation of $e_2$ in the tail. The expression $\mathtt{hd}\: e$ yields the head of
+the evaluation of $e$ and $\mathtt{tl}\: e$ its tail. The expression 
+$\mathtt{nil}$ just gives back $Nil$\footnote{
+	Note the difference: $\mathtt{nil}$ is an expression in the language,
+	literally the string {\tt nil}, but $Nil $ is the mathematical entity.
+	Similarly you should not mix up $\mathtt{cons} a b$ and $ConsCell(x, y)$}.
+We also want to refer to stored values, so an identifier (e.g. {\tt X}) can
+also be an expression, the evaluation of which depends on the current variable
+bindings.
+
+There are very few types of statements in \FOR, just three to be precise: The 
+first is the {\em assignment} $\mathtt{X}\:\mathtt{:=}\: e$, which assigns the variable {\tt X}
+the evaluation of $e$. Later, when {\tt X} is used in an expression, it 
 will reproduce this value. The second is the classic {\tt if} statement, that 
 only executes its first block, if the expression does {\em not} return {\tt nil} 
 and the else-block -- if any -- otherwise. Finally, there is the eponymous 
-{\tt for} loop, that works as follows:
+$\mathtt{for}\: I\: \mathtt{in}\: e\: block$ loop, that works as follows:
 
 \begin{enumerate}
-	\item On first entering the loop, the expression is evaluated and lets call 
-		it $e$.
-	\item If the evaluation is {\tt nil}, the loop is not evaluated anymore.
-	\item Otherwise the block is evaluated with the value of the head of $e$.
+	\item On first entering the loop, the expression $e$ is evaluated and stored.
+	\item If the evaluation is $Nil$, we are done.
+	\item Otherwise the block is evaluated with the head of $e$ bound to the 
+		variable name $I$.
 	\item Then this procedure is run again with the tail of $e$.
 \end{enumerate}
+
+\begin{table}
+	If $c = \{(name_i, value_i)\}$ is the variable binding at the time of the evaluation:
+	\begin{align}
+			\interpret{\mathtt{nil}}(c) &= Nil \\
+			\interpret{\mathtt{cons}\: A\: B}(c)=\interpret{\mathtt{(}A\mathtt{.}B\mathtt{)}} &=  ConsCell(\interpret{A}(c), \interpret{B}(c)) \\
+			\interpret{\mathtt{hd}\: A}(c) &= \begin{cases}
+				x, &\text{ if }\interpret{A}(c) = ConsCell(x, y)\\
+				\bot, &\text{ otherwise}
+			\end{cases}\\
+			\interpret{\mathtt{tl}\: A}(c) &= \begin{cases}
+				y, &\text{ if }\interpret{A}(c) = ConsCell(x, y)\\
+				\bot, &\text{ otherwise}
+			\end{cases}\\
+			\interpret{name}(c) &= \begin{cases}
+				x, &\text{ if } (name, x) \in c\\
+				Nil, &\text{ otherwise}
+			\end{cases}
+	\end{align}
+	\caption{Semantics of \FOR expressions}
+	\label{tab:for-sem-exp}
+\end{table}
+\begin{table}
+	If $c = \{(name_i, value_i)\}$ is the variable binding at the time of the evaluation:
+	\begin{align*}
+		\interpret{name\: := a}(c) &= (c\setminus \{(name, x)\}) \cup (name, \interpret{a}(c)) \\
+		\interpret{\mathtt{if}\: a\: block_1\: \mathtt{else}\: block_2}(c) &= \begin{cases}
+			\interpret{block_2}(c), &\text{ if }\interpret{a}(c)= Nil\\
+			\interpret{block_1}(c), &\text{ otherwise}
+		\end{cases}\\
+		\interpret{\mathtt{if}\: a\: block}(c) &= \begin{cases}
+			c, &\text{ if }\interpret{a}(c)= Nil\\
+			\interpret{block}(c), &\text{ otherwise}
+		\end{cases}\\
+		\interpret{\mathtt{for}\: a\:\mathtt{in}\: v\: \{\: b\: \}}(c) &= \begin{cases}
+			c, &\text{ if }\interpret{v}(c) = Nil\\
+			(\interpret{\mathtt{for}\: a\: \mathtt{in}\: \interpret{\mathtt{tl}\: 
+		v}(c)\:\{\: b\: \}}\circ\interpret{b}\circ \interpret{a\: \mathtt{:=}\: 
+		\mathtt{hd}\: v})(c), &\text{ otherwise}
+		\end{cases}
+	\end{align*}
+	
+	\caption{Semantics of \FOR Statements}
+	\label{tab:for-sem-stat}
+\end{table}
 
 \subsection{\FOR computability}
 The probably most important property of the \FOR language is that programs in 
@@ -98,7 +155,7 @@ do it in an algorithmic way and so it is only reasonable to expect \FOR to be
 able to interpret itself. As we will see, that can not be the case:
 
 \begin{theorem}
-	There is no \FOR program $exec$ that takes $(program.input)$ as its 
+	There is no \FOR program $exec$ that takes $ConsCell(program, input)$ as its 
 	argument and returns $\interpret{program}(input)$.
 \end{theorem}
 \begin{proof}
@@ -160,7 +217,7 @@ halt, i.e. produces a new value on any {\tt next}.
 
 \subsection{The \FOR in mathematics and logic}
 The \FOR computable functions match a category of functions known as 
-primitive recursive. A function is primitive recursive, if it is either
+{\em primitive recursive}. A function is {\em primitive recursive}, if it is either
 \begin{enumerate}
 	\item A successor function $S_i(x_1,\dots,x_n) = x_i+1$
 	\item A projection function $P_i(x_1,\dots,x_n) = x_i$
@@ -176,7 +233,7 @@ primitive recursive. A function is primitive recursive, if it is either
 It is easy to see that \FOR can compute any primitive recursive function:
 The successor function and the projections are trivial, for the primitive 
 recursion, we have programs $\interpret{G}=g$ and $\interpret{H}=h$ by 
-induction assumtion\citationneeded. 
+induction assumtion. 
 
 \begin{verbatim}
 F read NX {
@@ -185,10 +242,17 @@ F read NX {
   Repetitions := [unary](N)
   Result := [G](Xs)
   Counter := 0
-  FOR I IN Repetitions {
+  for I in Repetitions {
     Result := [H](Result.Xs)
   }
 } write Result
 \end{verbatim}
 
-The other direction is in the exercises \TODO.
+\begin{Exercise}[title={\FOR computable functions are primitive recursive}]
+	\Question Can you model an {\tt if} statement in primitive recursion?
+	\Question How would you implement a {\tt for} loop with primitive recursion?
+	\Question How could we model assignment in the primitive recursive functions?
+	\Question {\em Difficult:} Show that $ConsCell$ can be modelled in the 
+		natural numbers, with primitive recursive functions handling $\mathtt{cons}$, 
+		$\mathtt{hd}$ and $\mathtt{tl}$.
+\end{Exercise}

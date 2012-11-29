@@ -40,30 +40,32 @@ Nearly all modern languages try to capture the full spectrum of solvable
 problems. For the purposes of this text, the \WHILE language will 
 serve as a minimal coding for computability.
 
-\lineofthought{
-	I need to explain stuff I'll need in the chapter \ref{sec:WHILE}, e.g. 
-	turing completeness (?), what a programming language is, ...
-	
-	\begin{itemize}
-		\item Data and Language
-		\item Representation of a program vs its semantics.
-		\item Turing completeness
-	\end{itemize}
-}
 \subsection{What is a programming language?} % (fold)
 \label{sub:What is a programming language}
-We have an intuitive notion of what a programming language is, which probably 
-goes like "A language, in which programs can be written" or "An 
-executable language". But what makes a string of letters executable? 
+We have an intuitive notion of what a programming language is, which probably
+goes like "A language, in which programs can be written" or "An executable
+language". But what makes a string of letters executable? 
 
 The difference is just that we know how a programming language should be 
-interpreted, i.e. a program can be mapped to a function and thus in the 
+interpreted, i.e.\ a program can be mapped to a function and thus in the 
 realm of mathematics.
+
+\begin{defn}
+	A partial function from $A$ to $B$ is a function 
+	\[ f:A\rightarrow B_\bot = B\cup \{\bot\}\]
+	where $\bot$ signifies that no value exists for that input.
+
+	For example $\interpret{A}(x) = \bot$ means, that the program $A$ does 
+	either give an error or does not terminate on the input $x$.
+\end{defn}
+
 \begin{defn}
 	A {\em semantic function} $\interpret[A]{.}$ for a programming language $A$ is a function
-	\[ \interpret[A]{.}: A \rightarrow \left( \Input[A] \rightarrow \Output[A]\right)\]
-	That is, the function $\interpret[A]{.}$ takes a valid $A$ program and 
-	gives a function that maps inputs for $A$ programs to outputs.
+	\[ \interpret[A]{.}: A \rightarrow \left( \Input[A] \rightarrow 
+	\Output[A]\cup \{\bot\}\right)\]
+	where $\bot$ signifies either an error or that the function does not return.
+	Then the function $\interpret[A]{.}$ takes a valid $A$ program and 
+	gives a function that maps inputs for $A$ programs to outputs (if any).
 \end{defn}
 The semantic function defines what a program {\em means}, while its syntax 
 defines {\em how it should look like}. It typically uses other functions to 

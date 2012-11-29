@@ -161,7 +161,7 @@ interpreter will be the following exercise.
 
 \begin{verbatim}
     lookup read (Table.Key) {
-      FOR (K.Value) IN Table {
+      for (K.Value) in Table {
         if [and](K = Key . [not](Result)) {
           Result := Value
         }
@@ -170,7 +170,7 @@ interpreter will be the following exercise.
 
     insert read (Table.(Key.Value)) {
       Outtable := Nil
-      FOR (K.V) IN Table {
+      for (K.V) in Table {
         if K = Key {
           Outtable := cons (Key.Value) Outtable
         }
@@ -361,7 +361,7 @@ any algorithm. The perhaps most notoric is the halting problem:
 	There can be no program $\mathtt{halt?}\in \WHILE$ such that 
 	\begin{align*}
 		\interpret{\mathtt{halt?}}&:\WHILE\times \Input[\WHILE] \longrightarrow \{True, False\}\\
-		\interpret{\mathtt{halt?}}&(p, i) =\begin{cases}
+		\interpret{\mathtt{halt?}}&(p, i) \peq\begin{cases}
 			False, &\text{ if }\interpret{p}(i)=\bot\\
 			True, &\text{ else}
 		\end{cases}
@@ -393,7 +393,7 @@ any algorithm. The perhaps most notoric is the halting problem:
 
 	\begin{align*}
 		\interpret{loopInverse}(loopInverse) &= \bot &\Rightarrow \\ 
-		\interpret{halt?} &= False &\Rightarrow \\ 
+		\interpret{halt?}(loopInverse) &= False &\Rightarrow \\ 
 		\interpret{loopInverse}(loopInverse) &= loopInverse\neq \bot
 	\end{align*}
 
@@ -415,7 +415,7 @@ language, then the new language can not solve its own halting problem, even
 if it was more powerful than \WHILE.
 
 \begin{corrolary}
-	No language more powerful than \WHILE can solve its own halting problem.
+	No language at least as powerful than \WHILE can solve its own halting problem.
 \end{corrolary}
 
 \subsection{Rice's Theorem}
@@ -438,7 +438,7 @@ Rice proved in 1953 that these procedures cannot exist either.
 		program, that can deduce if the property holds based on the source of a
 		procedure alone.
 \end{theorem}
-\begin{proof}
+\begin{proof}\TODO\lineofthought{What do the sub-programs do exactly}
 	We can easily see that the halting problem is a special case of this, but 
 	in fact, with a simple construction, all cases come down to it.
 
