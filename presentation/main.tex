@@ -1,7 +1,8 @@
 \documentclass{beamer}
-\usetheme{Dresden}
+%\usetheme{Dresden}
+\setbeameroption{show notes}
+
 \setbeamercovered{transparent}
-% \beamertemplatenavigationsymbolsempty % Comment this out if you want a navigation bar
 
 \usepackage[utf8x]{inputenc}
 \usepackage{amsmath}
@@ -90,16 +91,27 @@
 \frame{
 	\frametitle{Goal}
 	\begin{itemize}[<+->]
-		\item Introduction to methods and theorems of computability and complexity
+		\item Introduction to methods and theorems of computability and 
+			complexity \note{Focus is however on computability}
 		\item To be read in parallel to the Computability and Complexity Lecture 
 			by Prof. Strahm
-		\item Connect theory and practical application
+		\item Connect theory and practical application\note{practical application 
+				reach from JIT compilers that use partial evaluation, how 
+				applications are ported to new architectures and how we can formulate 
+				Churches thesis so that it can be checked scientifically.}
 		\item With a formalism easily understandable by students in the fourth semester
+			\note{Means that prerequisites should be very low -- no formal logic, few
+			data structures, only scratching formal languages. Basically, the text 
+			should be self contained}
 	\end{itemize}
 }
 
 \subsection{Some Definitions}
 \begin{frame}{Semantic Function}
+	\note{Semantic functions are used in a style of defining languages called
+		{\em denotational semantics}. It gives very precise specifications for a
+		language, but for complex languages, it is nigh impossible to write them
+		down.}
 	\pause
 	The \alert{semantic function}\/ translates between the language $L$, we use to 
 	describe a program and the mathematical objects $M$, it describes.
@@ -118,11 +130,12 @@
 \end{frame}
 
 \begin{frame}[fragile]{The {\tt Cons}\/ cell data structure}
-	
+	\note{This is like in LISP, the cons cell is very flexible and incorporates 
+	pointers, that could allow sub-linear runtimes.}
 	\begin{center}
-	\begin{code}
-		data Cons = Nil | ConsCell { hd :: Cons, tl :: Cons }
-	\end{code}
+		\begin{code}
+			data Cons = Nil | ConsCell { hd :: Cons, tl :: Cons }
+		\end{code}
 		\includegraphics[width=0.25\textwidth]{pictures/conscell}
 	\end{center}
 	The {\tt cons}\/ cell is a simple data structure that contains a head and a 
@@ -135,12 +148,14 @@
 
 \subsection{\WHILE}
 \begin{frame}[fragile]{The \WHILE programming language}
+	A basic, imperative, Turing-complete languages, using {\tt cons} cells to 
+	represent data.
 	
-	\begin{itemize}
+	\note{\begin{itemize}
 		\item Very basic, but Turing complete language.
 		\item Imperative
 		\item Uses the {\tt cons} cell as basic data structure.
-	\end{itemize}
+	\end{itemize}}
 	\begin{example}
 		\begin{verbatim}
 unary_minus_one read X {
@@ -152,7 +167,13 @@ unary_minus_one read X {
 \end{frame}
 
 \begin{frame}[fragile]{The \WHILE programming language -- Syntax}
-	
+	\note{\begin{description}
+			\item[Expressions] nil, cons of two exps, hd or tl of an exp and 
+				variables. Symbols for added convenience. Functions also, but will 
+				not go into details.
+			\item[Statements] Assignment, while -- for and if for convenience
+			\item[Procedures] 
+		\end{description}}
 	\begin{center}
 		\begin{tiny}
 			\begin{grammar}
@@ -162,6 +183,7 @@ unary_minus_one read X {
 						\alt 	`hd' <expression>
 						\alt 	`tl' <expression>
 						\alt 	<variable>
+						\alt 	`:' <name>
 
 				<statement-list> ::= <statement> ; \alt <statement> ; <statement-list>
 

@@ -4,6 +4,41 @@ While most languages we encounter are turing-complete, that does not need
 to be the case. In this chapter, we will discuss the notion of a problem 
 description as a programming language.
 
+\subsection{Problem descriptions}
+There are many different kinds of problems in computer science, for example 
+sorting a list or determining if a boolean formula with variables is always
+true. Nevertheless, these kind of problems are never singular -- we would not 
+want an algorithm\footnote{Most definitions would not even allow this as an 
+algorithm}, that could reliably sort the list $4, 8, 2, -9$, but one that 
+could sort {\em all} lists, no matter the size. This means of course, that 
+algorithms need data as input to describe the problems they need to solve. 
+This data is then called the {\em problem description}. 
+
+Looking back at the beginning, the semantic function was introduced to give 
+meaning to data. Since then, we primarily used it to differentiate between 
+\WHILE programs and the functions they denote. In the case of problem
+descriptions, we can the interpretation of a problem would be the solution 
+that we would expect. 
+
+\begin{example}
+	$U = Cons(Nil, Cons(Nil, Cons(Nil, Nil)))$, then $\interpret[unary]{U} = 3$.
+\end{example}
+\begin{example}
+	$L=Cons(4, Cons(8, Cons(2, Cons(-9, Nil))))$ is the problem description for
+	sorting the list $4, 8, 2, -9$ if given to a sorting procedure, formally
+	$\interpret[sort]{L}= Cons(-9, Cons(2, Cons(4, Cons(8, Nil))))$. When given
+	to a procedure, that calculates the minimum, the interpretation would be that
+	instead, so $\interpret[min]{L} = -9$.
+\end{example}
+
+\lineofthought{Partial evaluation for partial problem descriptions?}
+\TODO
+\subsection{Reductions}
+\TODO
+
+\subsection{Hardness and completeness}
+\TODO
+
 \lineofthought{
 	The closest connection might be Prolog, in which I state a problem 
 	description, and the system will figure out a solution. Prolog is Turing 
