@@ -60,9 +60,16 @@ sourceExp = do {
 	name <- wakkas identifier;
 	return $ Source name
 } <?> "Source"
+
+atomExp = do {
+	reserved "atom?";
+	d <- dataExpression;
+	return $ AtomExp d
+}
+
 wakkas x =  between (symbol "<") (symbol ">") x
 
-term = parens dataExpression <|>  sourceExp <|> nilExp <|> numExp <|> consExp <|> varExp <|> symExp <|> try universalCallExp <|> evalExp  
+term = parens dataExpression <|>  sourceExp <|> nilExp <|> numExp <|> consExp <|> atomExp <|> varExp <|> symExp <|> try universalCallExp <|> evalExp 
 
 dataExpression = operators <?> "Data Expression"
 

@@ -11,6 +11,7 @@ flatSize (HdExp x) = flatSize x - 1
 flatSize (TlExp x) = flatSize x - 1
 flatSize (ConsExp x y) = 1 + flatSize x + flatSize y
 flatSize NilExp = 0
+flatSize (AtomExp _) = 1
 flatSize (FunctionCall _ _) = 0
 flatSize (UniversalCall _ _) = 0
 
@@ -25,6 +26,7 @@ data DataExpression =
 	Symbol Name                                |
 	Source Name                                |
 	FunctionCall Name DataExpression           |
+	AtomExp DataExpression                     |
 	UniversalCall DataExpression DataExpression
 	deriving (Show, Eq)
 

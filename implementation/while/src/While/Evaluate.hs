@@ -110,6 +110,13 @@ evalData (UniversalCall sourceExp argExp) = do
 	r <- interpretProcedure prog argExp
 	put context
 	return r
+evalData (AtomExp a) = do
+	dat <- evalData a
+	return $ isAtomic dat
+	where 
+		isAtomic Nil = Cons Nil Nil
+		isAtomic (Sym _) = Cons Nil Nil
+		isAtomic _ = Nil
 
 programAsData x = toTree x
 dataAsProgram x = fromTree x
