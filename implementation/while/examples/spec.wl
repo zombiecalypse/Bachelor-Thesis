@@ -6,10 +6,15 @@ setProgramName read PN {
 	P := hd PN; N := tl PN;
 	Pp := (:program).N.(tl (tl P));
 } write Pp
+
+extractBlock read P {
+	Y := hd (tl (tl (tl (tl P))));
+} write Y
 	
 
 main read X {
 	self := <main>;
 	self := [[ <setProgramName> ]](self.(:other));
-	self := [extractProgramName](self);
-} write self
+	self := [extractBlock](self);
+	statement := hd (tl self);
+} write statement

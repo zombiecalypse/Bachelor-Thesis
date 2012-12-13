@@ -55,11 +55,11 @@ instance (TreeBijection Program) where
 	toTree p = Sym "program" `Cons` Sym (programName p) `Cons` Sym (input p) `Cons` Sym (output p) `Cons` toTree (block p) `Cons` Nil
 	fromTree (Sym "program" `Cons` Sym name `Cons` Sym i `Cons` Sym o `Cons` b `Cons` Nil) = Program { programName = name, input = i, output = o, block = fromTree b }
 
-instance (TreeBijection a) => TreeBijection [a] where
-	toTree [] = Nil
-	toTree (x:xs) = toTree x `Cons` toTree xs
-	fromTree Nil = []
-	fromTree (a `Cons` b) = fromTree a : fromTree b
+instance (TreeBijection Block) where
+  toTree [] = Nil
+  toTree (x:y) = toTree x `Cons` toTree y
+  fromTree Nil = []
+  fromTree (Cons x y) = (fromTree x):(fromTree y)
 
 instance TreeBijection Integer where
 	toTree = intAsTree
