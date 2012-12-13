@@ -50,7 +50,19 @@ consExp = do {
 	return $ ConsExp dat1 dat2
 }
 
-term = parens dataExpression <|> nilExp <|> numExp <|> consExp <|> varExp <|> symExp <|> evalExp
+universalCallExp = do {
+	dat1 <- between (symbol "[[") (symbol "]]") dataExpression;
+	argument <- parens dataExpression;
+	return $ UniversalCall dat1 argument
+} <?> "Universal call"
+
+sourceExp = do {
+	name <- wakkas identifier;
+	return $ Source name
+} <?> "Source"
+wakkas x =  between (symbol "<") (symbol ">") x
+
+term = parens dataExpression <|>  sourceExp <|> nilExp <|> numExp <|> consExp <|> varExp <|> symExp <|> try universalCallExp <|> evalExp  
 
 dataExpression = operators <?> "Data Expression"
 

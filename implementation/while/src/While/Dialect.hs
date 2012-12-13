@@ -23,7 +23,7 @@ whileLanguage = WhileDialect {
 	while = Allow,
 	for = Allow,
 	cons = Allow,
-	universal = Disallow
+	universal = Allow
 }
 
 forLanguage = whileLanguage {

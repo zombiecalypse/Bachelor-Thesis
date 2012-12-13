@@ -1,5 +1,5 @@
 name: while
-version: 0.2.1
+version: 1.0.0
 cabal-version: -any
 build-type: Simple
 license: AllRightsReserved

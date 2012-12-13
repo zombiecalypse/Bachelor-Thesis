@@ -5,6 +5,8 @@ import Data.Monoid
 data Tree = Nil | Cons Tree Tree | Sym String
 	deriving (Eq)
 
+infixr 5 `Cons`
+
 instance Show Tree where	
 	show Nil = "nil"
 	show (Cons l r) = "(" ++ show l ++ "." ++ show r ++ ")"

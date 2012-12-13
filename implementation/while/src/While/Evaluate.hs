@@ -97,7 +97,24 @@ evalData (FunctionCall name arg) = do
 					r <- interpretProcedure (procs M.! name) arg
 					put context
 					return r
+evalData (Source name) = do
+	guardAllowed "Can't dump source" D.universal
+	programs <- getPrograms
+	return $ programAsData $ programs M.! name
+evalData (UniversalCall sourceExp argExp) = do
+	guardAllowed "Can't evaluate source" D.universal
+	context <- get
+	src <- evalData sourceExp
+	let prog = dataAsProgram src
+	put (mempty{ functionName = programName prog, parentContext = Just context })
+	r <- interpretProcedure prog argExp
+	put context
+	return r
 
+programAsData x = toTree x
+dataAsProgram x = fromTree x
+
+	
 setVal name val = do {
 	context@(Context {dict = d}) <- get;
 	put (context {dict = M.insert name val d})
