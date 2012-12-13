@@ -1,6 +1,6 @@
 \documentclass{beamer}
-%\usetheme{Dresden}
-\setbeameroption{show notes}
+\usetheme{Dresden}
+%\setbeameroption{show notes}
 
 \setbeamercovered{transparent}
 
@@ -81,6 +81,12 @@
 \title{A Programming Language Oriented Approach to Computability}
 \institute{Institute of Computer Science and Applied Mathematics\\ Universität Bern}
 \date{2012}
+\AtBeginSection[]{
+  \begin{frame}<beamer>
+    \frametitle{Outline for section \thesection}
+    \tableofcontents[currentsection, hideothersubsections]
+  \end{frame}
+}
 \begin{document}
 
 \frame{\maketitle}
@@ -255,6 +261,7 @@ unary_minus_one read X {
 \end{frame}
 
 \section{Transforms}
+\subsection{Programs acting on programs}
 \begin{frame}{Programs acting on programs}
 	In any programming language $A$ we define:
 	\begin{description}
@@ -294,7 +301,6 @@ unary_minus_one read X {
 	\end{itemize}
 \end{frame}
 
-\subsection{The first Futamura Projection}
 \begin{frame}{The first Futamura Projection}
 	Given a program $p$ in a language $L$, can we make it an executable in $A$?
 	\pause
@@ -325,7 +331,6 @@ unary_minus_one read X {
 	\end{itemize}
 \end{frame}
 
-\subsection{The second Futamura Projection}
 \begin{frame}{The second Futamura Projection}
 	Do we need to write a compiler for $L$, if we already have an interpreter?
 	\pause
@@ -356,7 +361,6 @@ unary_minus_one read X {
 	\end{itemize}
 \end{frame}
 
-\subsection{The third Futamura Projection}
 \begin{frame}{The third Futamura Projection}
 	How can we automate this process of transforming an interpreter to a compiler?
 

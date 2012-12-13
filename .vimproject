@@ -63,6 +63,7 @@ implementation=/home/aaron/Bachelor/implementation {
    function_call.wl
    identity.wl
    simple_call.wl
+   spec.wl
    symbol.wl
    turing.wl
 	}
