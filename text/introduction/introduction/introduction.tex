@@ -60,27 +60,27 @@ realm of mathematics.
 \end{defn}
 
 \begin{defn}
-	A {\em semantic function} $\interpret[A]{.}$ for a programming language $A$ is a function
+	A \emph{semantic function} $\interpret[A]{.}$ for a programming language $A$ is a function
 	\[ \interpret[A]{.}: A \rightarrow \left( \Input[A] \rightarrow 
 	\Output[A]\cup \{\bot\}\right)\]
 	where $\bot$ signifies either an error or that the function does not return.
 	Then the function $\interpret[A]{.}$ takes a valid $A$ program and 
 	gives a function that maps inputs for $A$ programs to outputs (if any).
 \end{defn}
-The semantic function defines what a program {\em means}, while its syntax 
-defines {\em how it should look like}. It typically uses other functions to 
+The semantic function defines what a program \emph{means}, while its syntax 
+defines \emph{how it should look like}. It typically uses other functions to 
 denote parts of the program. 
 \begin{example}
 	As a part of a programming language, we want to know the semantics of 
 	$\mathtt{572}$. Note that $\mathtt{572}$ is a string, not the number. However 
-	$\interpret[dec]{\mathtt{572}}=5\cdot 100+7\cdot 10+ 2$ {\em is} the number, not the string. 
+	$\interpret[dec]{\mathtt{572}}=5\cdot 100+7\cdot 10+ 2$ \emph{is} the number, not the string. 
 \end{example}
 
-When describing a programming language, the terms {\em expression} and {\em
-statement} will be used often. An {\em expression} is a representation of 
+When describing a programming language, the terms \emph{expression} and {\em
+statement} will be used often. An \emph{expression} is a representation of 
 data used in the language. It returns a value and can depend on the state of 
 the computation, e.g. to evaluate variables. Some expressions even change the 
-state of the computation. A {\em statement} does not return a value and just 
+state of the computation. A \emph{statement} does not return a value and just 
 changes the state.
 \begin{example}
 	In the assignment in a {\tt C}-like language {\tt int four = 2+2;}, the 

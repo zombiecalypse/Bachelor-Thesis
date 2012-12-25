@@ -35,7 +35,7 @@ our Turing machine model\footnote{Quantum computing is faster than \TM\@. A
 
 The problems we discuss are decision problems:
 \begin{defn}
-	A problem $P$ is called a {\em decision problem}, if the required output is 
+	A problem $P$ is called a \emph{decision problem}, if the required output is 
 	$Bool = \{True, False\}$.
 \end{defn}
 
@@ -193,15 +193,15 @@ mirrors computability theory, it has proven to be hard on much more basic
 levels than computability has.
 
 \subsection{Hierarchy Theorems}
-While not much is known, there are two important {\em hierarchy theorems}, 
-which give proper inclusions. To formulate that, we need the notion of a {\em 
+While not much is known, there are two important \emph{hierarchy theorems}, 
+which give proper inclusions. To formulate that, we need the notion of a \emph{
 time constructible function}\/:
 
 \begin{defn}
-	A function $f$ is called {\em time constructible}\/ if there is a 
+	A function $f$ is called \emph{time constructible}\/ if there is a 
 	$M\in\TM$, such that for sufficiently big $n$, $\TIME[M](1^n) = f(n)$.
 
-	A function $f$ is called {\em space constructible}\/ if there is a $M\in\TM$, 
+	A function $f$ is called \emph{space constructible}\/ if there is a $M\in\TM$, 
 	such that for sufficiently big $n$, $\SPACE[M](1^n)=f(n)$.
 
 	Basically, this states, that there are Turing machines with this exact time 
@@ -226,7 +226,7 @@ time constructible function}\/:
 			to the number $1(0)^k$ in binary.
 		\item $f(x)=2^x$ is space constructible: First write $1$ on the output 
 			tape, then for each element of the input, copy the output tape to its own end.
-		\item If $f(x)\leq x$ for infinitely many $x$ then $f$ is {\em not}\/ time
+		\item If $f(x)\leq x$ for infinitely many $x$ then $f$ is \emph{not}\/ time
 			constructible: We can't read the input, so we couldn't know, how long it
 			would have been.
 		\item This is not true for space constructible functions: We could even 

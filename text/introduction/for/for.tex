@@ -39,7 +39,7 @@ structure stems from the building of linked lists.}.
 	\caption{The $ConsCell$}
 \end{figure}
 
-Because the head and the tail point to {\em something}, we also need some 
+Because the head and the tail point to \emph{something}, we also need some 
 atomic data, that it can point to. We introduce $Nil$, which points at 
 nothing and is the basis for the $ConsCell$ data.
 
@@ -61,10 +61,10 @@ also be an expression, the evaluation of which depends on the current variable
 bindings.
 
 There are very few types of statements in \FOR, just three to be precise: The 
-first is the {\em assignment} $\mathtt{X}\:\mathtt{:=}\: e$, which assigns the variable {\tt X}
+first is the \emph{assignment} $\mathtt{X}\:\mathtt{:=}\: e$, which assigns the variable {\tt X}
 the evaluation of $e$. Later, when {\tt X} is used in an expression, it 
 will reproduce this value. The second is the classic {\tt if} statement, that 
-only executes its first block, if the expression does {\em not} return {\tt nil} 
+only executes its first block, if the expression does \emph{not} return {\tt nil} 
 and the else-block -- if any -- otherwise. Finally, there is the eponymous 
 $\mathtt{for}\: I\: \mathtt{in}\: e\: block$ loop, that works as follows:
 
@@ -182,7 +182,7 @@ We have
 It outputs {\tt TRUE} iff the given program outputs {\tt FALSE}. What then 
 is $\interpret{inverse}(inverse)$? Assume first that it is 
 {\tt TRUE}, then by definition it is {\tt FALSE} -- and vice versa! So it 
-neither returns {\tt TRUE} {\em nor} {\tt FALSE}. The only way that would 
+neither returns {\tt TRUE} \emph{nor} {\tt FALSE}. The only way that would 
 work would be if it didn't return anything at all, but as we have seen, all 
 \FOR programs terminate in finite time, so that can not be the case. 
 Therefore {\tt inverse} can not be a \FOR program and by extension {\tt exec} 
@@ -197,7 +197,7 @@ that are not \FOR computable, but that in general, any language that supports
 the building blocks of {\tt inverse} either doesn't support 
 self-interpretation or it contains programs that will not halt.
 
-As we try to capture {\em all} intuitively computable functions, it is not 
+As we try to capture \emph{all} intuitively computable functions, it is not 
 acceptable to leave self-interpretation out, so in the next chapter, we will 
 explore a language that will contain non-halting programs.
 
@@ -217,7 +217,7 @@ halt, i.e. produces a new value on any {\tt next}.
 
 \subsection{The \FOR in mathematics and logic}
 The \FOR computable functions match a category of functions known as 
-{\em primitive recursive}. A function is {\em primitive recursive}, if it is either
+\emph{primitive recursive}. A function is \emph{primitive recursive}, if it is either
 \begin{enumerate}
 	\item A successor function $S_i(x_1,\dots,x_n) = x_i+1$
 	\item A projection function $P_i(x_1,\dots,x_n) = x_i$
@@ -252,7 +252,7 @@ F read NX {
 	\Question Can you model an {\tt if} statement in primitive recursion?
 	\Question How would you implement a {\tt for} loop with primitive recursion?
 	\Question How could we model assignment in the primitive recursive functions?
-	\Question {\em Difficult:} Show that $ConsCell$ can be modelled in the 
+	\Question \emph{Difficult:} Show that $ConsCell$ can be modelled in the 
 		natural numbers, with primitive recursive functions handling $\mathtt{cons}$, 
 		$\mathtt{hd}$ and $\mathtt{tl}$.
 \end{Exercise}

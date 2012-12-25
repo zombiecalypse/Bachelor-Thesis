@@ -9,7 +9,7 @@ As it turned out, it does not matter -- the problems that can be solved in
 each of them are the same. This was shown by proving that the different 
 mechanisms can simulate each other. By extension, a new formulism only needs 
 to be able to simulate any of the existing formalisms to be at least as 
-powerful as any of them. Thus came the expression {\em Turing complete} to 
+powerful as any of them. Thus came the expression \emph{Turing complete} to 
 describe, that a certain formalism can build any Turing machine.
 
 This chapter is build as exercises, because solving the problems gives a good 
@@ -48,7 +48,7 @@ do in the following way:
 	cell on the tape and then execute the transitions indicated by the transition
 	function until we get into any of the states $q_{accept}$ or $q_{reject}$.
 
-	A {\em configuration} of a turing machine is then a tuple 
+	A \emph{configuration} of a turing machine is then a tuple 
 	$(l, c, r, s) \in \Gamma^*\times \Gamma \times \Gamma^*\times Q$ 
 	and we have 
 	\begin{equation*}
@@ -241,7 +241,7 @@ Machines alone.
 	many low level implementation problems of programming languages in the progress.
 	\Question Show an $n$-taped \TM to the one taped (where $n$ is of course fixed at
 		compilation time). A $n$-taped turing machine has $n$ tapes that can be 
-		independently moved and writen. {\em Hint: Unify the tapes and mark where 
+		independently moved and writen. \emph{Hint: Unify the tapes and mark where 
 		you are.}
 	\Question Show that for all \TM's {\tt A} and {\tt B} exists a turing 
 			machine {\tt A;B} such that $\interpret[\TM]{A;B}(x) \peq
@@ -254,7 +254,7 @@ Machines alone.
 		\subQuestion Modify this so that $B$ gets executed as long as $A$ returns {\tt T}.
 	\Question Implement the {\tt cons} datastructure on the tape of a turing 
 	machine. Note that you can add another tape to ``take notes" by merit of the first question.
-		\subQuestion Implement {\tt cons}. {\em Hint: Be literal about 
+		\subQuestion Implement {\tt cons}. \emph{Hint: Be literal about 
 		expressions like {\tt cons (cons nil nil) (cons nil nil)}.} 
 		\subQuestion Implement {\tt hd} and {\tt tl}.
 	\Question Show that you can implement a map, that can be used to save the variables.
@@ -272,7 +272,7 @@ Machines alone.
 		\begin{center}
 			\includegraphics[width=0.49\textwidth]{computability/completeness/pictures/multitape}
 		\end{center}
-		where the $*_n$ means {\em tape $n$ is currently at the following value}. 
+		where the $*_n$ means \emph{tape $n$ is currently at the following value}. 
 		
 		Now design the states and transitions such that
 		\begin{algorithmic}[1]
@@ -288,7 +288,7 @@ Machines alone.
 		more than one tape simultanously.
 	\Question {\tt A;B} inherits the end-states of {\tt B} and the 
 		starting-state of {\tt A}. The internal states of {\tt A} and {\tt B} 
-		need to be disjunct, otherwise the machine could {\em jump over} from 
+		need to be disjunct, otherwise the machine could \emph{jump over} from 
 		{\tt A} to {\tt B} or vice versa. To ensure that, we call the states in 
 		the new machine $(s, A)$ or $(s, B)$, depending on whether $s$ is from 
 		{\tt A} or {\tt B}. Now $\delta((s,A), x) = \delta_A(s,x)$ and
@@ -419,6 +419,7 @@ if it was more powerful than \WHILE.
 \end{corrolary}
 
 \subsection{Rice's Theorem}
+\label{Rice}
 Now maybe the Halting Problem is very special and maybe we're not even that 
 interested in the halting of the machine. Maybe we're interested in another 
 property $P$, for example ``if the machine halts, its result is the fibonacci 
@@ -476,12 +477,12 @@ Rice tells us, that it is not possible to deduce for example,
 that the result of a computation is a {\tt String}. Yet the Java compiler 
 does it all the time. How is this possible?
 
-The trick is that Rice tells us that the problem can't be solved {\em in full
+The trick is that Rice tells us that the problem can't be solved \emph{in full
 generality}. So instead of accepting all programs, we accept only the ones for
-which we {\em can} prove the property. This throws away an infinitude of
+which we \emph{can} prove the property. This throws away an infinitude of
 perfectly reasonable programs, which would keep the property, only because we
 can't prove it, but this way, we can be sure that for any program we accept,
-the property {\em does} hold.
+the property \emph{does} hold.
 
 \subsection{The Normal Form Theorem}
 \begin{theorem}[Normal Form Theorem]
@@ -541,7 +542,7 @@ we could actually build a machine that computes it. This gives us the
 physical Church-Turing thesis: It is not possible to build a computer that 
 can not be simulated on a \TM.
 
-This is a thesis, that {\em can} be put to the test. While \TM rely on 
+This is a thesis, that \emph{can} be put to the test. While \TM rely on 
 classical mechanics, some thought has been put into quantum computing. The 
 model that is currently used to build quantum computers (qubits) are however
 not stronger than \TM. Faster yes, but not really stronger.

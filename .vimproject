@@ -69,6 +69,3 @@ implementation=/home/aaron/Bachelor/implementation {
 	}
  }
 }
-presentation="/home/aaron/Bachelor/presentation/" filter="*.tex" {
- main.tex
-}

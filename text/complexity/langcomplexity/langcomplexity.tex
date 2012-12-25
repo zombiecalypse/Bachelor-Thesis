@@ -4,15 +4,15 @@ While most languages we encounter are turing-complete, that does not need
 to be the case. In this chapter, we will discuss the notion of a problem 
 description as a programming language.
 
-\subsection{Problem descriptions}
+\subsubsection{Problem descriptions}
 There are many different kinds of problems in computer science, for example 
 sorting a list or determining if a boolean formula with variables is always
 true. Nevertheless, these kind of problems are never singular -- we would not 
 want an algorithm\footnote{Most definitions would not even allow this as an 
 algorithm}, that could reliably sort the list $4, 8, 2, -9$, but one that 
-could sort {\em all} lists, no matter the size. This means of course, that 
+could sort \emph{all} lists, no matter the size. This means of course, that 
 algorithms need data as input to describe the problems they need to solve. 
-This data is then called the {\em problem description}. 
+This data is then called the \emph{problem description}. 
 
 Looking back at the beginning, the semantic function was introduced to give 
 meaning to data. Since then, we primarily used it to differentiate between 
@@ -34,11 +34,64 @@ that we would expect.
 In this light, a problem description becomes a small and domain specific 
 programming language, with the algorithm that solves it being an interpreter.
 \lineofthought{Partial evaluation for partial problem descriptions?}
-\TODO
+\TODO?
 \subsection{Reductions}
-\lineofthought{Reduction is efficient cross-compilation}
+Often in courses on algorithms, the same algorithm can be used in many 
+different domains, because it has been observed that the two problems are 
+\emph{essentially the same} or that one is \emph{essentially a special case of
+another}. 
+
+For example in chapter~\ref{Rice}, we saw that we could formulate any 
+non-trivial function property as a halting problem. \TODO\lineofthought{Find 
+good example}
+
+\begin{defn}
+	For a complexity class $X$, a $X$-\emph{reduction} of a problem $A$ to a
+	problem $B$ is a compiler from the problem descriptions of $A$ to the 
+	descriptions of $B$, so that compiling a description of $A$ and executing 
+	it as a $B$ problem description is in $X$.
+\end{defn}
+
+\begin{example}
+	The most common reductions are:
+	\begin{enumerate}
+		\item $\PTIME$-reductions translate and execute a problem in polynomial 
+			time and therefore $\PTIME$ and $\PSPACE$ are closed under these reductions.
+		\item Linear time reductions give much stronger bounds, so that for example
+			a $O(n^2)$ problem to which another is reduced, proves that the other 
+			problem is $O(n^2)$ as well.
+		\item Computable reductions are used to show the computability or 
+			incomputability of problems.
+	\end{enumerate}
+\end{example}
+\lineofthought{
+	Introduce $\approx 4$ problems and show how they relate, one of which is
+	\PTIME complete
+
+	Dang\dots there are no simple, interesting problems for which $\PTIME$, 
+	$\PSPACE$, \dots are sufficient.
+	
+	Actually, introducing $NP$ might be \emph{less} work than finding stupid 
+	problems in stupid $P$.
+
+\begin{enumerate}
+	\item Game of Life -- given a cell $c$, is that cell alive after $n$ steps?
+	\item Does this turing machine stop after this many steps (in unary)
+\end{enumerate}
+
+\begin{theorem}
+	$P \neq NP$
+\end{theorem}
+\begin{proof}
+	Left to the interested reader.
+\end{proof}
+}
 \TODO
 
 \subsection{Hardness and completeness}
+We saw that in computability, there seems to be a natural border of 
+computability, in which \WHILE, Turing machines and nearly any reasonably 
+strong language reside. It was not too surprising then, that these different 
+languages could 
 \lineofthought{Hardness is being universal for a complexity class}
 \TODO

@@ -73,7 +73,7 @@ computation, \FOR, are not self interpreting.
 \end{proof}
 
 \begin{example}[Quines]
-	A {\em quine}\/ is a program, that outputs its own source. It is a fun 
+	A \emph{quine}\/ is a program, that outputs its own source. It is a fun 
 	exercise for all students of computer science to find a quine in their 
 	favourite language. The existence of quines is ensured by the recursion theorem:
 	Simply take the program $\interpret{id}(x)\peq x$ and then 
@@ -124,7 +124,7 @@ quined""")
 	\end{enumerate}
 \end{example}
 
-\paragraph{Why is it called the {\em recursion} theorem?}
+\paragraph{Why is it called the \emph{recursion} theorem?}
 Since we have our own source, we can implement recursion with our interpreter:
 \begin{verbatim}
 fibonacci read (source.X) {
@@ -138,7 +138,7 @@ fibonacci read (source.X) {
 
 \subsection{How this translates into logic}
 The notion of computability is closely related to that of decidability in 
-logic. A statement is {\em decidable}\/ if either itself or its negation can be 
+logic. A statement is \emph{decidable}\/ if either itself or its negation can be 
 proven. For many years, it was thought that given a set of axioms strong 
 enough every statement in mathematics was decidable, but as we will 
 see, that is not the case.
@@ -163,11 +163,11 @@ of itself.
 
 Then what happens, if we apply this to the predicate {\tt "no number codes a proof 
 of the first argument"}? We'd have that {\tt "no number codes a proof of this
-statement"}. Assume that it is false, then there {\em is}\/ a proof for the 
+statement"}. Assume that it is false, then there \emph{is}\/ a proof for the 
 statement, but since the statement is false, we'd have a contradiction in our 
 formal system. And if the statement is true? Then there is a true statement 
-expressable in the system, that can not be proven. This is known as {\em Gödel's 
+expressable in the system, that can not be proven. This is known as \emph{Gödel's 
 incompleteness theorem}. \lineofthought{This might profit from a bit more 
-formality. Then again, I can't assume that the reader knows {\em anything} 
+formality. Then again, I can't assume that the reader knows \emph{anything} 
 about formal logic. If I did that, I'd have to spend a page or two explaining 
 the notions.}

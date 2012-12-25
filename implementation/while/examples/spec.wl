@@ -19,20 +19,6 @@ extractBlock read P {
 	Y := hd (tl (tl (tl (tl P))));
 } write Y
 
-literal read X {
-	if [not](X) {
-		Y := (:nilexp);
-	} else {
-		if (atom? X) {
-			Y := (:symbol).X;
-		} else {
-			head := [literal](hd X);
-			tail := [literal](tl X);
-			Y := (:consexp).head.tail;
-		}
-	}
-} write Y
-
 spec read PX {
 	P := hd PX; X := (tl PX);
 	name := hd (tl P);
