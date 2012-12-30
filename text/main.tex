@@ -29,20 +29,26 @@
 \newcommand*{\WHILE}{\ensuremath{\mathtt{WHILE}}\xspace}
 \newcommand*{\FOR}{\ensuremath{\mathtt{FOR}}\xspace}
 \newcommand*{\TM}{\ensuremath{\mathtt{TM}}\xspace}
+\newcommand*{\NTM}{\ensuremath{\mathtt{NTM}}\xspace}
 \newcommand*{\N}{\ensuremath{\mathbb{N}}\xspace}
 \newcommand{\lepower}{\leq}
 \newcommand{\gepower}{\geq}
 \newcommand{\epower}{\equiv}
 \newcommand{\abs}[1]{\left|#1\right|}
 \newcommand{\TIME}[1][]{\ensuremath{\mathtt{TIME}\ifthenelse{\isempty{#1}}{}{_{#1}}}}
+\newcommand{\NTIME}[1][]{\ensuremath{\mathtt{NTIME}\ifthenelse{\isempty{#1}}{}{_{#1}}}}
 \newcommand{\SPACE}[1][]{\ensuremath{\mathtt{SPACE}\ifthenelse{\isempty{#1}}{}{_{#1}}}}
+\newcommand{\NSPACE}[1][]{\ensuremath{\mathtt{NSPACE}\ifthenelse{\isempty{#1}}{}{_{#1}}}}
 \newcommand{\LOGTIME}{\ensuremath{\mathtt{LOGTIME}}}
 \newcommand{\LOGSPACE}{\ensuremath{\mathtt{LOGSPACE}}}
-\newcommand{\PTIME}{\ensuremath{\mathtt{PTIME}}}
+\newcommand{\PTIME}{\ensuremath{\mathtt{PTIME}}\xspace}
+\newcommand{\NPTIME}{\ensuremath{\mathtt{NPTIME}}\xspace}
 \newcommand{\PSPACE}{\ensuremath{\mathtt{PSPACE}}}
 \newcommand{\EXPTIME}{\ensuremath{\mathtt{EXPTIME}}}
 \newcommand{\EXPSPACE}{\ensuremath{\mathtt{EXPSPACE}}}
 \mathchardef\mhyphen="2D
+\newcommand{\set}[1]{\left\{ #1 \right\}}
+\newcommand{\reducesTo}{\leq}
 
 % Note Commands
 \newcommand{\citationneeded}{{\em (citation needed) } }
@@ -83,10 +89,6 @@
 \begin{document}
 \maketitle
 \tableofcontents
-%\begin{abstract}
-  %\include*{abstract}	
-%\end{abstract}
-%
 \chapter{Introduction}
 	\include*{introduction/introduction/introduction}
 	\include*{introduction/for/for}
@@ -99,14 +101,12 @@
 
 \chapter{Complexity}
 	\include*{complexity/complexity/complexity}
-	\include*{complexity/hierarchy/hierarchy}
-	\include*{complexity/robustness/robustness}
 	\include*{complexity/langcomplexity/langcomplexity}
 
 \bibliography{biblio}{}
 \bibliographystyle{plain}
 
 %\begin{appendices}
-  %\include*{appendix}
+	%\include*{appendix}
 %\end{appendices}
 \end{document}

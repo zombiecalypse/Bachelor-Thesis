@@ -36,7 +36,7 @@ our Turing machine model\footnote{Quantum computing is faster than \TM\@. A
 The problems we discuss are decision problems:
 \begin{defn}
 	A problem $P$ is called a \emph{decision problem}, if the required output is 
-	$Bool = \{True, False\}$.
+	in $Bool = \{True, False\}$.
 \end{defn}
 
 Our high-level \WHILE language served us well in computability, but it would
@@ -287,3 +287,99 @@ time constructible function}\/:
 This theorem is much stronger than the time hierarchy theorem, because it 
 shows that any difference in the asymptotic behaviour leads to a different 
 computability class.
+
+\section{Nondeterminism} % (fold)
+\label{sec:Nondeterminism}
+Up until now, choice did not come into play at any moment: A program gave a 
+unique trace of executed instructions for any given input. In many cases 
+however, algorithms contain a moment of arbitrariness, where in the 
+deterministic case, one fixed way would need to be chosen. The run-time of 
+the algorithm can depend very much on the choices we make. 
+
+\begin{defn}
+	A non-deterministic Turing machine ($\NTM$) is a deterministic Turing machine, where 
+	the transition function $\delta$ returns sets instead of values now.
+
+	\[ \delta: Q\times \Gamma \rightarrow \mathcal{P}(Q\times \Gamma\times \{L, N, R\}) \]
+\end{defn}
+
+	The semantics need to adapt to that, a configuration of a non-deterministic 
+	Turing machine needs to contain serveral configuration of a deterministic run:
+
+\begin{defn}
+	A \emph{configuration} is $C\subset \Gamma^*\times \Gamma \times \Gamma^*\times Q$
+	and a step by a \NTM is $C_1\vdash C_2$ if 
+	\[ C_2 = \bigcup_{c\in C_1}\set{ step(tape_c, s_c, t) : t\in \delta (c)} \]
+
+	This allows us to define
+
+	\[
+		\interpret[\NTM]{M}(tape_1) = \bigcup_{(tape_1, q_0) \vdash^*_M C}\set{ tape : (tape, q_{accept}) \in C}
+		\]
+
+	So if any computation for some choices ends in $q_{accept}$, then the 
+	computation of the non-deterministic machine succeeds. For decision 
+	problems, we only need to know that this set is not empty.
+\end{defn}
+
+\begin{example}
+	When parsing the string $\mathtt{aabab}$ with the regex 
+	$\mathtt{(a|ab)+}$, we can't know after the first letter in which branch of 
+	the  \emph{or} we will be. Only after we saw, that a second $\mathtt{a}$ 
+	follows, we know that it was the first one.
+\end{example}
+
+\begin{defn}
+	The time measure $\NTIME$ is the \emph{minimum} of the $\TIME$ measures of 
+	the possible traces. Analogously, the space measure $\NSPACE$ is the 
+	minimum of possible $\SPACE$ measures of the traces. It denotes the 
+	fastest/least space consuming possible way to solve the problem, if guessing
+	is allowed.
+\end{defn}
+
+At first, this seems like a new mode of computation and thus belong to
+computability rather than complexity, but just proving that \emph{some}
+computation accepts the input can be done by performing a breadth-first search
+on the possible traces. The complexity however seems very different, because 
+in the worst case, this approach will take $\TIME{\mathcal{O}(2^{\abs{Q}})}$ 
+per step.
+
+The most important class, that uses non-determinism is \NPTIME: The 
+problems, that can be solved in polynomial time, if guessing is allowed and 
+we guess optimally.
+
+\begin{theorem}[Guess and check]
+	If $X\in \NPTIME$, then we can find a so-called \emph{certificate} 
+	$w\in \Gamma^*$ for each input $x$, so that there is a deterministic Turing 
+	machine $M$ that decides $X$ given $w$ and $x$ in \PTIME. If we can 
+	formulate the problem in such a way, then it is in \NPTIME.
+
+	This means, that we can check our hypotheses for positive answers in
+	polynomial time, so the hard part is only coming up with the good hypotheses.
+	There is however no requirement for negative solutions, so the algorithm 
+	might even fail by looping forever.\footnote{The class of decision problems, that 
+	fail in non-deterministic polynomial time, but might run forever to check 
+for success is called $co-\NPTIME$.}
+\end{theorem}
+\begin{proof}
+	On one hand, we can code the trace, that lead to the succeeding computation, to the 
+	tape. Checking, that a trace is valid for a given Turing machine is trivial. 
+
+	If on the other hand we can produce a certificate for any input and check in 
+	polynomial time, then that certificate can only be $p(\abs{x})$ long for some 
+	polynomial $p$ -- otherwise, we wouldn't be able to check the certificate this fast. 
+
+	But then, we can define a non-deterministic machine, that comes up with 
+	this input in $p(\abs{x})$ steps and checks that afterwards by simulating 
+	the deterministic checker.
+\end{proof}
+
+We can see that $\PTIME\subset \NPTIME$, by just outputting singleton sets in 
+the non-deterministic $\delta$ and intuitively it seems that non-determinism 
+must accellerate the computation significantly.
+
+\begin{thesis}
+	$\PTIME\neq\NPTIME$
+\end{thesis}
+
+However, up to this point, every try to prove or disprove this statement failed.

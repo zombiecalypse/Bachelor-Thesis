@@ -29,7 +29,7 @@ do in the following way:
 
 \begin{defn}
 	\label{def:tm}
-	A Turing Machine $T$ is a tuple $(Q, \Sigma, \Gamma, \delta, q_0, q_{accept}, q_{reject})$
+	A Turing Machine $M$ is a tuple $(Q, \Sigma, \Gamma, \delta, q_0, q_{accept}, q_{reject})$
 	where 
 	\begin{itemize}
 		\item $Q$ are the states of mind the machines can be in.
@@ -43,20 +43,26 @@ do in the following way:
 		\item $q_{accept}, q_{reject}\in Q$ signify that the machine has stopped --
 			successfully or not.
 	\end{itemize}
+\end{defn}
 
-	To run a \TM means to give it a word $w\in\Sigma^*$, place the head at some 
-	cell on the tape and then execute the transitions indicated by the transition
-	function until we get into any of the states $q_{accept}$ or $q_{reject}$.
+To run a \TM means to give it a word $w\in\Sigma^*$, place the head at some 
+cell on the tape and then execute the transitions indicated by the transition
+function until we get into any of the states $q_{accept}$ or $q_{reject}$.
 
-	A \emph{configuration} of a turing machine is then a tuple 
-	$(l, c, r, s) \in \Gamma^*\times \Gamma \times \Gamma^*\times Q$ 
-	and we have 
+\begin{defn}
+	A \emph{configuration} of a Turing machine 
+	$M=(Q, \Sigma, \Gamma, \delta, q_0, q_{accept}, q_{reject})$ 
+	is then a tuple 
+	$c = (tape, s) = (l, h, r, s) \in \Gamma^*\times \Gamma \times \Gamma^*\times Q$. 
+	This allows us to define a step that a \TM makes.
+
+	\TODO \lineofthought{Nice formating}
 	\begin{equation*}
-		\interpret[\TM]{T}(l, c, r, s) = \begin{cases}
-			(l, c, r, s), &\text{ if } s \in \{q_{accept}, q_{reject}\} \\
-			(l, \tilde{c}, r, \tilde{s}) , &\text{ if } \delta(s,c) = (\tilde{s}, \tilde{c}, N)\\
-			(\tilde{c}\, l , first(r), rest(r), \tilde{s}) , &\text{ if } \delta(s,c) = (\tilde{s}, \tilde{c}, R)\\
-			(rest(l), first(l), \tilde{c}\, r, \tilde{s}) , &\text{ if } \delta(s,c) = (\tilde{s}, \tilde{c}, L)
+		step(tape, s, (\tilde{h}, \tilde{s}, d)) = \begin{cases}
+			(tape, s), &\text{ if } s \in \{q_{accept}, q_{reject}\} \\
+			(l, \tilde{h}, r, \tilde{s}) , &\text{ if } d = N\\
+			([\tilde{h} | l]) , first(r), rest(r), \tilde{s}) , &\text{ if } d = R\\
+			(rest(l), first(l), [\tilde{h} | r]), \tilde{s}) , &\text{ if } d = L
 		\end{cases}
 	\end{equation*}
 
@@ -64,6 +70,18 @@ do in the following way:
 		\includegraphics[width=0.95\textwidth]{computability/completeness/pictures/turingtape}
 		\caption{Tape of the turing machine}
 	\end{figure}
+
+	We write $c_1 \vdash_{M} c_2$ to denote that $step(c_1, \delta(c_1)) = c_2$ and say that 
+	one \emph{step of $M$} transforms $c_1$ to $c_2$.
+
+	Now $c_1 \vdash_M^* c_2$ means that an arbitrary number of steps lead $c_1$ to $c_2$.
+
+	\[
+		\interpret[\TM]{M}(tape_1) = \begin{cases}
+			tape_2, &\text{ if } (tape_1, q_0) \vdash_M^*(tape_2, q_{accept}) \\
+			\bot, &\text{ if there is no such} tape_2
+		\end{cases}
+		\]
 \end{defn}
 
 \begin{example}[Adding two binary numbers]
@@ -135,8 +153,8 @@ do in the following way:
 	\end{center}
 \end{example}
 
-Seeing how complex turing machines get, it seems surprising, that it can code 
-any machine or language.
+Seeing how complex turing machines get, it seems
+surprising, that it can code any machine or language.
 
 \subsection{\WHILE is Turing complete}
 By definition~\ref{def:power}, we would need a compiler from \TM to \WHILE, 
