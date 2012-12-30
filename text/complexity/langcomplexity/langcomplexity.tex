@@ -40,7 +40,7 @@ different domains, because it has been observed that the two problems are
 another}. 
 
 For example in chapter~\ref{Rice}, we saw that we could formulate any 
-non-trivial function property as a halting problem. \TODO\lineofthought{Find good example}
+non-trivial function property as a halting problem.
 
 \begin{defn}
 	For a complexity class $X$, a $X$-\emph{reduction} of a problem $A$ to a
@@ -147,10 +147,36 @@ will mostly feature that.
 \paragraph{SAT reduces to TSP}
 \TODO
 \paragraph{TSP reduces to SAT}
-\TODO
+Lets reduce the TSP for the graph $G = (Nodes, Edges)$ for at most the cost 
+$M$ to a problem of satisfiability of boolean expressions.
+
+We first notice, that we can add and compare numbers by building a fixed 
+length binary calculator from the logical connectives, that is able to add 
+all weights if necessary. This won't require to introduce more than 
+polynomial many variables and connectives.
+
+Let the variables $p_i^n$ denote, that the $i$th node of the path is $n$, 
+then 
+\[ PathExclusion = \bigwedge_{i=1}^{\abs{Nodes}}\bigwedge_{n\in Nodes} \bigwedge_{n'\in Nodes\atop n'\neq n} p_i^n \rightarrow \lnot p_i^{n'}\]
+says that at any given position, only one node can be visited. Now we can 
+just add up all weights multiplied with $1$ if they are in the round-trip or 
+$0$ if they are not. This would look messy, because we have to do it bitwise, 
+but the solution would look like
+\[
+	PathExclusion \wedge \left( \sum_{e=\in Edges} cost(e)\cdot 
+	include\mhyphen edge(e) \right) \]
+where 
+\[ include\mhyphen edge(n_0, n_1)= \begin{cases}
+		1, &\text{if }\bigvee_{k=1}^{\abs{Edges}} p_k^{n_0} \wedge p_{k+1}^{n_1}\\
+		0, &\text{otherwise }
+	\end{cases}\]
+
+This formula would still be polynomially long in the input length and 
+wouldn't contain any predicates. Therefore, it is polynomially reduced 
+to $SAT$.
+\DONE
 \paragraph{Factorization reduces to TSP}
 \TODO
-
 \paragraph{CFG reduces to SAT}
 \TODO
 
@@ -196,17 +222,146 @@ classes. But in fact, we have seen two problems already, that are \NPTIME-comple
 	move out of a premarked part of the tape, in the case of 
 	\PTIME-completeness, you count down your remaining time and in the case of 
 	\NPTIME-completeness, you build a table of possible configurations of the 
-	turing machine and see if any of them succeeds\footnote{This proof follows 
-	\cite{sipser2006introduction}}.
+	turing machine and see if any of them succeeds\footnote{This proof mixes 
+		the proofs given by \cite{jones} and \cite{sipser2006introduction}}.
 
 	% Jones has a more elegant approach, but that requires to introduce the 
 	% language SBoole, which then simulates a GOTO program, which simulates a 
 	% TM. However the solution is so much prettier, that I consider adapting it 
 	% to the known formalisms.
   %
-	First assume without loss of generality, that the problem, we want to reduce
-	takes at most $n^k$ steps to accept. This means, that we can be in at most 
-	\TODO prove rest
+	First of all, it is not necessary to use transition function 
+	$\delta: Q\times \Gamma \rightarrow \mathcal{P}(Q\times \Gamma\times \{L, N, R\})$
+	, it is sufficient to be able to choose between two alternatives. If for 
+	example $\delta(q, x) = \set{(q_1, y_1, d_1), \ldots, (q_n, y_n, d_n)}$, 
+	then we can simply and polynomially reduce it to a list of binary 
+	choices\footnote{The use of tuples instead of sets stems from the fact, 
+	that one cannot speak of the \emph{first} or \emph{second} element of a 
+	set, but for strict semantics, this is necessary.}:
+	\begin{align}
+		\delta(q, x) &= \Big((q_1, y_1, d_1), (q^{(1)}, x, N) \Big)\\
+		\delta(q^{(1)}, x) &= \Big((q_2, y_2, d_2), (q^{(2)}, x, N) \Big)\\
+		&\vdots \\
+		\delta(q^{(n-1)}, x) &= \Big((q_{n-1}, y_{n-1}, d_{n-1}), (q_{n}, y_{n}, d_{n}) \Big)
+	\end{align}
+	So without loss of generality, we can assume, that the non-deterministic 
+	Turing machine makes at most binary choices, which we could code as 
+	booleans. Further, if we \emph{don't} want to make a choice, we could make 
+	a choice, but end in $q_{reject}$ as the second option, so we can make 
+	\emph{exactly} one binary choice per step.
+
+	So let us now reduce the arbitrary problem $A\in\NPTIME$ to $SAT$. Since it 
+	is polynomial runtime, there is some $k$ for which the runtime is bound by 
+	$p(n) = n^k$.
+
+	Even assuming, that we made a choice in every step, it would be enough to
+	give $p(n)$ booleans $c_1, \dots, c_{p(n)}$ to fully specify the trace. This
+	will be, what the solver for SAT would then modify to find the solution to
+	$A$, the rest is deterministic. 
+
+	What remains to be done is to code, when a trace is ending in an accepting 
+	state and for this, how a Turing machine works. % TODO is that English???
+
+	The state changes over time, and has $\abs{Q}$ exclusive possibilities.
+	Then $s^q_{t}$ means, that the machine is in state $q$ at the time $t$. 
+	Coding, that the possibilities exclude each other can be done by adding 
+	\begin{align}
+		StateExclude &= \bigwedge_{q\in Q \atop t=1\ldots p(n)}{
+		\bigwedge_{q'\in Q\atop q' \neq q}{s^q_{t} \rightarrow \lnot 
+		s^{q'}_{t} }}\\
+		&= \bigwedge_{q\in Q \atop t=1\ldots p(n)} 
+		\bigwedge_{q'\in Q\atop q' \neq q} \lnot s^q_{t} \vee \lnot 
+		s^{q'}_{t}
+	\end{align}
+	This gives $\abs{Q}^2\,p(n)$ additional input characters -- nothing that would 
+	break polynomial input to $SAT$.
+
+	The tape only needs $p(n)$ cells, but for each of the $p(n)$ time steps, 
+	therefore we code the tape as the table $T^c_{x, t}$ with $c\in\Gamma$, 
+	$x = 1\ldots p(n)$ and $t=1\ldots p(n)$, meaning \emph{the tape cell $x$ 
+	contains the character $c$ at the time $t$}. The constraint is of course, 
+	that at any given time, the tape at a given cell can only contain one 
+	character, but this can be expressed by
+	\begin{align}
+		TapeExclude &= \bigwedge_{g\in \Gamma}\bigwedge_{x=1\ldots p(n) \atop t=1\ldots p(n)}
+		\bigwedge_{g'\in \Gamma\atop g' \neq g}{T^g_{x,t} \rightarrow \lnot 
+		T^{g'}_{x,t} }\\
+		&= \bigwedge_{g\in \Gamma}\bigwedge_{x=1\ldots p(n) \atop t=1\ldots p(n)} 
+		\bigwedge_{g'\in \Gamma\atop g' \neq g} \lnot T^g_{x,t} \vee \lnot 
+		T^{g'}_{x,t}
+	\end{align}.
+	Despite looking huge at first glance, this is still polynomially long in the input.
+
+	We also need to keep track of where the read/write head of the Turing 
+	machine is. Perhabs unsurprisingly, we introduce a table $H_{x,t}$, meaning 
+	that at the time $t=1\ldots p(n)$ the head is at the position 
+	$x=1\ldots p(n)$. Exclusion applies, so we add
+	\begin{align}
+		HeadExclude &= \bigwedge_{x=1\ldots p(n) \atop t=1\ldots p(n)}
+		{H_{x,t} \rightarrow \lnot H_{x,t} }\\
+		&= \bigwedge_{x=1\ldots p(n) \atop t=1\ldots p(n)} \lnot H_{x,t} \vee \lnot 
+		H_{x,t}
+	\end{align}.
+
+	Finally we need to code how the transitions take place. We need to say that
+	\begin{itemize}
+		\item Deterministically changing state means, that if we were in state $g$ 
+			to time $t$ and saw the cell $T_x$ with the character $c$, then in $t+1$,
+			we are in the state $g'$ implied by $\delta$.
+			\begin{align}
+				StateTransition^{q'}(s^q_t, T^c_{x,t}) 
+									&= s^q_{t}\wedge T^c_{x,t} \rightarrow s^{q'}_{t+1}\\
+									&= \lnot s^q_{t} \vee \lnot T^c_{x,t}\vee s^{q'}_{t+1}
+			\end{align} 
+		\item Deterministically changing the current cell does the same thing, 
+			only with cells instead of states.
+			\begin{align}
+				CellTransition^{c'}(s^q_t, T^c_{x,t}) 
+									&= s^q_{t}\wedge T^c_{x,t} \rightarrow T^{c'}_{x,t+1}\\
+									&= \lnot s^q_{t} \vee \lnot T^c_{x,t}\vee T^{c'}_{x,t+1}
+			\end{align} 
+
+		\item Deterministically moving on the tape only changes $H_{t+1}$
+			\begin{align}
+				MoveTransition^d(s^q_t, T^c_{x,t}) 
+				&= s^q_{t}\wedge T^c_{x,t} \wedge H_{x,t} \rightarrow H_{x+d,t+1}\\
+									&= \lnot s^q_{t} \vee \lnot T^c_{x,t}\vee H_{x,t}\vee H_{x+d,t+1}
+			\end{align},
+			where $d\in \set{-1,0,1}$
+		\item If our current choice bit says $True$, then take the first option $X_t$, 
+			else the second option $Y_t$. This could for example be expressed by 
+			$(c_t \wedge X_t) \vee (\lnot c_t \wedge Y_t)$.
+
+		\item Plugging this together, we get the coding of the transition 
+			function.
+			\begin{multline}
+				FirstTransition_{x,t} 
+				= H_{x,t}\wedge T^c_{x,t}\wedge s^q_{t} \rightarrow
+				\\ MoveTransition^{d}(s^q_t, T^c_{x,t}) \wedge 
+				\\ CellTransition^{c'}(s^q_t, T^c_{x,t}) \wedge
+				\\ StateTransition^{q'}(s^q_t, T^c_{x,t}) \\
+			\end{multline}
+			if $\delta(c,q) = \left((c', q', d), (c'', q'', d')\right)$ and analogously for 
+			the second choice
+			\begin{equation}
+				Transition = \bigwedge_{t=1}^{p(n)}\bigwedge_{x=1}^{p(n)} 
+							(c_t \wedge FirstTransition_{x,t}) \vee 
+							(\lnot  c_t \wedge SecondTransition_{x, t})
+			\end{equation}
+
+			Even this huge transition table is still polynomial in the length of the input.
+	\end{itemize}
+
+	Now $Transition\wedge HeadExclude \wedge TapeExclude \wedge StateExclude$ 
+	is the representation of $A$ in $SAT$. Note that no functions (predictates) would have 
+	been necessary\footnote{Slightly changing this proof shows then, that predicate 
+	logic is actually Turing complete.}.
+
+	With this so-called \emph{gadget} -- something that simulates the 
+	computational behaviour of another problem -- we have reduced the problem $A$ 
+	to $SAT$. Basically we reduced the problem of calculating $p(n)$ steps on a 
+	non-deterministic Turing machine, which is by definition \NPTIME-complete, 
+	to the $SAT$ problem.
 \end{proof}
 This implies, that SAT can express any other \NPTIME problem with only a 
 polynomial slowdown. This also means, that SAT could model any \PTIME 
@@ -216,9 +371,10 @@ On the other hand, we saw that SAT can be reduced to the Traveling Salesman
 Problem, which shows its completeness as well.
 
 There are indeed many relevant problems that are \NPTIME-complete\footnote{So 
-many in fact, that the author struggled to find any interesting \PTIME problems}, for 
-example maximizing linear functions over linear constraints in the domain of 
-integers or optimal scheduling of tasks over multiple processors just to name two.
+many in fact, that the author struggled to find any interesting \PTIME-complete
+problems}, for example maximizing linear functions over linear constraints in
+the domain of integers or optimal scheduling of tasks over multiple processors
+just to name two.
 
 \subsubsection{\NPTIME and optimization}
 \label{np-opti}
