@@ -63,6 +63,10 @@ non-trivial function property as a halting problem.
 \end{example}
 
 \subsection{Examples}
+The following examples should give a good impression of how the results of 
+complexity can be used and what typical problems can look like. Since 
+diversity was important in the writing, some results use techniques and 
+helpers that have not been introduced here, but should be familiar for many nonetheless.
 \subsubsection{Problems}
 \paragraph{Factorization of binary numbers}
 Given an integer $N$ to be factored and an upper bound $1<M<N$, is there a 
@@ -75,10 +79,9 @@ up to $M$ if the counter divides $N$, but since $M$ is written in binary, it
 only takes $\log_2(M)$ space for the input, therefore counting up to the 
 number is actually exponential in the input.
 \begin{example}[Relevance] 
-	The RSA algorithm for
-	public key encryption allows to deduce the private
-	keys from the public keys -- but only, if the
-	attacker can factorize a big integer.
+	The RSA algorithm for public key encryption allows to deduce the private keys
+	from the public keys -- but only, if the attacker can factorize a big
+	integer.
 \end{example}
 
 \paragraph{Context Free Grammar membership (CFG)}
@@ -145,9 +148,64 @@ variables, so that the whole expression is true?
 SAT is an extremely handy problem to reduce to, so the following reductions 
 will mostly feature that.
 \paragraph{SAT reduces to TSP}
-\TODO
+It can be shown, that SAT can be reduced to a special case of itself, namely 
+$3-cnf SAT$, the satisfiability of formulas in the so-called 3-clause normal form
+
+\[ \bigwedge_{i=1}^n a^1_i\vee a^2_i \vee a^3_i \].
+where $a^j_i$ can be any $x_k$ or $\lnot x_k$. The 
+$a^1_i\vee a^2_i \vee a^3_i$ are known as the \emph{clauses}.
+
+How this could be done might become apparent when looking at the proof of
+theorem~\ref{sat-np}. Without loss of generality then, we can assume, that 
+the formula is in this form, when we try to reduce it to TSP. This has the 
+advantage, that we know, that all clauses must be true and that in all 
+clauses, one of the atoms must be true.
+
+TSP takes as an input the maximum summed cost, but it is clear, that there is 
+a special case, in which only the existance of a round-trip is asked for, not 
+the limit of the cost\footnote{One could for example set all costs to zero 
+and check for any number $M$}. This case is known as the Hamiltonian Cycle problem.
+
+Now we need to create a graph, that is polynomially large in the length of 
+the formula, but contains a round-trip if and only if the formula is 
+satisfiable. The trick is of course using the clause-normal-form: Represent 
+all clauses as a node $n_k$. The idea is now to only allow connections to 
+$n_k$, if the representation of the atom makes the clause true\footnote{This 
+construction is based on \cite[p. 286-291]{sipser2006introduction}}.
+
+Variables have a more complex structure \TODO\lineofthought{image}:
+
+\begin{itemize}
+	\item a start node, in which the decision takes place, if the variable is 
+		set to $True$ (left) or $False$ (right). Depending on choice, the steps 
+		through the middle will allow of disallow checking off clauses.
+	\item a bridge in the middle, that can either be just walked through, but 
+		also has some connections to the $n_k$ nodes that will be explained shortly.
+	\item an end node, which will be the start node to the next variable.
+\end{itemize}
+
+\TODO\lineofthought{combined variables image} It is clear, that the only 
+round-trip possible leads through assigning all variables true or false, but 
+we don't have a coding for \emph{variable $i$ appears in clause $j$}. 
+
+This is done with giving meaning to the hops on the bridge: If the variable 
+$i$ makes $j$ true if taken as $True$, then the $j$th such pair\TODO contains 
+a hop from the left node to the right one over $n_j$, and from the right to 
+the left, if assigning $False$ makes $j$ true.
+
+\begin{theorem}
+	This construction has a round-trip if and only if the original formula is satisfiable.
+\end{theorem}
+\begin{proof}
+	If the formula is satisfiable, then we can tick off one clause after 
+	another, by taking the hops from the bridge to $n_k$ whenever possible. 
+
+	Now if the formula is \emph{not} satisfiable, then that means, that at 
+	least one clause cannot be made true, but that translates directly to not 
+	bein able to jump over to it with the current variable assignment in the graph.
+\end{proof}
 \paragraph{TSP reduces to SAT}
-Lets reduce the TSP for the graph $G = (Nodes, Edges)$ for at most the cost 
+Lets reduce the TSP for the graph $G = (Nodes, Edges)$ for at most the cost
 $M$ to a problem of satisfiability of boolean expressions.
 
 We first notice, that we can add and compare numbers by building a fixed 
@@ -178,7 +236,47 @@ to $SAT$.
 \paragraph{Factorization reduces to TSP}
 \TODO
 \paragraph{CFG reduces to SAT}
-\TODO
+Here as well, it is useful to use a special form, in order to manage the 
+complexity that the problem in unrestricted form offers: Context-free 
+grammars can (relatively easily with a mere $n^4$ blow up of the grammar) be
+converted to the so called Greibach Normal Form, in which rules always have one
+of the following forms:
+
+\begin{align*}
+	X &\rightarrow \alpha, A_1, A_2, \ldots, A_n \\
+	S &\rightarrow \varepsilon
+\end{align*}
+
+where $A_i$ are non-terminals and $\alpha$ is a terminal. Furthermore $\varepsilon$ 
+denotes the empty string and $S$ the start symbol.
+
+This form has some consequences, for example that only one rule if any can 
+produce empty strings, all others produce at least one terminal. Another nice 
+property is that the string grows to the right, we don't \emph{need} to go 
+back if we perfer not to.
+
+In this case, we will just expand the left-most non-terminal one after 
+another until the string is fully produced -- after at most $n$ steps, since 
+we don't need to use the empty string rule, except when explicitly matching 
+the empty string. Now let $R_t^r$ denote that we use the rule $r$ at the step $t$.
+Since we expand one after another, we need to formalize exclusion as seen earlier:
+
+\[ RuleExclusion = \bigwedge_{t=1}^{n}\bigwedge_{r\in Rules} \bigwedge_{r'\in Rules\atop r'\neq r} R_t^r \rightarrow \lnot R_t^{r'}\]
+
+Furthermore we need to model the string after the step $t$, by defining 
+$S^A_{x,t}$ to mean that the $x$th symbol of the string is $A$ at the time $t$. 
+Again, we exclude the possibility, that the string has multiple symbols at 
+the same time and space.
+
+\[ SymbolExclusion = \bigwedge_{t=1}^{n}\bigwedge_{x=1}^{n}\bigwedge_{s\in Symbols} \bigwedge_{s'\in Symbols\atop s'\neq s} S_{x,t}^s \rightarrow \lnot R_{x,t}^{s'}\]
+
+With these at our disposal, we can define the expansion rules: 
+$Rule_j = X \rightarrow \alpha, A_1, \ldots, A_m$ becomes 
+$\coded{Rule_j} = S^X_{i,t}\rightarrow S^\alpha_{i,t+1}\wedge \bigwedge_{k=1}^m S^{A_k}_{i+k, t+1}$
+
+Then the matching of context-free grammars can be solved by solving
+
+\[ RuleExclusion \wedge SymbolExclusion \wedge \bigwedge_{t=1}^{n}\bigvee_{j = 0}^{\abs{Rules}} \coded{Rule_j} \]
 
 \subsection{Hardness and completeness}
 We saw that in computability, there seems to be a natural border of 
@@ -205,6 +303,7 @@ classes. But in fact, we have seen two problems already, that are \NPTIME-comple
 
 \subsubsection{SAT is \NPTIME-complete}
 \begin{theorem}
+	\label{sat-np}
 	The satisfiability of boolean formulas is \NPTIME-complete.
 \end{theorem}
 \begin{proof}
@@ -222,8 +321,8 @@ classes. But in fact, we have seen two problems already, that are \NPTIME-comple
 	move out of a premarked part of the tape, in the case of 
 	\PTIME-completeness, you count down your remaining time and in the case of 
 	\NPTIME-completeness, you build a table of possible configurations of the 
-	turing machine and see if any of them succeeds\footnote{This proof mixes 
-		the proofs given by \cite{jones} and \cite{sipser2006introduction}}.
+	turing machine and see if any of them succeeds\footnote{This proof combines 
+		ideas from the proofs given by \cite{jones} and \cite{sipser2006introduction}}.
 
 	% Jones has a more elegant approach, but that requires to introduce the 
 	% language SBoole, which then simulates a GOTO program, which simulates a 
