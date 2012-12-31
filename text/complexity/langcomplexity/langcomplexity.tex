@@ -173,7 +173,7 @@ all clauses as a node $n_k$. The idea is now to only allow connections to
 $n_k$, if the representation of the atom makes the clause true\footnote{This 
 construction is based on \cite[p. 286-291]{sipser2006introduction}}.
 
-Variables have a more complex structure \TODO\lineofthought{image}:
+Variables have a more complex structure
 
 \begin{itemize}
 	\item a start node, in which the decision takes place, if the variable is 
@@ -184,12 +184,18 @@ Variables have a more complex structure \TODO\lineofthought{image}:
 	\item an end node, which will be the start node to the next variable.
 \end{itemize}
 
-\TODO\lineofthought{combined variables image} It is clear, that the only 
+\begin{figure}[htb]
+	\includegraphics[width=0.97\textwidth]{complexity/langcomplexity/pictures/satastsp}
+	\caption{The tour for the expression $\underbrace{(x_1\vee\lnot x_2)}_{c_1}\wedge \underbrace{x_2}_{c_2}$}
+	
+\end{figure}
+
+It is clear, that the only 
 round-trip possible leads through assigning all variables true or false, but 
 we don't have a coding for \emph{variable $i$ appears in clause $j$}. 
 
 This is done with giving meaning to the hops on the bridge: If the variable 
-$i$ makes $j$ true if taken as $True$, then the $j$th such pair\TODO contains 
+$i$ makes $j$ true if taken as $True$, then the $j$th such pair contains 
 a hop from the left node to the right one over $n_j$, and from the right to 
 the left, if assigning $False$ makes $j$ true.
 
@@ -234,7 +240,18 @@ wouldn't contain any predicates. Therefore, it is polynomially reduced
 to $SAT$.
 \DONE
 \paragraph{Factorization reduces to TSP}
-\TODO
+Factorization would be very easy to reduce to SAT: Given a $n$ digit binary 
+number $z$, we could device $a_i$ and $b_i$ for $i=1\ldots (n-1)$ as $n-1$ digit 
+binary numbers. We could then build a binary multiplier\footnote{Consult your 
+favourite book on computer engineering} and check, if the result is the same 
+as $z$. But we already found, that any SAT problem can be reduced to TSP, so 
+if we use the construction with the zick-zack-gates again and on a large 
+scale, we can convert $a_i$ and $b_i$ and the binary multiplier. Since 
+applying two polynomial reductions in series still is a polynomial reduction, 
+we can reduce Factorization to TSP. 
+% Not sure, if I should do a smarter way, but then again, maybe there is no 
+% elegant way...
+
 \paragraph{CFG reduces to SAT}
 Here as well, it is useful to use a special form, in order to manage the 
 complexity that the problem in unrestricted form offers: Context-free 
@@ -358,8 +375,8 @@ classes. But in fact, we have seen two problems already, that are \NPTIME-comple
 	will be, what the solver for SAT would then modify to find the solution to
 	$A$, the rest is deterministic. 
 
-	What remains to be done is to code, when a trace is ending in an accepting 
-	state and for this, how a Turing machine works. % TODO is that English???
+	The coding, if a trace ends in an accepting state, remains to be done -- 
+	which includes coding how a Turing machine works. 
 
 	The state changes over time, and has $\abs{Q}$ exclusive possibilities.
 	Then $s^q_{t}$ means, that the machine is in state $q$ at the time $t$. 
