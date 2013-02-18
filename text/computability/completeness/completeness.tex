@@ -485,15 +485,14 @@ halt: read (Q,I) {
 
 	The trick here is that 
 	\[
-		\interpret{\interpret{spec}(\mathtt{maybe-p}, \mathtt{Q}, \mathtt{I})}(x)\peq \begin{cases}
+		\interpret{\interpret{spec}(\mathtt{maybe\mhyphen p}, \mathtt{Q}, \mathtt{I})}(x)\peq \begin{cases}
 			\interpret{z}, &\text{ if } \interpret{Q}(I) \peq \bot\\
-			\interpret{known-p}, &\text{ else }			
+			\interpret{known\mhyphen p}, &\text{ else }			
 		\end{cases}
 	\]
 	
 	and therefore 
-	$\interpret{\mathtt{halt}}(q,i)\peq True\Leftrightarrow \interpret{\interpret{spec}(\mathtt{maybe-p}, \mathtt{q}, \mathtt{i})} \peq \interpret{\mathtt{known-p}}\Leftrightarrow$
-	$\interpret{q}(i)$ halts and vice versa for the contrary case.
+	\[\interpret{\mathtt{halt}}(q,i)\peq True\Leftrightarrow \interpret{\interpret{spec}(\mathtt{maybe\mhyphen p}, \mathtt{q}, \mathtt{i})} \peq \interpret{\mathtt{known\mhyphen p}}\] $\Leftrightarrow \interpret{q}(i)$ halts and vice versa for the contrary case.
 \end{proof}
 
 \subsubsection{So how do we deduce properties about programs then?}

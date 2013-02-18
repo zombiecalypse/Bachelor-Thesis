@@ -37,8 +37,10 @@ computation, \FOR, are not self interpreting, which changes as soon as self inte
 			$\interpret{h'}(x):\peq \interpret{spec}(x.\interpret{h}(x))$, because 
 			that would give the same problem. 
 		\item Instead we need to repeat this process 
-			$\interpret{iterate\mhyphen combinator}(combinator.program.x):\peq 
-			\interpret{program}(\interpret{spec}(combinator.(combinator.program)).x)$. 
+\begin{multline*}
+\interpret{iterate\mhyphen combinator}(combinator.program.x):\peq \\
+			\interpret{program}(\interpret{spec}(combinator.(combinator.program)).x).
+\end{multline*}			
 			What does this do? We run the program and pass as its first argument 
 			the code of a program that is modified by the combinator once. This is 
 			basically the step from above, only for $combinator$.

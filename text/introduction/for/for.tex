@@ -33,7 +33,10 @@ The \FOR language contains only very basic commands, but they can be combined
 to implement a huge number of algorithms. As the data structure, we choose 
 the humble $ConsCell$, that contains only a reference as the head and 
 another as the tail\footnote{An observant reader will notice that this
-structure stems from the building of linked lists.}. As a short cut notation, let $[a_1, a_2, \dots, a_n] := ConsCell(a_1, ConsCell(a_2, \dots ConsCell(a_n, Nil)\dots ))$.
+structure stems from the building of linked lists.}. Because the head and the tail point to \emph{something}, we also need some 
+atomic data, that it can point to. We introduce $Nil$, which points at 
+nothing and is the basis for the $ConsCell$ data. As a short cut notation, let 
+\[[a_1, a_2, \dots, a_n] := ConsCell(a_1, ConsCell(a_2, \dots ConsCell(a_n, Nil)\dots )).\]
 \begin{figure}[htb]
 	\begin{center}
 		\includegraphics[height=3cm]{introduction/for/images/conscell}
@@ -41,9 +44,8 @@ structure stems from the building of linked lists.}. As a short cut notation, le
 	\caption{The $ConsCell$}
 \end{figure}
 
-Because the head and the tail point to \emph{something}, we also need some 
-atomic data, that it can point to. We introduce $Nil$, which points at 
-nothing and is the basis for the $ConsCell$ data. To make the programs easier to decipher, we also use named symbols, which are not strictly necessary: we could also use lists to code them.
+To make the programs easier to decipher, we also use named symbols, which are
+not strictly necessary: we could also use lists to code them.
 
 The formal definitions of the semantics of \FOR can be seen in the tables 
 \ref{tab:for-sem-exp} and \ref{tab:for-sem-stat}, but to gain familiarity 
@@ -119,7 +121,7 @@ $\mathtt{for}\: I\: \mathtt{in}\: e\: block$ loop, that works as follows:
 		\interpret{\mathtt{for}\: a\:\mathtt{in}\: v\: \{\: b\: \}}(c) &= \begin{cases}
 			c, &\text{ if }\interpret{v}(c) = Nil\\
 			(\interpret{\mathtt{for}\: a\: \mathtt{in}\: \interpret{\mathtt{tl}\: 
-		v}(c)\:\{\: b\: \}}\circ\interpret{b}\circ \interpret{a\: \mathtt{:=}\: 
+		v}(c)\:\{\: b\: \}}\circ\interpret{b}\circ\\ \qquad \interpret{a\: \mathtt{:=}\: 
 		\mathtt{hd}\: v})(c), &\text{ otherwise}
 		\end{cases}
 	\end{align*}
@@ -204,7 +206,7 @@ We have
 	\end{cases} \]
 
 It outputs {\tt TRUE} iff the given program outputs {\tt FALSE}. What then 
-is $\interpret{inverse}(inverse)$? Assume first that it is 
+is \sloppy$\interpret{inverse}(inverse)$ ? Assume first that it is 
 {\tt TRUE}, then by definition it is {\tt FALSE} -- and vice versa! So it 
 neither returns {\tt TRUE} \emph{nor} {\tt FALSE}. The only way that would 
 work would be if it didn't return anything at all, but as we have seen, all 
