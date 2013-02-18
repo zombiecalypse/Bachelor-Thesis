@@ -7,6 +7,8 @@
 				\alt 	`cons' <expression> <expression>
 				\alt 	`hd' <expression>
 				\alt 	`tl' <expression>
+				\alt		`:' <symbol-name>
+				\alt		<expression> `=' <expression>
 				\alt 	<variable>
 
 		<statement-list> ::= <statement> ;\alt <statement> ; <statement-list>
@@ -30,8 +32,8 @@
 The \FOR language contains only very basic commands, but they can be combined
 to implement a huge number of algorithms. As the data structure, we choose 
 the humble $ConsCell$, that contains only a reference as the head and 
-another as the tail.\footnote{An observant reader will notice that this
-structure stems from the building of linked lists.}.
+another as the tail\footnote{An observant reader will notice that this
+structure stems from the building of linked lists.}. As a short cut notation, let $[a_1, a_2, \dots, a_n] := ConsCell(a_1, ConsCell(a_2, \dots ConsCell(a_n, Nil)\dots ))$.
 \begin{figure}[htb]
 	\begin{center}
 		\includegraphics[height=3cm]{introduction/for/images/conscell}
@@ -41,7 +43,7 @@ structure stems from the building of linked lists.}.
 
 Because the head and the tail point to \emph{something}, we also need some 
 atomic data, that it can point to. We introduce $Nil$, which points at 
-nothing and is the basis for the $ConsCell$ data.
+nothing and is the basis for the $ConsCell$ data. To make the programs easier to decipher, we also use named symbols, which are not strictly necessary: we could also use lists to code them.
 
 The formal definitions of the semantics of \FOR can be seen in the tables 
 \ref{tab:for-sem-exp} and \ref{tab:for-sem-stat}, but to gain familiarity 
@@ -55,7 +57,7 @@ the evaluation of $e$ and $\mathtt{tl}\: e$ its tail. The expression
 $\mathtt{nil}$ just gives back $Nil$\footnote{
 	Note the difference: $\mathtt{nil}$ is an expression in the language,
 	literally the string {\tt nil}, but $Nil $ is the mathematical entity.
-	Similarly you should not mix up $\mathtt{cons} a b$ and $ConsCell(x, y)$}.
+	Similarly you should not mix up $\mathtt{cons}\: a\: b$ and $ConsCell(x, y)$}.
 We also want to refer to stored values, so an identifier (e.g. {\tt X}) can
 also be an expression, the evaluation of which depends on the current variable
 bindings.
@@ -80,6 +82,7 @@ $\mathtt{for}\: I\: \mathtt{in}\: e\: block$ loop, that works as follows:
 	If $c = \{(name_i, value_i)\}$ is the variable binding at the time of the evaluation:
 	\begin{align}
 			\interpret{\mathtt{nil}}(c) &= Nil \\
+			\interpret{\mathtt{:}a}(c) &= symbol_a\\
 			\interpret{\mathtt{cons}\: A\: B}(c)=\interpret{\mathtt{(}A\mathtt{.}B\mathtt{)}} &=  ConsCell(\interpret{A}(c), \interpret{B}(c)) \\
 			\interpret{\mathtt{hd}\: A}(c) &= \begin{cases}
 				x, &\text{ if }\interpret{A}(c) = ConsCell(x, y)\\
@@ -89,9 +92,13 @@ $\mathtt{for}\: I\: \mathtt{in}\: e\: block$ loop, that works as follows:
 				y, &\text{ if }\interpret{A}(c) = ConsCell(x, y)\\
 				\bot, &\text{ otherwise}
 			\end{cases}\\
+			\interpret{A\:\mathtt{=}\: B}(c) &= \begin{cases}
+				ConsCell(Nil, Nil), &\text{ if } \interpret{A}(c) = \interpret{B}(c)\\
+				Nil,&\text{ otherwise}
+			\end{cases}\\
 			\interpret{name}(c) &= \begin{cases}
-				x, &\text{ if } (name, x) \in c\\
-				Nil, &\text{ otherwise}
+				x, & \text{ if } (name, x) \in c\\
+				Nil, & \text{ otherwise }
 			\end{cases}
 	\end{align}
 	\caption{Semantics of \FOR expressions}
@@ -120,7 +127,27 @@ $\mathtt{for}\: I\: \mathtt{in}\: e\: block$ loop, that works as follows:
 	\caption{Semantics of \FOR Statements}
 	\label{tab:for-sem-stat}
 \end{table}
+\subsection{Coding \FOR programs}
+\label{sub:code-for}
+Some of the more interesting programs in the \FOR language use other \FOR programs 
+as their input, for example a program $composition$ that takes a program $p$ and another program $q$, such that $\interpret{\interpret{composition}(p, q)}(x) = \interpret{p}(\interpret{q}(x))$. In order to create such a program, we need some interpretation \lineofthought{This would be a good point to start talking of functors, but then again, nobody wants to hear that in a practical text} $\coded{.}: \FOR \rightarrow \Input[\FOR]$.
 
+One possible way to go about this is interpreting blocks and expressions as lists and denote them:
+\begin{table}
+\begin{align*}
+	\coded{\mathtt{nil}} &= symbol_{nilexp}\\
+	\coded{\mathtt{:}a} &= [symbol_{symbol}, symbol_a] \\
+	\coded{\mathtt{cons\: a\: b }} &= [symbol_{cons}, \coded{a}, \coded{b}]\\
+	\coded{\mathtt{hd}\: a} &= [symbol_{hd}, \coded{a}]\\
+	\coded{\mathtt{tl}\: a} &= [symbol_{tl}, \coded{a}]\\
+	\coded{variable} &= [symbol_{var}, symbol_{variable}] \\
+	\coded{a\: \mathtt{:=}\: e} &= [symbol_{assign}, symbol_a, \coded{e}]\\
+	\coded{\mathtt{\{ } b_1 \mathtt{;} b_2 \mathtt{;} \dots \mathtt{;} b_n \mathtt{\} }} &= [\coded{b_1}, \coded{b_2}, \dots, \coded{b_n}]\\
+	\coded{\mathtt{for}\: a\: \mathtt{in}\: e\: block} &= [symbol_{for}, symbol_a, \coded{e}, \coded{block}]\\
+	\coded{\mathtt{if}\: e\: if\mhyphen block\: else\mhyphen block} &= [symbol_{if}, \coded{e}, \coded{if\mhyphen block}, \coded{else\mhyphen block}]
+\end{align*}
+\caption{Coding the \FOR language in its own data}
+\end{table} 
 \subsection{\FOR computability}
 The probably most important property of the \FOR language is that programs in 
 it always terminate. The reason for this is, that upon entering the for loop, 
@@ -144,10 +171,7 @@ functions are \FOR computable:
 As we can see, it is relatively simple to generate huge numbers using the 
 \FOR language and then generate lists with that length.
 
-\lineofthought{Thm: Algorithm $C$ with $T(C)\in O(f(n))$, $f(n) \in \FOR$, 
-	then $\interpret{C}\in \FOR$}
-
-At first glance it seems that any function can be computed this way, but 
+At first glance it seems that any computation can be defined this way, but 
 sadly, that is not the case.
 
 Intuitively the interpretation of a \FOR program should be computable. We can 
@@ -166,9 +190,9 @@ its argument. Now the following procedure would surely be a \FOR program too:
 inverse read X {
   result := [exec](X.X)
   if result {
-    Y := FALSE
+    Y := FALSE;
   } else {
-    Y := TRUE
+    Y := TRUE;
   }
 } write Y
 \end{verbatim}
@@ -233,7 +257,7 @@ The \FOR computable functions match a category of functions known as
 It is easy to see that \FOR can compute any primitive recursive function:
 The successor function and the projections are trivial, for the primitive 
 recursion, we have programs $\interpret{G}=g$ and $\interpret{H}=h$ by 
-induction assumtion. 
+induction assumption. 
 
 \begin{verbatim}
 F read NX {

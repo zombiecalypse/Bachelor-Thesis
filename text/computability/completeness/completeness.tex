@@ -18,7 +18,7 @@ impression, how one could go about proving other things to be turing complete.
 \subsection{The Turing Machine}
 The Turing Machine (\TM) is a formalism that focuses on a possible physical 
 implementation of a computing machine, although far from what is used today. 
-It features an potentially infinite amount of tape on which the machine 
+It features a potentially infinite amount of tape on which the machine 
 operates and which it uses as storage. From this tape, the machine can read and
 write the current cell and move its read-write-head one cell to the left or the
 right. Finally, the machine has a finite number of ``states of mind",
@@ -56,19 +56,20 @@ function until we get into any of the states $q_{accept}$ or $q_{reject}$.
 	$c = (tape, s) = (l, h, r, s) \in \Gamma^*\times \Gamma \times \Gamma^*\times Q$. 
 	This allows us to define a step that a \TM makes.
 
-	\TODO \lineofthought{Nice formating}
 	\begin{equation*}
 		step(tape, s, (\tilde{h}, \tilde{s}, d)) = \begin{cases}
 			(tape, s), &\text{ if } s \in \{q_{accept}, q_{reject}\} \\
 			(l, \tilde{h}, r, \tilde{s}) , &\text{ if } d = N\\
-			([\tilde{h} | l]) , first(r), rest(r), \tilde{s}) , &\text{ if } d = R\\
-			(rest(l), first(l), [\tilde{h} | r]), \tilde{s}) , &\text{ if } d = L
+			(\tilde{h}\: l, r_1, r_{2, \dots}, \tilde{s}) , &\text{ if } d = R\\
+			(l_{2, \dots}, l_1, \tilde{h}\: r), \tilde{s}) , &\text{ if } d = L
 		\end{cases}
 	\end{equation*}
+	
+	or in other words: if the head moves \emph{right}, then the rewritten head is pushed to the left stack and the new head is popped off the right stack.
 
 	\begin{figure}[htb]
 		\includegraphics[width=0.95\textwidth]{computability/completeness/pictures/turingtape}
-		\caption{Tape of the turing machine}
+		\caption{Tape of the Turing machine}
 	\end{figure}
 
 	We write $c_1 \vdash_{M} c_2$ to denote that $step(c_1, \delta(c_1)) = c_2$ and say that 
@@ -79,7 +80,7 @@ function until we get into any of the states $q_{accept}$ or $q_{reject}$.
 	\[
 		\interpret[\TM]{M}(tape_1) = \begin{cases}
 			tape_2, &\text{ if } (tape_1, q_0) \vdash_M^*(tape_2, q_{accept}) \\
-			\bot, &\text{ if there is no such} tape_2
+			\bot, &\text{ if there is no such } tape_2
 		\end{cases}
 		\]
 \end{defn}
@@ -457,26 +458,31 @@ Rice proved in 1953 that these procedures cannot exist either.
 		program, that can deduce if the property holds based on the source of a
 		procedure alone.
 \end{theorem}
-\begin{proof}\TODO\lineofthought{What do the sub-programs do exactly}
+\begin{proof}
 	We can easily see that the halting problem is a special case of this, but 
 	in fact, with a simple construction, all cases come down to it.
 
-	First we note that a procedure $\interpret{z}(x)\peq \bot \forall x$ must 
+	First we note that a procedure $\interpret{z}(x)\peq \bot$ must 
 	either have the property $P$ or not. Since $p$ halts, we can check that in 
 	advance. Assume that $\interpret{p}(z)=False$, then we can build a program 
-	that can solve the halting problem:
+	that can solve the halting problem. For this we use that there is a procedure $\mathtt{known-p}$ that satisfies $P$ (by non-triviality). Then we can define
 
 	\begin{verbatim}
 maybe-p: read (Q.I.X) {
   [interpreter](Q,I)
   Y := [known-p](X)
 } write Y
+\end{verbatim}
+so that $f = \interpret{spec}(\texttt{maybe-p}, Q, I)$ satisfies the property $P$ if $\interpret{Q}(I) \neq \bot$, otherwise $\interpret{f} \peq \interpret{z}$.
 
+\begin{verbatim}
 halt: read (Q,I) {
   known-p-or-z := [spec](maybe-p.Q.I)
   Y := [p](known-p-or-z)
 } write Y
 \end{verbatim}
+	so \texttt{maybe-p} 
+
 	The trick here is that 
 	\[
 		\interpret{\interpret{spec}(\mathtt{maybe-p}, \mathtt{Q}, \mathtt{I})}(x)\peq \begin{cases}
@@ -517,7 +523,7 @@ the property \emph{does} hold.
 \subsection{Church's Thesis}
 As mentioned, when the notion of computability was first developed, there 
 were competing formalisms, but as it turned out, they were all equally 
-powerful. This lead Alonzo Church to conjegure, that what the human sees 
+powerful. This lead Alonzo Church to conjecture, that what the human sees 
 as intuitively computable, is adequately formalized by any of these 
 competitors. This is known as Church's Thesis (or Church-Turing Thesis).
 
@@ -569,8 +575,8 @@ On a larger scale, it is possible to construct a computing device that orbits
 around a rotating black hole. An observer falling into the black hole could 
 then observe the infinite computation time of the orbiting machine in
 subjectively finite time\footnote{See \cite{etesi2002blackhole} for the whole
-discussion on the feasability and the mathematical proof}. It has however been
-noted, that falling into a black hole might not be a good idea\citationneeded.
+discussion on the feasibility and the mathematical proof}. It has however been
+noted, that falling into a black hole might not be a good idea.
 
 Finally, the notion of a computer running and halting after some time might 
 be flawed. There is no procedure, that can compute $\pi$ to its full extend, 
@@ -638,9 +644,9 @@ of their programs, because normally they obviously do. Proving that might not
 be trivial and might require the programmer to rewrite the program in such a 
 way, that a computer can prove it. So while it would be possible to to 
 implement most algorithms in a weaker language, it would be impractical. We
-couldn't use any unboundedd loop constructs or true recursion.
+couldn't use any unbounded loop constructs or true recursion.
 
 In some areas, this is acceptable: In formal logic and interactive 
-proof-finding, Coq\footnote{\url{http://coq.inria.fr/}} is used, eventhough it has 
+proof-finding, Coq\footnote{\url{http://coq.inria.fr/}} is used, even-though it has 
 no unbounded recursion and every piece of code terminates.
 % subsection Why are most programming languages Turing Complete? (end)

@@ -5,12 +5,12 @@ Self interpretation is the ability of an formalism to support an
 description of any programs in itself and apply it to some input.
 
 For computability, self interpretation can be seen as some kind of gold
-standard\citationneeded. This stems from the fact, that the simpler model of
-computation, \FOR, are not self interpreting.
+standard. This stems from the fact, that the simpler model of
+computation, \FOR, are not self interpreting, which changes as soon as self interpretation is added.
 
 \subsection{Recursion Theorem}
 \begin{theorem}[Recursion Theorem]
-	For any procedure $p\in \WHILE$ there is a procecure $p'\in \WHILE$ so 
+	For any procedure $p\in \WHILE$ there is a procedure $p'\in \WHILE$ so 
 	that $\interpret{p'}(x) = \interpret{p}(p'.x)$. This can uniformly be 
 	computed by $Y\in \WHILE$, i.e. $\interpret{\interpret{Y}(p)}(x) = \interpret{p}(\interpret{Y}(p).x)$
 
@@ -167,7 +167,4 @@ statement"}. Assume that it is false, then there \emph{is}\/ a proof for the
 statement, but since the statement is false, we'd have a contradiction in our 
 formal system. And if the statement is true? Then there is a true statement 
 expressable in the system, that can not be proven. This is known as \emph{Gödel's 
-incompleteness theorem}. \lineofthought{This might profit from a bit more 
-formality. Then again, I can't assume that the reader knows \emph{anything} 
-about formal logic. If I did that, I'd have to spend a page or two explaining 
-the notions.}
+incompleteness theorem}.
