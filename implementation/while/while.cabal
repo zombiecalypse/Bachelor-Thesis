@@ -19,11 +19,6 @@ build-depends:
     parsec,
     mtl
 
-executable: while-data
-main-is: data.hs
-buildable: True
-hs-source-dirs: src,src/While
-
 executable: parser
 main-is: statement.hs
 buildable: True
