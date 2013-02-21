@@ -60,13 +60,14 @@ class Context(object):
     def executeStatement(self, state):
         self.trace.append(state)
         if isinstance(state, Assignment):
-            self.context[state.var] = self.executeExpression(state.expr)
+            eval = self.executeExpression(state.expr)
+            self.context[state.var] = eval
         elif isinstance(state, If):
             evals = self.executeExpression(state.expr)
             if evals != nil:
                 self.executeBlock(state.block)
             else:
-                self.executeStatement(state.eblock)
+                self.executeBlock(state.eblock)
         elif isinstance(state, For):
             eval = self.executeExpression(state.expr)
             while eval != nil:
@@ -81,7 +82,7 @@ class Context(object):
 
     def executeExpression(self, exp):
         self.trace.append(exp)
-        if isinstance(exp, Symbol):
+        if isinstance(exp, SymExp):
             return sym(exp.name)
         elif isinstance(exp, Var):
             return self.context[exp.name]
@@ -160,9 +161,9 @@ class Context(object):
         e = self.asList(e)
         n = e[0].name
         if n == 'symbol':
-            return Symbol(e[1].name)
+            return SymExp(e[1].name)
         elif n == 'var':
-            return Var(Symbol(e[1]))
+            return Var(SymExp(e[1]))
         elif n == 'nil':
             return NilExp()
         elif n == 'cons':
@@ -220,7 +221,7 @@ class Context(object):
                 self.dumpExpression(s.expr)])
 
     def dumpExpression(self, e):
-        if isinstance(e, Symbol):
+        if isinstance(e, SymExp):
             return self.listData([
                 sym('symbol'),
                 sym(e.name)])

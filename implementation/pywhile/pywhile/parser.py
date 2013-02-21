@@ -20,7 +20,7 @@ identifier = (~keywords + PP.Regex('[a-zA-Z]\w*'))
 dot, eq = map(PP.Literal, ['.', '='])
 
 symbol = (PP.Literal(':') + identifier)
-symbol.setParseAction(lambda x: Symbol(x[1]))
+symbol.setParseAction(lambda x: SymExp(x[1]))
 
 variable = identifier.copy()
 variable.setParseAction(lambda x: Var(x[0]))

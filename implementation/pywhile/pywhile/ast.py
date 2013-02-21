@@ -9,7 +9,7 @@ def disp_block(block, indent):
 
 class DataExp(object): pass
 
-class Symbol(DataExp):
+class SymExp(DataExp):
     def __init__(self, name):
         assert isinstance(name, basestring), "%s is no string" % name
         DataExp.__init__(self)
