@@ -1,0 +1,13 @@
+# Installation
+
+The easiest way to install the while interpreter is to have [`easy_install`](https://pypi.python.org/pypi/setuptools) installed. In that case, you can just type
+
+    $ sudo easy_install PyWhile
+
+into your console.
+
+Otherwise get yourself a [Python 2](http://python.org/) installation for your system.  Then go to the [PyWhile](https://pypi.python.org/pypi/PyWhile) page and download the current version. Extract the archive somewhere and check that
+
+    $ python path/to/PyWhile/bin/while.py -h
+
+works and gives you a description of the options.

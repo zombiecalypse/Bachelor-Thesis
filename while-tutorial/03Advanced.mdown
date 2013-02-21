@@ -1,0 +1,70 @@
+# More advanced features
+Of course, `WHILE` is a toy language (*toy* as in *illustration* - *playing* with it should teach you something, but don't write your next application in it), so there are many features are not there, such as file system access, networking, heck, even string processing. There are however some features that make it a better, more interesting toy. 
+
+## Cons manipulation
+
+To this point, cons where only created, but you have to get things out of them too. You can do that with `hd` giving the head and `tl` the tail, so in other words:
+
+    example read X {
+      C := cons :a :b;
+      A := hd C;
+      B := tl C;
+    } write ...
+
+gives `Sym[a]` for ... = `A` and `Sym[b]` for ... = `B`. 
+
+## Conditionals
+Say we agree that `cons nil nil` is true and `nil` is false, then how could we make a function that inverts the input. For this, we need an if:
+
+`not.wl`:
+
+    not read X {
+      if X {
+        X := nil;
+      } else {
+        X := cons nil nil;
+      }
+    } write X
+
+now can do just that. `while.py not.wl` gives `ConsCell(Nil, Nil)`, but the idea is to invert the input. So you can define input with the `-i` option like this:
+`while.py not.wl -i 'cons nil nil'` gives `Nil`. Now formating can not only do lists, with the `-B` option, you can get `True` and `False` as output.
+
+The `else` clause is optional. If executes the first block if and only if the expression does not evaluate to nil (so if it is a `ConsCell` or a `Sym`).
+
+## Equality and Atomicity
+So symbols would not be too useful, if we could not compare them. For this the `=` operator is built in, for example `nil = nil` is `ConsCell(Nil, Nil)` and `:a = :b` is `Nil`.
+
+Another thing is to check if an expression is a `cons` cell, which can be done with the `atom?` operator: `atom? nil` is true, `atom? :a` is true, but `atom? (cons nil nil)` is false.
+
+## Loops
+Ok, this might not usually be a huge feature, but it needs to be said:
+
+    palindromify read X {
+      Y := (:a . :b . :c . nil);
+      for e in Y {
+        Y := cons e Y;
+      }
+    } write Y
+
+gives `[Sym[c], Sym[b], Sym[a], Sym[a], Sym[b], Sym[c]]` (with the `-L` option). Note here that `Y` is only evaluated once, so it can't loop forever.
+
+If you want to do that, there is also the `while` loop (would be weird if there wasn't):
+
+    reverse read X {
+      Y := (:a . :b . :c . nil);
+      while Y {
+        e := hd Y;
+        X := cons e X;
+        Y := tl Y;
+      }
+    } write Y
+
+## Function calls
+Now while you could do without, programming without functions is puts a huge strain on your mind for everything non-trivial. For example, we might have defined all of the functions above in the file `main.wl`, so now we can use these functions with a `[function](argument)` syntax:
+
+    last read X {
+      X := [reverse](X);
+      Y := hd X;
+    } write Y
+
+You should not use recursion until you read about the recursion theorem though.

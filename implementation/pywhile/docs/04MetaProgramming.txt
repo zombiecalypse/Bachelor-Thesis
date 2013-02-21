@@ -1,0 +1,66 @@
+# Metaprogramming
+It is entirely possible to write an `WHILE` interpreter in the language so far, it wouldn't even too hard, but in case you don't want to do that, you can use the builtin functionality:
+
+* `<function>` gives the source of the `function`.
+* `[[Source]](argument)` executes the dumped source (which might have been modified).
+
+So in short, `[[ <function> ]](argument)` is the same as `[function](argument)`. But the interesting part is the format, so you can reproduce it. For the interested: you might want to learn [LISP](http://en.wikipedia.org/wiki/LISP).
+
+* A program is a list of
+    - the literal symbol `:program`.
+    - the symbol of the function name.
+    - the symbol of the input identifier
+    - the symbol of the output identifier
+    - a list of the statements in the function.
+* Statements depend on the kind:
+    - The *Assignment* is a list of
+         * the literal symbol `assignment`
+         * the symbol of the variable identifier
+         * the expression of the right hand site.
+    - The *If* statement is a list of
+         * the literal `if`
+         * the expression
+         * the list of the `if` statements
+         * the list of the `else` statements
+    - The *For* statement contains
+         * the literal `for`
+         * the identifier
+         * the expression
+         * the block
+    - The *While* statement has
+         * the literal `while`
+         * the expression
+         * the block
+* Expressions are lists too:
+    - `nil` goes to `[Sym[nil]]`
+    - `cons` goes to
+         * the symbol `cons`
+         * the left expression
+         * the right expression
+    - A symbol would be
+         * the symbol `symbol`
+         * the actual symbol
+    - a variable reference
+         * the symbol `var`
+         * the symbol of the variable identifier
+    - `hd` and `tl` go to
+         * the symbol `hd`/`tl`
+         * the dumped expression
+    - equality is
+         * `eq`
+         * the left expression
+         * the right expression
+    - a function call is
+         * `call`
+         * the symbol of the name
+         * the argument expression
+    - a universal call (interpreting the source from a data expression):
+         * `universal`
+         * the source expression
+         * the argument expression
+    - a source dump
+         * `source`
+         * the symbol of the function name.
+    - a `atom?` becomes
+         * `atom`
+         * the dumped expression.

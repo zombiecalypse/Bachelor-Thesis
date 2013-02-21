@@ -1,0 +1,35 @@
+# Hello World
+
+The `WHILE` programming language has only a few constructs, such as assignment, loops and functions. For the beginning however, lets look at the ubiquitous "Hello World" program:
+
+`hello.wl`:
+
+    hello read X {
+      Y := :HelloWorld;
+    } write Y
+
+Now run it with `while.py hello.wl`, which will print `Sym[HelloWorld]`. The thing is that `WHILE` does not support input and output, just return values, so the Hello World is just a program, that returns the constant value `HelloWorld` as a symbol.
+
+* `hello` on the first line means that the function is called "hello" and could be called later. If only one function is defined, the name does not matter, it is not used to define the main function. Instead the last function defined is the function called by the interpreter.
+* `read X` defines the input variable name. `X` could now read out in the program. If the interpreter is given the `-i` parameter, you can pass another value than `nil` into the function.
+* `Y := ...;` means that you define the `Y` variable. Variables *can be redefined*, but they *don't carry across function borders*. Every Variable that is *not defined* will evaluate to `nil`.
+* `:HelloWorld` is a symbol with that name. There are no functions that can change symbol names, so there can be a finite number of symbols in the program.
+* `write Y` defines the output to be the content of the `Y` variable, in this case the symbol `HelloWorld`.
+
+To make things a bit more fun, we can admit that Hello World are actually two words and should not be in a single symbol. WHILE uses the `ConsCell` data structure, that contains two pointers (called head and tail) to `nil`, a symbol or another `cons` cell. To simulate two words, you could just do the following:
+
+    hello read X {
+      Y := cons :Hello :World;
+    } write Y
+
+which gives `ConsCell(Sym[Hello], Sym[World])`. Now the `ConsCell` is usually used in [linked lists](http://en.wikipedia.org/wiki/Linked_list), so you might want to add a `nil` to the end:
+
+    hello read X {
+      Y := cons :Hello (cons :World nil);
+    } write Y
+
+and since this is a valid linked list, the output can be formated accordingly with the `-L` option for the interpreter, which should now print `[Sym[Hello], Sym[World]]`. Now `cons :Hello (cons :World nil)` is a bit unwieldy. Instead you can write the right associative `.` operator: 
+
+    hello read X {
+      Y := :Hello . :World . nil;
+    } write Y
