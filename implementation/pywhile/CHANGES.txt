@@ -3,3 +3,4 @@ v1.0.1, 2013-2-21 -- Struggling with the packaging
 v1.0.2, 2013-2-21 -- Bug caused symbols to be None
 v1.0.3, 2013-2-21 -- Bug caused source dumping to fail
 v1.0.4, 2013-2-22 -- Documentation
+v1.0.5, 2013-2-22 -- Descriptors don't interfer with keywords

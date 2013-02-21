@@ -137,21 +137,21 @@ class Context(object):
 
     def parseStatement(self, s):
         n = s[0].name
-        if n == 'if':
+        if n == 'STif':
             expr = self.parseExpression(s[1])
             block = self.parseBlock(s[2])
             eblock = self.parseBlock(s[3])
             return If(expr, block, eblock)
-        elif n == 'for':
+        elif n == 'STfor':
             ident = s[1].name
             expr = self.parseExpression(s[2])
             block = self.parseBlock(s[3])
             return For(ident, expr, block)
-        elif n == 'while':
+        elif n == 'STwhile':
             expr = self.parseExpression(s[1])
             block = self.parseBlock(s[2])
             return While(expr, block)
-        elif n == 'assignment':
+        elif n == 'STassignment':
             ident = s[1].name
             expr = self.parseExpression(s[2])
             return Assignment(ident, expr)
@@ -160,27 +160,27 @@ class Context(object):
     def parseExpression(self, e):
         e = self.asList(e)
         n = e[0].name
-        if n == 'symbol':
+        if n == 'EXsymbol':
             return SymExp(e[1].name)
-        elif n == 'var':
+        elif n == 'EXvar':
             return Var(SymExp(e[1]))
-        elif n == 'nil':
+        elif n == 'EXnil':
             return NilExp()
-        elif n == 'cons':
+        elif n == 'EXcons':
             return ConsExp(self.parseExpression(e[1]), self.parseExpression(e[2]))
-        elif n == 'hd':
+        elif n == 'EXhd':
             return HdExp(self.parseExpression(e[1]))
-        elif n == 'tl':
+        elif n == 'EXtl':
             return TlExp(self.parseExpression(e[1]))
-        elif n == 'eq':
+        elif n == 'EXeq':
             return EqExp(self.parseExpression(e[1]), self.parseExpression(e[2]))
-        elif n == 'call':
+        elif n == 'EXcall':
             return FuncCall(e[1].name, self.parseExpression(e[2]))
-        elif n == 'universal':
+        elif n == 'EXuniversal':
             return UniversalCall(self.parseExpression(e[1]), self.parseExpression(e[2]))
-        elif n == 'source':
+        elif n == 'EXsource':
             return SourceExp(e[1].name)
-        elif n == 'atom':
+        elif n == 'EXatom':
             return AtomExp(self.parseExpression(e[1]))
         assert False, "Is not a valid Expression: %s" % (e,)
 
@@ -199,73 +199,73 @@ class Context(object):
     def dumpStatement(self, s):
         if isinstance(s, If):
             return self.listData([
-                sym('if'),
+                sym('STif'),
                 self.dumpExpression(s.expr),
                 self.dumpBlock(s.block),
                 self.dumpBlock(s.eblock)])
         elif isinstance(s, For):
             return self.listData([
-                sym('for'),
+                sym('STfor'),
                 sym(s.ident),
                 self.dumpExpression(s.expr),
                 self.dumpBlock(s.block)])
         elif isinstance(s, While):
             return self.listData([
-                sym('while'),
+                sym('STwhile'),
                 self.dumpExpression(s.expr),
                 self.dumpBlock(s.block)])
         elif isinstance(s, Assignment):
             return self.listData([
-                sym('assignment'),
+                sym('STassignment'),
                 sym(s.var),
                 self.dumpExpression(s.expr)])
 
     def dumpExpression(self, e):
         if isinstance(e, SymExp):
             return self.listData([
-                sym('symbol'),
+                sym('EXsymbol'),
                 sym(e.name)])
         elif isinstance(e, Var):
             return self.listData([
-                sym('var'),
+                sym('EXvar'),
                 sym(e.name)])
         elif isinstance(e, NilExp):
-            return self.listData([sym('nil')])
+            return self.listData([sym('EXnil')])
         elif isinstance(e, HdExp):
             return self.listData([
-                sym('hd'),
+                sym('EXhd'),
                 self.dumpExpression(e.expr)])
         elif isinstance(e, TlExp):
             return self.listData([
-                sym('tl'),
+                sym('EXtl'),
                 self.dumpExpression(e.expr)])
         elif isinstance(e, ConsExp):
             return self.listData([
-                sym('cons'),
+                sym('EXcons'),
                 self.dumpExpression(e.left),
                 self.dumpExpression(e.right)])
         elif isinstance(e, EqExp):
             return self.listData([
-                sym('eq'),
+                sym('EXeq'),
                 self.dumpExpression(e.left),
                 self.dumpExpression(e.right)])
         elif isinstance(e, FuncCall):
             return self.listData([
-                sym('call'),
+                sym('EXcall'),
                 sym(e.func),
                 self.dumpExpression(e.argument)])
         elif isinstance(e, UniversalCall):
             return self.listData([
-                sym('universal'),
+                sym('EXuniversal'),
                 self.dumpExpression(e.func_coded),
                 self.dumpExpression(e.argument)])
         elif isinstance(e, SourceExp):
             return self.listData([
-                sym('source'),
+                sym('EXsource'),
                 sym(e.func)])
         elif isinstance(e, AtomExp):
             return self.listData([
-                sym('atom'),
+                sym('EXatom'),
                 self.dumpExpression(e.exp)])
 
     def listData(self, l):
