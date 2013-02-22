@@ -1,4 +1,4 @@
-As we saw, not all problems are solvable, but it seems not too farfetched to
+As we saw, not all problems are solvable, but it seems not too far-fetched to
 say that a problem not being solvable by any algorithm is seldom a concern for
 most applications. Being solvable in a reasonable amount of time and space
 however can very easily become a problem. What use is a program that solves our
@@ -170,9 +170,9 @@ hierarchy is in fact interleaved, as the following theorems will prove.
 			memory arranged to hold that property? Each cell can hold any of the 
 			symbols of $\Gamma$, so there are $\abs{\Gamma}^{f(\abs{x})}$ ways to 
 			arrange that. Multiply that with the number of states that are not
-			endstates and you get the number of steps after either the machine is in
+			end states and you get the number of steps after either the machine is in
 			a configuration it has seen before or goes to a new configuration --
-			necessarily an endstate. If the Turing machine is in the same
+			necessarily an end state. If the Turing machine is in the same
 			configuration, then it will necessarily act in precisely the same way 
 			as before, get to the same configuration again and again, and therefore loop. 
 		\item But since $\measurespace{P}(x)\leq f(\abs{x})$, 
@@ -181,14 +181,14 @@ hierarchy is in fact interleaved, as the following theorems will prove.
 	\end{enumerate}
 \end{proof}
 
-\begin{corrolary}
+\begin{corollary}
 	\[ %\LOGSPACE\subseteq
 		\PTIME\subseteq\PSPACE\subseteq\EXPTIME\subseteq\EXPSPACE \]
-\end{corrolary}
+\end{corollary}
 
 Surprisingly, it is not known, if these inclusions are strict. It has not 
 been proven yet, that $\PTIME\neq \PSPACE$ or that $\PSPACE\neq\EXPTIME$. 
-Complexity theory is full of these uncertainities, even if it superficially 
+Complexity theory is full of these uncertainties, even if it superficially 
 mirrors computability theory, it has proven to be hard on much more basic
 levels than computability has.
 
@@ -212,8 +212,8 @@ time constructible function}\/:
 		\item $f(x)=x$ is time and space 
 			constructible: Copy the input to the output tape.
 		\item If $f$ is space constructible, then $g(x)=(x+1)\cdot f(x)$ time and space
-			constructible. Run the machine from above on the output (the $x$) of the
-			constructing machine (the $+1$).
+			constructible. Run the machine from above on the output of the
+			constructing machine: Running the constructing machine takes $f(x)$ time and space and then running the linear machine adds $x\cdot f(x)$.
 		\item If $f$ is time/space constructible, then 
 			$\forall c\in \mathbb{N^+}: g(x)=c\cdot f(x)$ is time/space 
 			constructible: Run the constructing machine $M$ for $f$, but cicle through $c$ 
@@ -255,19 +255,19 @@ time constructible function}\/:
 			then $\interpret{G}(m) :\peq not\,\interpret{H_f}(m, m)$ runs only
 			\[f\left(\floor{\frac{2\abs{m}+1}{2}}\right)=f(\abs{m})\] steps. 
 		\item Thus 
-			\[\interpret{G}(G)\peq not\, \interpret{H_f}(G,G) \peq not\, True \peq False\]
-			, but that would imply, that $H_f$ would reject it, therefore 
+			\[\interpret{G}(G)\peq not\, \interpret{H_f}(G,G) \peq not\, True \peq False,\]
+			but that would imply, that $H_f$ would reject it, therefore 
 			\[\interpret{G}(G)\peq not\, \interpret{H_f}(G,G) \peq not\, False \peq True\]
 			and vice versa -- which is a contradiction. Therefore $G\not\in\TIME{f(x)}$ 
 			and $H_f\not\in\TIME{f\left(\floor{\frac{x}{2}}\right)}$
 	\end{enumerate}
 \end{proof}
 
-\begin{corrolary}
+\begin{corollary}
 	\[\PTIME\neq\EXPTIME\]
-\end{corrolary}
+\end{corollary}
 \begin{proof}
-	$x^n$ is time computable for all $n\in \N$, but 
+	$x^n$ is time constructable for all $n\in \N$, but 
 	$x^{3n} < 2^x \Leftrightarrow 3n\cdot \log_2 x < x \Leftrightarrow \frac{\log_2 x}{x} < 3n$
 	, which holds for any $n$, if $x$ is big enough, so there is no polynomial 
 	close enough to the exponentials, that would allow the \PTIME\/ class to 
@@ -341,16 +341,15 @@ At first, this seems like a new mode of computation and thus belong to
 computability rather than complexity, but just proving that \emph{some}
 computation accepts the input can be done by performing a breadth-first search
 on the possible traces. The complexity however seems very different, because 
-in the worst case, this approach will take $\TIME{\mathcal{O}(2^{\abs{Q}})}$ 
-per step.
+in the worst case, this approach will take $\mathcal{O}(2^{\mathcal{O}(n)})$ deterministic steps per non-deterministic step, thus an algorithm that takes $\NTIME f(x)$ will take $\TIME 2^{\mathcal{O}(f(x))}$ with this approach.
 
 The most important class, that uses non-determinism is \NPTIME: The 
 problems, that can be solved in polynomial time, if guessing is allowed and 
 we guess optimally.
 
 \begin{theorem}[Guess and check]
-	If $X\in \NPTIME$, then we can find a so-called \emph{certificate} 
-	$w\in \Gamma^*$ for each input $x$, so that there is a deterministic Turing 
+	If $X\in \NPTIME$, then we can find a so-called  \emph{certificate} 
+	$w\in \Gamma^*$ for each input $x$, with $\abs{w} \leq p(\abs{x})$ for a polynomial $p$, so that there is a deterministic Turing 
 	machine $M$ that decides $X$ given $w$ and $x$ in \PTIME. If we can 
 	formulate the problem in such a way, then it is in \NPTIME.
 
@@ -365,8 +364,8 @@ for success is called $co-\NPTIME$.}
 	On one hand, we can code the trace, that lead to the succeeding computation, to the 
 	tape. Checking, that a trace is valid for a given Turing machine is trivial. 
 
-	If on the other hand we can produce a certificate for any input and check in 
-	polynomial time, then that certificate can only be $p(\abs{x})$ long for some 
+	If on the other hand we can produce a certificate for any input and check it in 
+	polynomial time in $\abs{x}$ alone, then that certificate can only be $p(\abs{x})$ long for some 
 	polynomial $p$ -- otherwise, we wouldn't be able to check the certificate this fast. 
 
 	But then, we can define a non-deterministic machine, that comes up with 
@@ -376,7 +375,7 @@ for success is called $co-\NPTIME$.}
 
 We can see that $\PTIME\subset \NPTIME$, by just outputting singleton sets in 
 the non-deterministic $\delta$ and intuitively it seems that non-determinism 
-must accellerate the computation significantly.
+must accelerate the computation significantly.
 
 \begin{thesis}
 	$\PTIME\neq\NPTIME$

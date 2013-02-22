@@ -46,16 +46,16 @@ non-trivial function property as a halting problem.
 	For a complexity class $X$, a $X$-\emph{reduction} of a problem $A$ to a
 	problem $B$ is a compiler from the problem descriptions of $A$ to the 
 	descriptions of $B$, so that compiling a description of $A$ and executing 
-	it as a $B$ problem description is in $X$.
+	it as a $B$ problem description is in $X$. We write $A\leq_X B$.
 \end{defn}
 
 \begin{example}
 	The most common reductions are:
 	\begin{enumerate}
 		\item $\PTIME$-reductions translate and execute a problem in polynomial 
-			time and therefore $\PTIME$ and $\PSPACE$ are closed under these reductions.
+			time and therefore $\NPTIME$ and $\PSPACE$ are closed under these reductions. Nearly every $\PTIME$ problem can be $\PTIME$-reduced to any other\footnote{All instances that have accepting and rejecting answers}.
 		\item Linear time reductions give much stronger bounds, so that for example
-			a $O(n^2)$ problem to which another is reduced, proves that the other 
+			a $O(n^2)$ problem to which another is linearly reduced, proves that the other 
 			problem is $O(n^2)$ as well.
 		\item Computable reductions are used to show the computability or 
 			incomputability of problems.
@@ -144,7 +144,7 @@ variables, so that the whole expression is true?
 	If we have the facts $F$ and the hypothesis $H$, then $H$ fits the facts, if
 	and only if $F\wedge\lnot H$ is \emph{not} satisfiable.
 \end{example}
-\subsubsection{Reductions}
+\subsubsection{Polynomial reductions}
 SAT is an extremely handy problem to reduce to, so the following reductions 
 will mostly feature that.
 \paragraph{SAT reduces to TSP}
@@ -409,7 +409,7 @@ classes. But in fact, we have seen two problems already, that are \NPTIME-comple
 	Despite looking huge at first glance, this is still polynomially long in the input.
 
 	We also need to keep track of where the read/write head of the Turing 
-	machine is. Perhabs unsurprisingly, we introduce a table $H_{x,t}$, meaning 
+	machine is. Perhaps unsurprisingly, we introduce a table $H_{x,t}$, meaning 
 	that at the time $t=1\ldots p(n)$ the head is at the position 
 	$x=1\ldots p(n)$. Exclusion applies, so we add
 	\begin{align}
@@ -467,9 +467,11 @@ classes. But in fact, we have seen two problems already, that are \NPTIME-comple
 
 			Even this huge transition table is still polynomial in the length of the input.
 	\end{itemize}
+	
+	Finally, the formula should only be accepted of the end state is $q_{accept}$, which is simply $EndState = s^{q_{accept}}_{p(x)}$.
 
-	Now $Transition\wedge HeadExclude \wedge TapeExclude \wedge StateExclude$ 
-	is the representation of $A$ in $SAT$. Note that no functions (predictates) would have 
+	Now $Transition\wedge HeadExclude \wedge TapeExclude \wedge StateExclude \wedge EndState$ 
+	is the representation of $A$ in $SAT$. Note that no functions (predicates) would have 
 	been necessary\footnote{Slightly changing this proof shows then, that predicate 
 	logic is actually Turing complete.}.
 
@@ -504,13 +506,19 @@ $k$, then we can actually find the optimal path:
 \begin{algorithmic}[1]
 	\State find least $k_0$, so that the round-trip is possible with binary search over $k$
 	\For{each edge $e$ in the graph}
-		\State Remove the $e$
+		\State Remove $e$ from the graph
 		\State Check if the round-trip cost increases
 		\State If so, reinsert $e$
 	\EndFor
 \end{algorithmic}
 
 After the algorithm finishes, the only edges in the graph are the ones in the round-trip.
+
+Why does this work? First the binary search determines the exact cost of the optimal route and does so in only $\log k_0 \cdot f(x)$, where $f(x)$ is the time that TSP takes. 
+
+The loop then uses that any edge, that is not in the round-trip will leave the cost untouched, even when removed. An edge, that can not be compensated however will increase the cost, when removed. If there are more than one possible round-trip with the same cost, then only one of them will survive the loop, because edges will be removed, if any of the routes is still possible. We would need $\abs{E}\cdot f(x)$ time for the loop.
+
+All in all this algorithm will take $(\log k_0 + \abs{E})\cdot f(x)$ and therefore has only a linear slowdown compared to solving TSP.
 
 \subsubsection{Help, my problem is \NPTIME-complete}
 While being (probably) asymptotically very difficult to solve, 
@@ -558,7 +566,7 @@ the road, the quantum computer will get its share.
 \paragraph{$\mathtt{NC}$}
 stands for Nick's class\footnote{honoring Nick Pippenger} and
 has been described as the class of well-parallelizable 
-problems\citationneeded. It is known that $\mathtt{NC} \subset \PTIME$, but it is unknown, 
+problems\footnote{See \cite{sipser2006introduction}}. It is known that $\mathtt{NC} \subset \PTIME$, but it is unknown, 
 whether this inclusion is proper. Similarly to \NPTIME-complete problems, 
 \PTIME-complete problems, such as CFG, are analyzed to prove this. 
 
