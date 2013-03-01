@@ -1,17 +1,22 @@
 from collections import defaultdict
 from .ast import *
+from .collectors import NullCollector
 
 class Tree(object):
     def __getitem__(self, i):
         if i == 0: return hd(self)
 
         return tl(self)[i-1]
+    def size(self):
+        raise NotImplementedError()
  
 class Nil(Tree): 
     def __repr__(self):
         return "Nil"
     def __eq__(self, o):
         return isinstance(o, Nil)
+    def size(self):
+        return 0
 
 class Cons(Tree):
     def __init__(self, l, r):
@@ -23,6 +28,8 @@ class Cons(Tree):
     def __eq__(self, o):
         if not isinstance(o, Cons): return False
         return self.left == o.left and self.right == o.right
+    def size(self):
+        return 1 + self.left.size() + self.right.size()
 
 class Symbol(Tree):
     def __init__(self, name):
@@ -33,6 +40,8 @@ class Symbol(Tree):
     def __eq__(self, o):
         if not isinstance(o, Symbol): return False
         return self.name == o.name
+    def size(self):
+        return 1
 
 nil = Nil()
 def cons(l, r):
@@ -46,19 +55,23 @@ def tl(e):
     assert isinstance(e, Cons), "Tail of nil"
     return e.right
 
+
 class Context(object):
-    def __init__(self, ast):
+    def __init__(self, ast, collector = NullCollector(), parent = None):
         self.programs = {}
-        self.trace = []
+        self.collector = collector
+        self.parent = parent
         for prog in ast:
             self.programs[prog.name] = prog
+        assert self.collector
 
     def executeBlock(self, block):
         for statement in block:
             self.executeStatement(statement)
 
     def executeStatement(self, state):
-        self.trace.append(state)
+        assert self.collector
+        self.collector.statement(self, state)
         if isinstance(state, Assignment):
             eval = self.executeExpression(state.expr)
             self.context[state.var] = eval
@@ -81,7 +94,8 @@ class Context(object):
             assert False, "Weird statement %s (%s)" % (state, state.__class__)
 
     def executeExpression(self, exp):
-        self.trace.append(exp)
+        assert self.collector
+        self.collector.expression(self, exp)
         if isinstance(exp, SymExp):
             return sym(exp.name)
         elif isinstance(exp, Var):
@@ -97,7 +111,7 @@ class Context(object):
             right = self.executeExpression(exp.right)
             return cons(left, right)
         elif isinstance(exp, FuncCall):
-            return Context(self.programs.values()).executeProgram(exp.func, self.executeExpression(exp.argument))
+            return Context(self.programs.values(), parent = self).executeProgram(exp.func, self.executeExpression(exp.argument))
         elif isinstance(exp, UniversalCall):
             eval = self.executeExpression(exp.func_coded)
             eval_arg = self.executeExpression(exp.argument)
@@ -284,8 +298,7 @@ class Context(object):
         try:
             return self.executeAst(self.programs[name], input)
         except AssertionError as e:
-            for s in self.trace:
-                print "* {}".format(s)
+            print self.collector.report()
             raise e
 
     def executeAst(self, ast, input):
@@ -293,4 +306,5 @@ class Context(object):
         self.context = defaultdict(lambda : nil)
         self.context[ast.input] = input
         self.executeBlock(ast.block)
+        self.collector.end(self)
         return self.context[ast.output]

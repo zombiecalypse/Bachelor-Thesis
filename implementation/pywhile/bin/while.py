@@ -16,20 +16,24 @@ if __name__ == '__main__':
     argument.add_argument('-L', '--list', dest = 'output', action='store_const',
             const = pywhile.list, default = pywhile.identity,
             help = 'The output is a list and printed accordingly')
-    argument.add_argument('-i', '--input', default = 'nil', 
-            help = 'The main function gets this expression as argument, default to nil')
-    argument.add_argument('-t', '--trace',  action="store_true",
-            help = 'Prints the complete trace of the program in the end.')
+    argument.add_argument('-i', '--input', default = 'nil', help = 'The main function gets this expression as argument, default to nil')
+    argument.add_argument('--trace',  action="append_const", dest = 'collector',
+                          const = pywhile.TraceCollector(), help = 'Prints the complete trace of the program in the end.')
+    argument.add_argument('--space',  action="append_const", dest = 'collector',
+                          const = pywhile.SpaceCollector(), help = 'Reports the space usage of the program.')
+    argument.add_argument('--time',  action="append_const", dest = 'collector',
+                          const = pywhile.TimeCollector(),
+            help = 'Reports the time usage of the program.')
     args = argument.parse_args()
     progs = []
     for f in args.files:
         for p in pywhile.parseFile(f):
             progs.append(p)
-    context = pywhile.Context(progs)
+    collector = reduce(lambda x,y: x+y, args.collector, pywhile.NullCollector())
+    context = pywhile.Context(progs, collector = collector)
     input = context.executeExpression(pywhile.parseExpression(args.input)[0])
     last_name = progs[-1].name
     ret = context.executeProgram(last_name, input)
     print args.output(ret)
-    if args.trace:
-        for s in context.trace:
-            print "* {}".format(s)
+    print
+    print context.collector.report()
