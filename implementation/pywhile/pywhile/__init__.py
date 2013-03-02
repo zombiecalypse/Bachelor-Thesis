@@ -4,4 +4,4 @@ from .executor import Context, cons, nil
 from .collectors import *
 from .output import *
 
-version = "0.1.6rc1"
+version = "0.1.7"

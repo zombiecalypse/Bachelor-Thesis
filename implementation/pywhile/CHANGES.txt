@@ -4,3 +4,5 @@ v1.0.2, 2013-2-21 -- Bug caused symbols to be None
 v1.0.3, 2013-2-21 -- Bug caused source dumping to fail
 v1.0.4, 2013-2-22 -- Documentation
 v1.0.5, 2013-2-22 -- Descriptors don't interfer with keywords
+v1.0.6rc1, 2013-2-28 -- Reporting implemented
+v1.0.7, 2013-2-28 -- Reasonable output method for source code

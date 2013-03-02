@@ -1,6 +1,7 @@
 from collections import defaultdict
 from .ast import *
 from .collectors import NullCollector
+from .exceptions import AtomicError
 
 class Tree(object):
     def __getitem__(self, i):
@@ -49,10 +50,10 @@ def cons(l, r):
 def sym(name):
     return Symbol(name)
 def hd(e):
-    assert isinstance(e, Cons), "Head of nil"
+    if not isinstance(e, Cons): raise AtomicError("Head of nil")
     return e.left
 def tl(e):
-    assert isinstance(e, Cons), "Tail of nil"
+    if not isinstance(e, Cons): raise AtomicError("Tail of nil")
     return e.right
 
 
