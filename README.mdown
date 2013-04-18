@@ -1,5 +1,12 @@
-# Code of Aaron Karper's Bachelor Thesis
+# How to use it?
 
-Requirements:
-- LaTeX-makefile
-- cabal
+1. Make sure you have the PDF or a physical copy of the text. If it didn't come with
+   the source, run `make` in the `text/` directory and continue installing dependencies
+   until this works (make, latex-mk, miktex with pdflatex, ...). Alternatively you can
+   try latexmk on the `main.tex` file or run `pdflatex` on it several times.
+2. Install the `WHILE` interpreter. Consult [this](https://github.com/zombiecalypse/Bachelor-Thesis/wiki) page.
+3. Read the text. For more benefit:
+    - compare it to your class on computability.
+    - experiment with the interpreter, whenever you feel the need to do so.
+    - dig deeper into the facts that interest you. The internet (e.g. Google Scholar)
+      provides you with a wealth of information.
