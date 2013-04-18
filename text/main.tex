@@ -84,11 +84,39 @@
 \newtheorem{defn}{Definition}
 \newtheorem*{example}{Example}
 
+
+
+
 \author{Aaron Karper}
-\title{A Programming Language Oriented Approach to Computability}
+\newcommand{\titletext}{A Programming Language Oriented Approach to Computability}
+\title{\titletext}
 \date{}
 \begin{document}
-\maketitle
+\begin{titlepage}
+  \let\footnotesize\small
+  \let\footnoterule\relax
+  \let \footnote \thanks
+  
+  \begin{center}%
+	\vspace{10em}
+  	{\huge{\textsc{\titletext}}\\}%
+  	\vskip 5em%
+	{\LARGE{Bachelorarbeit\\der Philosophisch-naturwissenschaftlichen
+  	 Fakult\"at der Universit\"at Bern}\par}%
+  	\vskip 12em%
+  	{\Large{vorgelegt von}\par}%
+  	\vskip 1.5em%
+  	{\Large{Aaron Karper}\par}%
+  	{\Large{2013}\par}%
+  	\vskip 6em%
+  	{\Large{Leiter der Arbeit:}\par}%
+  	{\Large{Professor Dr. Thomas Strahm}\par}%
+	{\Large{Institut f\"ur Informatik und angewandte Mathematik}\par}%
+  \end{center}\par	
+  \thanks
+  \vfil\null
+\end{titlepage}
+
 \tableofcontents
 \chapter{Introduction}
 	\include{introduction/introduction/introduction}
